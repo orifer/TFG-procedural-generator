@@ -12,7 +12,7 @@ export default class app {
 
         document.getElementById('container').appendChild( this.renderer.domElement );
 
-        this.camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 10 );
+        this.camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 500 );
         this.camera.position.z = 2;
         this.scene = new THREE.Scene();
         this.addMesh();
@@ -46,8 +46,8 @@ export default class app {
         this.time += 0.05;
         this.material.uniforms.time.value = this.time;
 
-        this.mesh.rotation.x += 0.001;
-        this.mesh.rotation.y += 0.002;
+        // this.mesh.rotation.x += 0.001;
+        // this.mesh.rotation.y += 0.002;
         this.renderer.render( this.scene, this.camera );
         window.requestAnimationFrame(this.render.bind(this))
     }
