@@ -9,6 +9,7 @@ export default class app {
     constructor () {
         this.renderer = new THREE.WebGLRenderer( { antialias: true } );
         this.renderer.setSize( window.innerWidth, window.innerHeight );
+
         document.getElementById('container').appendChild( this.renderer.domElement );
 
         this.camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 10 );
@@ -17,6 +18,9 @@ export default class app {
         this.addMesh();
         this.time = 0;
         this.render();
+
+        this.onWindowResize();
+        window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
     }
 
     addMesh() {
@@ -25,7 +29,8 @@ export default class app {
         this.material = new THREE.ShaderMaterial( {
             uniforms: {
                 time: { value: 0 },
-                resolution: { value: new THREE.Vector4() }
+                u_resolution: { type: "v2", value: new THREE.Vector2() },
+                u_mouse: { type: "v2", value: new THREE.Vector2() }
             },
             vertexShader: vertex,
             fragmentShader: fragment
@@ -43,6 +48,19 @@ export default class app {
         this.mesh.rotation.y += 0.002;
         this.renderer.render( this.scene, this.camera );
         window.requestAnimationFrame(this.render.bind(this))
+    }
+
+    onWindowResize( event ) {
+        // Update camera
+        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
+
+        // Update renderer
+        this.renderer.setSize( window.innerWidth, window.innerHeight );
+
+        // Some variables
+        this.width = this.renderer.domElement.width;
+        this.height = this.renderer.domElement.height;
     }
 
 }
