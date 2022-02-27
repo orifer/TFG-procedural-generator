@@ -21,6 +21,8 @@ export default class app {
 
         this.onWindowResize();
         window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
+
+        this.controls = new OrbitControls( this.camera, this.renderer.domElement );
     }
 
     addMesh() {
