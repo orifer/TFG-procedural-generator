@@ -26,12 +26,18 @@ export default class app {
     }
 
     addMesh() {
-        this.geometry = new THREE.SphereBufferGeometry( 1, 32, 32 );
-        // this.material = new THREE.MeshNormalMaterial();
+
+        // Sphere
+        this.geometry = new THREE.SphereBufferGeometry( 1, 64, 64 );
+        this.geometry.verticesNeedUpdate = true;
+
+        // Plane
+        // this.geometry = new THREE.PlaneGeometry( 2, 2 ,1 ,1);
+
         this.material = new THREE.ShaderMaterial( {
             uniforms: {
                 time: { value: 0 },
-                u_resolution: { type: "v2", value: new THREE.Vector2() },
+                u_resolution: { type: "v2", value: new THREE.Vector2( window.innerWidth, window.innerHeight ) },
                 u_mouse: { type: "v2", value: new THREE.Vector2() }
             },
             vertexShader: vertex,
@@ -43,7 +49,7 @@ export default class app {
     }
 
     render() {
-        this.time += 0.05;
+        this.time++;
         this.material.uniforms.time.value = this.time;
 
         // this.mesh.rotation.x += 0.001;

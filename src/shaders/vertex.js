@@ -3,9 +3,9 @@
 const vertex = /* glsl */ `
 
 
-uniform float time;
-varying vec2 vUv;
-varying vec3 vPosition;
+uniform float time; // Time in seconds since load
+varying vec2 vUv; // 2d Vertex position
+varying vec3 vPosition; // Vertex position
 uniform vec2 pixels;
 float PI = 3.14159265358979323846264338;
 
