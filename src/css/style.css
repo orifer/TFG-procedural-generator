@@ -1,5 +1,6 @@
 body {
   overscroll-behavior: none;
+  background-color: #000;
 }
 
 * {
@@ -14,4 +15,26 @@ body {
 
 canvas {
   display: block;
+}
+
+#infoBoxHolder {
+  position: absolute;
+  z-index: 1000;
+  top: 0px;
+  right: 20px;
+  color: #FFFFFF;
+  background-color: rgba(0, 0, 0, 0.8);
+  width: 245px;
+}
+
+#infoBox {
+  padding: 12px 12px 12px 12px;
+  font-size: 14px;
+	font-family: "Helvetica-Light", sans-serif;
+  line-height: 18px;
+}
+
+#planetName {
+  font-size: 24px;
+  line-height: 28px;
 }

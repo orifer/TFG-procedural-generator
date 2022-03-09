@@ -1,6 +1,6 @@
 // https://threejs.org/docs/#api/en/renderers/webgl/WebGLProgram
 
-const vertex = /* glsl */ `
+const textureMapVert = /* glsl */ `
 
 
 uniform float time; // Time in seconds since load
@@ -23,4 +23,4 @@ void main() {
 
 
 `;
-export default vertex;
+export default textureMapVert;

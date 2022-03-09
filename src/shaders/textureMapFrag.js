@@ -1,7 +1,6 @@
 // https://threejs.org/docs/#api/en/renderers/webgl/WebGLProgram
-// https://thebookofshaders.com/
+const textureMapFrag = /* glsl */ `
 
-const fragment = /* glsl */ `
 
 
 
@@ -15,11 +14,11 @@ const fragment = /* glsl */ `
 
 float PI = 3.14159265358979323846264338;
 
-uniform float time; // Time in seconds since load
+uniform float u_time; // Time in seconds since load
 uniform vec2 u_resolution; // Canvas size (width,height)
 uniform vec2 u_mouse;    // mouse position in screen pixels
 
-varying vec2 vUv; // 2d Vertex position
+varying vec2 vUv; // The "coordinates" in UV mapping representation
 varying vec3 vPosition; // Vertex position
 
 // Hash scales //
@@ -146,10 +145,10 @@ vec3 planeToCartesian(vec2 vUv) {
 
 
 void main() {
-    // Solid greyish color
-    vec3 baseColor = vec3(0.3, 0.3, 0.3);
 
-    // float noisy = snoise(vec4(vPosition*5. , 1.0));
+    // Solid greyish color
+    vec3 baseColor = vec3( smoothstep(6.0,0.0,u_time)+0.3 , 0.3*smoothstep(5.0,0.0,u_time)+0.3, 0.1*smoothstep(1.0,0.0,u_time)+0.3);
+    // vec3 baseColor = vec3(0.3, 0.3, 0.3);
 
     // Modify the vertex position to be projected into a sphere
     vec3 p = planeToCartesian(vUv);
@@ -169,4 +168,4 @@ void main() {
 
 
 `;
-export default fragment;
+export default textureMapFrag;
