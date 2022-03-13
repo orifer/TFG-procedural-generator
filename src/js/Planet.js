@@ -62,6 +62,18 @@ class Planet {
     window.rng = new Math.seedrandom(this.seedString);
   }
 
+  switchGeometry() {    
+    if (this.geo.type == 'SphereBufferGeometry') {
+      this.geo = new THREE.PlaneGeometry( 4096, 2048 );
+    } else if (this.geo.type == 'PlaneGeometry') {
+      this.geo = new THREE.SphereBufferGeometry( 1024, 128, 128 );
+    }
+
+    this.view.remove(this.ground);
+    this.ground = new THREE.Mesh(this.geo, this.material);
+    this.view.add(this.ground);
+  }
+
   randomize() {
     this.seedString = new String(Math.floor(100000 + Math.random() * 900000));
     this.renderScene();
@@ -76,9 +88,9 @@ class Planet {
       color: new THREE.Color(0xFFFFFF)
     });
 
-    let geo = new THREE.SphereBufferGeometry( 1024, 64, 64 );
+    this.geo = new THREE.SphereBufferGeometry( 1024, 128, 128 );
 
-    this.ground = new THREE.Mesh(geo, this.material);
+    this.ground = new THREE.Mesh(this.geo, this.material);
     this.view.add(this.ground);
   }
 
@@ -129,17 +141,26 @@ class Planet {
 
     if (this.displayMap == "textureMap") {
       this.material.map = this.textureMap.map.texture;
-      this.material.bumpMap = this.normalMap;
-      // this.material.heightMap = this.normalMap;
-      // this.material.normalMap = this.normalMap;
-      this.material.normalScale = new THREE.Vector2(this.normalScale, this.normalScale);
+
+      this.material.displacementMap = this.textureMap.map.texture;
+      this.material.displacementScale = -50.;
+
+      this.material.bumpMap = this.textureMap.map.texture;
+      this.material.bumpScale = -100.;
+
+      // this.material.normalMap = this.normalMap.map.texture;
+      // this.material.normalScale = new THREE.Vector2(this.normalScale, this.normalScale);
     }
     else if (this.displayMap == "heightMap") {
       this.material.map = this.heightMap.map.texture;
+      this.material.displacementMap = null;
+      this.material.bumpMap = null;
       this.material.normalMap = null;
     }
     else if (this.displayMap == "normalMap") {
       this.material.map = this.normalMap.map.texture;
+      this.material.displacementMap = null;
+      this.material.bumpMap = null;
       this.material.normalMap = null;
     }
 
@@ -149,9 +170,9 @@ class Planet {
   updateNormalScaleForRes(value) {
     if (value == 256) this.normalScale = 0.25;
     if (value == 512) this.normalScale = 0.5;
-    if (value == 1024) this.normalScale = 1.0;
-    if (value == 2048) this.normalScale = 1.5;
-    if (value == 4096) this.normalScale = 3.0;
+    if (value == 1024) this.normalScale = 0.1;
+    if (value == 2048) this.normalScale = 0.2;
+    if (value == 4096) this.normalScale = 0.2;
   }
 
 }

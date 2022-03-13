@@ -66,6 +66,9 @@ class Interface {
     createDebugCategory() {
       let debugFolder = window.gui.addFolder('Debug');
       debugFolder.add(this.app.planet, "displayMap", ["textureMap", "heightMap", "normalMap"]).onChange(value => { this.app.planet.updateMaterial() });
+
+      // Display button
+      debugFolder.add(this.app.planet, "switchGeometry");
     }
 
     createCameraCategory() {
