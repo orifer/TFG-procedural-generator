@@ -9,7 +9,7 @@ class BaseApp {
 
         // Camera
         this.camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 100000 );
-        this.camera.position.z = 4000;
+        this.camera.position.z = 1024*7;
         window.camera = this.camera;
 
         // Scene
@@ -36,7 +36,7 @@ class BaseApp {
         this.scene.add(this.ambientLight);
 
         this.directionalLight = new THREE.DirectionalLight( 0xffffff, 1.2 );
-        this.directionalLight.position.set( 1, 1, 1000 );
+        this.directionalLight.position.set( 1, 1, 0);
         this.scene.add(this.directionalLight);
         window.light = this.directionalLight;
 

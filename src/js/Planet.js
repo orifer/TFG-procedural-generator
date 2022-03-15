@@ -63,15 +63,18 @@ class Planet {
   }
 
   switchGeometry() {    
-    if (this.geo.type == 'SphereBufferGeometry') {
-      this.geo = new THREE.PlaneGeometry( 4096, 2048 );
+    if (this.geo.type == 'SphereGeometry') {
+      this.geo = new THREE.PlaneGeometry( 1024*8, 1024*4 );
+      this.app.ambientLight.intensity = 1.8
+      this.app.directionalLight.intensity = 0.
     } else if (this.geo.type == 'PlaneGeometry') {
-      this.geo = new THREE.SphereBufferGeometry( 1024, 128, 128 );
+      this.geo = new THREE.SphereBufferGeometry( 2048, 256, 256 );
+      this.app.ambientLight.intensity = 0.04
+      this.app.directionalLight.intensity = 1.2
     }
 
-    this.view.remove(this.ground);
-    this.ground = new THREE.Mesh(this.geo, this.material);
-    this.view.add(this.ground);
+    this.ground.geometry.dispose()
+    this.ground.geometry = this.geo
   }
 
   randomize() {
@@ -88,8 +91,7 @@ class Planet {
       color: new THREE.Color(0xFFFFFF)
     });
 
-    this.geo = new THREE.SphereBufferGeometry( 1024, 128, 128 );
-
+    this.geo = new THREE.SphereBufferGeometry( 2048, 256, 256 );
     this.ground = new THREE.Mesh(this.geo, this.material);
     this.view.add(this.ground);
   }
@@ -137,13 +139,10 @@ class Planet {
       this.material.map = this.textureMap.map.texture;
 
       this.material.displacementMap = this.heightMap.map.texture;
-      this.material.displacementScale = 500.;
+      this.material.displacementScale = 50.;
 
-      // this.material.bumpMap = this.heightMap.map.texture;
-      // this.material.bumpScale = -100.;
-
-      // this.material.normalMap = this.normalMap.map.texture;
-      // this.material.normalScale = new THREE.Vector2(this.normalScale, this.normalScale);
+      this.material.normalMap = this.normalMap.map.texture;
+      this.material.normalScale = new THREE.Vector2(this.normalScale, this.normalScale);
     }
     else if (this.displayMap == "heightMap") {
       this.material.map = this.heightMap.map.texture;
