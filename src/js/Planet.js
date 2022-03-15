@@ -1,5 +1,4 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.module.js';
-import NoiseMap from './NoiseMap.js'
 import TextureMap from './TextureMap.js'
 import NormalMap from './NormalMap.js'
 
@@ -82,7 +81,6 @@ class Planet {
   createScene() {
     this.textureMap = new TextureMap();
     this.normalMap = new NormalMap();
-    this.heightMap = new NoiseMap();
 
     this.material = new THREE.MeshStandardMaterial({
       color: new THREE.Color(0xFFFFFF)
@@ -108,21 +106,11 @@ class Planet {
       time: this.app.time,
       resolution: this.resolution
     });
-    
-    this.heightMap.render({
-      seed: this.seed,
-      resolution: this.resolution,
-      res1: Utils.getRandomInt(resMin, resMax),
-      res2: Utils.getRandomInt(resMin, resMax),
-      resMix: Utils.getRandomInt(resMin, resMax),
-      mixScale: Utils.getRandomInt(0.5, 1.0),
-      doesRidged: Math.floor(Utils.getRandomInt(0, 4))
-    });
 
     this.normalMap.render({
       resolution: this.resolution,
       waterLevel: this.waterLevel,
-      heightMap: this.heightMap.map.texture,
+      heightMap: this.textureMap.map.texture,
       textureMap: this.textureMap.map.texture
     });
 
@@ -152,7 +140,7 @@ class Planet {
       // this.material.normalScale = new THREE.Vector2(this.normalScale, this.normalScale);
     }
     else if (this.displayMap == "heightMap") {
-      this.material.map = this.heightMap.map.texture;
+      this.material.map = this.textureMap.map.texture;
       this.material.displacementMap = null;
       this.material.bumpMap = null;
       this.material.normalMap = null;
