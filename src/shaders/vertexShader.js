@@ -12,6 +12,5 @@ void main() {
 
 
 
-
 `;
 export default vertex;
