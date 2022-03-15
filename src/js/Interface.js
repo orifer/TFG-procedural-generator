@@ -21,7 +21,7 @@ class Interface {
       this.app.planet.updatePlanetName();
 
       // Resolution
-      window.gui.add(this.app.planet, "resolution", [256, 512, 1024, 2048, 4096]).name("Resolution").onChange(value => { this.app.planet.renderScene() });
+      window.gui.add(this.app.planet, "resolution", [256, 512, 1024, 2048, 4096, 8192]).name("Resolution").onChange(value => { this.app.planet.renderScene() });
 
       // Seed
       window.gui.add(this.app.planet, "seedString").listen().onFinishChange(value => { this.app.planet.renderScene() }).name("Seed");
