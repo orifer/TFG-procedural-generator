@@ -1,6 +1,7 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.module.js';
-import TextureMap from './TextureMap.js'
-import NormalMap from './NormalMap.js'
+import * as THREE from "https://cdn.skypack.dev/three@0.136";
+import TextureMap from './maps/TextureMap.js'
+import NormalMap from './maps/NormalMap.js'
+import HeightMap from './maps/HeightMap.js';
 
 import * as seedrandom from 'https://cdn.jsdelivr.net/npm/seedrandom@3.0.5/seedrandom.min.js';
 import Utils from './Utils.js';
@@ -80,6 +81,7 @@ class Planet {
 
   createScene() {
     this.textureMap = new TextureMap();
+    this.heightMap = new HeightMap();
     this.normalMap = new NormalMap();
 
     this.material = new THREE.MeshStandardMaterial({
@@ -107,10 +109,14 @@ class Planet {
       resolution: this.resolution
     });
 
+    this.heightMap.render({
+      resolution: this.resolution
+    });
+
     this.normalMap.render({
       resolution: this.resolution,
       waterLevel: this.waterLevel,
-      heightMap: this.textureMap.map.texture,
+      heightMap: this.heightMap.map.texture,
       textureMap: this.textureMap.map.texture
     });
 
@@ -130,17 +136,17 @@ class Planet {
     if (this.displayMap == "textureMap") {
       this.material.map = this.textureMap.map.texture;
 
-      this.material.displacementMap = this.textureMap.map.texture;
-      this.material.displacementScale = -50.;
+      this.material.displacementMap = this.heightMap.map.texture;
+      this.material.displacementScale = 500.;
 
-      this.material.bumpMap = this.textureMap.map.texture;
-      this.material.bumpScale = -100.;
+      // this.material.bumpMap = this.heightMap.map.texture;
+      // this.material.bumpScale = -100.;
 
       // this.material.normalMap = this.normalMap.map.texture;
       // this.material.normalScale = new THREE.Vector2(this.normalScale, this.normalScale);
     }
     else if (this.displayMap == "heightMap") {
-      this.material.map = this.textureMap.map.texture;
+      this.material.map = this.heightMap.map.texture;
       this.material.displacementMap = null;
       this.material.bumpMap = null;
       this.material.normalMap = null;
@@ -158,9 +164,9 @@ class Planet {
   updateNormalScaleForRes(value) {
     if (value == 256) this.normalScale = 0.25;
     if (value == 512) this.normalScale = 0.5;
-    if (value == 1024) this.normalScale = 0.1;
-    if (value == 2048) this.normalScale = 0.2;
-    if (value == 4096) this.normalScale = 0.2;
+    if (value == 1024) this.normalScale = 1.0;
+    if (value == 2048) this.normalScale = 1.5;
+    if (value == 4096) this.normalScale = 2.0;
   }
 
 }

@@ -1,4 +1,5 @@
-import { GUI } from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/libs/dat.gui.module.js';
+import { GUI } from 'https://cdn.skypack.dev/three@0.136/examples/jsm/libs/lil-gui.module.min.js';
+// INFO: https://lil-gui.georgealways.com/
 
 class Interface {
 

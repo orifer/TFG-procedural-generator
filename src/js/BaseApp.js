@@ -1,5 +1,5 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.module.js';
-import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js';
+import * as THREE from "https://cdn.skypack.dev/three@0.136";
+import { OrbitControls } from "https://cdn.skypack.dev/three@0.136/examples/jsm/controls/OrbitControls.js";
 
 class BaseApp {
 
@@ -26,11 +26,12 @@ class BaseApp {
         document.getElementById('container').appendChild( this.renderer.domElement );
 
         // Lights
-        this.ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
+        this.ambientLight = new THREE.AmbientLight(0xffffff, 0.04);
         this.scene.add(this.ambientLight);
 
         this.directionalLight = new THREE.DirectionalLight( 0xffffff, 1.0 );
-        this.directionalLight.position.set( 1, 1, 1 );
+        this.directionalLight.position.set( 1, 1, 1000 );
+        // this.directionalLight.castShadow = true;
         this.scene.add(this.directionalLight);
         window.light = this.directionalLight;
 
