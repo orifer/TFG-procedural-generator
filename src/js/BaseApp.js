@@ -1,5 +1,7 @@
 import * as THREE from "https://cdn.skypack.dev/three@0.136";
 import { OrbitControls } from "https://cdn.skypack.dev/three@0.136/examples/jsm/controls/OrbitControls.js";
+import Stats from "https://cdn.skypack.dev/three@0.136/examples/jsm/libs/stats.module";
+
 
 class BaseApp {
 
@@ -25,13 +27,16 @@ class BaseApp {
         // Add to html
         document.getElementById('container').appendChild( this.renderer.domElement );
 
+        // Stats
+        this.stats = Stats()
+        document.body.appendChild(this.stats.dom)
+
         // Lights
         this.ambientLight = new THREE.AmbientLight(0xffffff, 0.04);
         this.scene.add(this.ambientLight);
 
-        this.directionalLight = new THREE.DirectionalLight( 0xffffff, 1.0 );
+        this.directionalLight = new THREE.DirectionalLight( 0xffffff, 1.2 );
         this.directionalLight.position.set( 1, 1, 1000 );
-        // this.directionalLight.castShadow = true;
         this.scene.add(this.directionalLight);
         window.light = this.directionalLight;
 
@@ -62,6 +67,7 @@ class BaseApp {
     render(timestamp) {
         requestAnimationFrame( this.render.bind(this) );
         this.controls.update();
+        this.stats.update()
         this.renderer.render( this.scene, this.camera );
     }
 
