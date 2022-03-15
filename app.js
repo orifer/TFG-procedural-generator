@@ -25,7 +25,7 @@ export default class app extends BaseApp {
         if (this.playing) {
             this.time += 0.016;
         }
-
+        
         super.render();
         this.planet.update();
     }

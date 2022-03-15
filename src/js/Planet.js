@@ -67,6 +67,7 @@ class Planet {
       this.geo = new THREE.PlaneGeometry( 1024*8, 1024*4 );
       this.app.ambientLight.intensity = 1.8
       this.app.directionalLight.intensity = 0.
+      this.rotate = false
     } else if (this.geo.type == 'PlaneGeometry') {
       this.geo = new THREE.SphereBufferGeometry( 2048, 256, 256 );
       this.app.ambientLight.intensity = 0.04
@@ -137,7 +138,6 @@ class Planet {
 
     if (this.displayMap == "textureMap") {
       this.material.map = this.textureMap.map.texture;
-
       this.material.displacementMap = this.heightMap.map.texture;
       this.material.displacementScale = 50.;
 
@@ -147,13 +147,11 @@ class Planet {
     else if (this.displayMap == "heightMap") {
       this.material.map = this.heightMap.map.texture;
       this.material.displacementMap = null;
-      this.material.bumpMap = null;
       this.material.normalMap = null;
     }
     else if (this.displayMap == "normalMap") {
       this.material.map = this.normalMap.map.texture;
       this.material.displacementMap = null;
-      this.material.bumpMap = null;
       this.material.normalMap = null;
     }
 
@@ -163,9 +161,10 @@ class Planet {
   updateNormalScaleForRes(value) {
     if (value == 256) this.normalScale = 0.25;
     if (value == 512) this.normalScale = 0.5;
-    if (value == 1024) this.normalScale = 1.0;
-    if (value == 2048) this.normalScale = 1.5;
+    if (value == 1024) this.normalScale = 0.6;
+    if (value == 2048) this.normalScale = 1.1;
     if (value == 4096) this.normalScale = 2.0;
+    if (value == 8192) this.normalScale = 3.0;
   }
 
 }

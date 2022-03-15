@@ -45,8 +45,8 @@ class BaseApp {
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
         this.controls.rotateSpeed = 0.5;
-        this.controls.autoRotate = false;
-        this.controls.autoRotateSpeed = 0.01;
+        this.controls.autoRotate = false
+        this.controls.autoRotateSpeed = 2.0;
         this.controls.zoomSpeed = 0.2;
 
         // Events
