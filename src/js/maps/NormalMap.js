@@ -1,6 +1,6 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.module.js';
-import vertShader from '../shaders/normalMapVert.js'
-import fragShader from '../shaders/normalMapFrag.js'
+import * as THREE from "https://cdn.skypack.dev/three@0.136";
+import vertShader from '../../shaders/vertexShader.js'
+import fragShader from '../../shaders/normalMapFrag.js'
 import Map from './Map.js'
 
 class NormalMap extends Map {

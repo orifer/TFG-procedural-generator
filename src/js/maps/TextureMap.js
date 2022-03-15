@@ -1,6 +1,6 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.module.js';
-import textureMapFrag from '../shaders/textureMapFrag.js'
-import textureMapVert from '../shaders/textureMapVert.js'
+import * as THREE from "https://cdn.skypack.dev/three@0.136";
+import fragShader from '../../shaders/textureMapFrag.js'
+import vertShader from '../../shaders/textureMapVert.js'
 import Map from './Map.js'
 
 class TextureMap extends Map {
@@ -20,8 +20,8 @@ class TextureMap extends Map {
 
     this.mat = new THREE.ShaderMaterial({
       uniforms: uniforms,
-      vertexShader: textureMapVert,
-      fragmentShader: textureMapFrag,
+      vertexShader: vertShader,
+      fragmentShader: fragShader,
       transparent: true,
       depthWrite: false
     });
