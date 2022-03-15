@@ -110,7 +110,7 @@ float cratersHeightMap(vec3 p) {
     for (float i = 0.; i < 5.; i++) {
         
         // Generate the craters
-        float c = craters(vec3(0.4 * pow(2.2, i) * p));
+        float c = craters(vec3(0.5 * pow(2.2, i) * p));
 
         // Generate the FBM noise
         float noise = 0.4 * exp(-3. * c) * FBM( vec3(10. * p) );
@@ -125,14 +125,15 @@ float cratersHeightMap(vec3 p) {
         height += w * (c + noise);
     }
 
-    return pow(height, -3.);
+    // Play with the contrast
+    return pow(height, -2.);
 }
 
 
 // Transforms a 2D vertex coordinate to 3D cartesian coordinates given latitude and longitude
 // This is used to deform and wrap a 2D plane into a 3D Sphere
 vec3 planeToCartesian(vec2 vUv) {
-    float scale = 1.5;
+    float scale = 2.;
     float lat = 180. * vUv.y - 90.;
     float lon = 360. * vUv.x;
     
@@ -147,7 +148,7 @@ void main() {
     // Create a height map
     float noisy = cratersHeightMap(p);
     
-    // Mix the base color with the generated one
+    // Mix the base color with the generated one to soften the result
     vec3 color = mix(vec3(0), vec3(noisy), 0.5);
     
     gl_FragColor = vec4(color,1.0);

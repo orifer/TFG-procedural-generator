@@ -48,7 +48,7 @@ float hash13(vec3 p3) {
 }
 
 
-// Generate craters
+// Generate procedural craters based on https://www.shadertoy.com/view/MtjGRD
 float craters(vec3 x) {
 	vec3 p = floor(x);
 	vec3 f = fract(x); // Same as x - floor(x)
@@ -114,7 +114,7 @@ float cratersHeightMap(vec3 p) {
     for (float i = 0.; i < 5.; i++) {
         
         // Generate the craters
-        float c = craters(vec3(0.4 * pow(2.2, i) * p));
+        float c = craters(vec3(0.5 * pow(2.2, i) * p));
 
         // Generate the FBM noise
         float noise = 0.4 * exp(-3. * c) * FBM( vec3(10. * p) );
@@ -129,6 +129,7 @@ float cratersHeightMap(vec3 p) {
         height += w * (c + noise);
     }
 
+    // Play with the contrast
     return pow(height, 3.);
 }
 
@@ -136,7 +137,7 @@ float cratersHeightMap(vec3 p) {
 // Transforms a 2D vertex coordinate to 3D cartesian coordinates given latitude and longitude
 // This is used to deform and wrap a 2D plane into a 3D Sphere
 vec3 planeToCartesian(vec2 vUv) {
-    float scale = 1.5;
+    float scale = 2.0;
     float lat = 180. * vUv.y - 90.;
     float lon = 360. * vUv.x;
     
@@ -157,7 +158,7 @@ void main() {
     float noisy = cratersHeightMap(p);
     vec3 noiseColor = vec3(noisy,noisy,noisy);
     
-    // Mix the base color with the generated one
+    // Mix the base color with the generated one to soften the result
     vec3 color = mix(baseColor, noiseColor, 0.1);
     
     gl_FragColor = vec4(color,1.0);
