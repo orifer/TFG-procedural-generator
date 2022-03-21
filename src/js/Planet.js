@@ -22,6 +22,7 @@ class Planet {
     this.roughness = 0.8;
     this.metalness = 0.5;
     this.normalScale = 3.0;
+    this.displacementScale = 50.0;
     this.resolution = 1024;
     this.size = 1000;
     this.waterLevel = 0;
@@ -139,7 +140,7 @@ class Planet {
     if (this.displayMap == "textureMap") {
       this.material.map = this.textureMap.map.texture;
       this.material.displacementMap = this.heightMap.map.texture;
-      this.material.displacementScale = 50.;
+      this.material.displacementScale = this.displacementScale;
 
       this.material.normalMap = this.normalMap.map.texture;
       this.material.normalScale = new THREE.Vector2(this.normalScale, this.normalScale);

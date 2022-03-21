@@ -58,6 +58,7 @@ class Interface {
       matFolder.add(this.app.planet, "roughness", 0.0, 1.0).onChange(value => { this.app.planet.updateMaterial(); });
       matFolder.add(this.app.planet, "metalness", 0.0, 1.0).onChange(value => { this.app.planet.updateMaterial(); });
       matFolder.add(this.app.planet, "normalScale", -3.0, 6.0).listen().onChange(value => { this.app.planet.updateMaterial(); });
+      matFolder.add(this.app.planet, "displacementScale", -600.0, 600.0).listen().onChange(value => { this.app.planet.updateMaterial(); });
 
       matFolder.add(this.app.planet, "wireframe").onChange(value => { this.app.planet.updateMaterial(); });
       matFolder.add(this.app.planet, "rotate");
