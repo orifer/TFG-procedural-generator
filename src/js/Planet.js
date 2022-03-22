@@ -70,7 +70,7 @@ class Planet {
       this.app.directionalLight.intensity = 0.
       this.rotate = false
     } else if (this.geo.type == 'PlaneGeometry') {
-      this.geo = new THREE.SphereBufferGeometry( 2048, 256, 256 );
+      this.geo = new THREE.SphereGeometry( 2048, 256, 256 );
       this.app.ambientLight.intensity = 0.04
       this.app.directionalLight.intensity = 1.2
     }
@@ -93,7 +93,7 @@ class Planet {
       color: new THREE.Color(0xFFFFFF)
     });
 
-    this.geo = new THREE.SphereBufferGeometry( 2048, 256, 256 );
+    this.geo = new THREE.SphereGeometry( 2048, 256, 256 );
     this.ground = new THREE.Mesh(this.geo, this.material);
     this.view.add(this.ground);
   }
