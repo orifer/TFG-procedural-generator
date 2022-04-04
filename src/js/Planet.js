@@ -6,7 +6,6 @@ import HeightMap from './maps/HeightMap.js';
 import * as seedrandom from 'https://cdn.jsdelivr.net/npm/seedrandom@3.0.5/seedrandom.min.js';
 import Utils from './Utils.js';
 
-
 class Planet {
 
   constructor(app) {
@@ -70,7 +69,7 @@ class Planet {
       this.app.directionalLight.intensity = 0.
       this.rotate = false
     } else if (this.geo.type == 'PlaneGeometry') {
-      this.geo = new THREE.SphereGeometry( 2048, 256, 256 );
+      this.geo = new THREE.SphereGeometry( 2048, 128, 128 );
       this.app.ambientLight.intensity = 0.04
       this.app.directionalLight.intensity = 1.2
     }
@@ -89,11 +88,9 @@ class Planet {
     this.heightMap = new HeightMap();
     this.normalMap = new NormalMap();
 
-    this.material = new THREE.MeshStandardMaterial({
-      color: new THREE.Color(0xFFFFFF)
-    });
+    this.material = new THREE.MeshStandardMaterial();
 
-    this.geo = new THREE.SphereGeometry( 2048, 256, 256 );
+    this.geo = new THREE.SphereGeometry( 2048, 128, 128 );
     this.ground = new THREE.Mesh(this.geo, this.material);
     this.view.add(this.ground);
   }
