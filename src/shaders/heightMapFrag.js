@@ -29,7 +29,7 @@ vec3 HASHSCALE3 = vec3(.1031, .1030, .0973);
 // OUT: vec3
 vec3 hash33(vec3 p3) {
     p3 = fract(p3 * HASHSCALE3);
-    p3 += dot(p3, p3.yxz+19.19);
+    p3 += dot(p3, p3.yxz + 19.19);
     return fract((p3.xxy + p3.yxx)*p3.zyx);
 }
 
@@ -44,7 +44,7 @@ float hash13(vec3 p3) {
 }
 
 
-// Generate craters
+// Generate procedural craters based on https://www.shadertoy.com/view/MtjGRD
 float craters(vec3 x) {
 	vec3 p = floor(x);
 	vec3 f = fract(x); // Same as x - floor(x)

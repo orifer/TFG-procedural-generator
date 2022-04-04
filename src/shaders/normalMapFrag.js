@@ -2,12 +2,8 @@
 
 const fragShader = /* glsl */ `
 
-
-
-
 varying vec2 vUv;
 uniform float resolution;
-uniform float waterLevel;
 uniform sampler2D heightMap;
 uniform sampler2D textureMap;
 
@@ -22,13 +18,10 @@ void main() {
 	float y = vUv.y;
 	float pixelSize = 1.0 / resolution;
 
-	// Value from trial & error.
-  	// Seems to work fine for the scales we are dealing with.
   	// float strength = scale.Y / 16;
   	float strength = 0.8;
 
 	float level = texture2D(heightMap, vec2(x, y)).r;
-	float water = waterLevel;
 
 	float tl = getBrightness(texture2D(textureMap, vec2(x-pixelSize, y-pixelSize)));
 	float l = getBrightness(texture2D(textureMap, vec2(x-pixelSize, y)));
@@ -40,7 +33,7 @@ void main() {
 	float t = getBrightness(texture2D(textureMap, vec2(x, y-pixelSize)));
 
 
-		float tl2 = getBrightness(texture2D(heightMap, vec2(x-pixelSize, y-pixelSize)));
+	float tl2 = getBrightness(texture2D(heightMap, vec2(x-pixelSize, y-pixelSize)));
 	float l2 = getBrightness(texture2D(heightMap, vec2(x-pixelSize, y)));
 	float bl2 = getBrightness(texture2D(heightMap, vec2(x-pixelSize, y+pixelSize)));
 	float b2 = getBrightness(texture2D(heightMap, vec2(x, y+pixelSize)));
@@ -51,11 +44,6 @@ void main() {
 
 	float ratio = 1.0;
 
-	if (level > water) {
-		float diff = water - level;
-		ratio = 1.0 - (diff*1.0);
-	}
-
 	tl = mix(tl, tl2, ratio);
 	l = mix(l, l2, ratio);
 	bl = mix(bl, bl2, ratio);
@@ -64,22 +52,6 @@ void main() {
 	r = mix(r, r2, ratio);
 	tr = mix(tr, tr2, ratio);
 	t = mix(t, t2, ratio);
-
-	// Smooth out the normal map for the water
-	float factor = 0.01;
-	float depth = 0.5;
-	if (level < water) {
-		// Strength = 0.00;
-		tl = mix(depth, tl, factor);
-		l = mix(depth, l, factor);
-		bl = mix(depth, bl, factor);
-		b = mix(depth, b, factor);
-		br = mix(depth, br, factor);
-		r = mix(depth, r, factor);
-		tr = mix(depth, tr, factor);
-		t = mix(depth, t, factor);
-	}
-
 
 	// Compute dx using Sobel:
 	//           -1 0 1
