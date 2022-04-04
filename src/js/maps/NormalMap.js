@@ -15,7 +15,6 @@ class NormalMap extends Map {
     this.mat = new THREE.ShaderMaterial({
       uniforms: {
         resolution: {type: "f", value: 0},
-        waterLevel: {type: "f", value: 0},
         heightMap: {type: "t", value: new THREE.Texture()},
         textureMap: {type: "t", value: new THREE.Texture()}
       },
@@ -28,7 +27,6 @@ class NormalMap extends Map {
 
   render(props) {
     this.mat.uniforms.resolution.value = props.resolution;
-    this.mat.uniforms.waterLevel.value = props.waterLevel;
     this.mat.uniforms.heightMap.value = props.heightMap;
     this.mat.uniforms.textureMap.value = props.textureMap;
     this.mat.needsUpdate = true;
