@@ -22,6 +22,7 @@ class BaseApp {
         });
         this.renderer.setPixelRatio( window.devicePixelRatio );
         this.renderer.setSize( window.innerWidth, window.innerHeight );
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         window.renderer = this.renderer;
 
         // Add to html
