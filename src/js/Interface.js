@@ -13,6 +13,7 @@ class Interface {
 
       this.createRightPanel();
       this.createPlanetCategory();
+      this.createAtmosphereCategory();
       this.createDebugCategory();
       this.createCameraCategory();
 
@@ -64,6 +65,15 @@ class Interface {
       matFolder.add(this.app.planet, "rotate");
 
       matFolder.close();
+    }
+
+    createAtmosphereCategory() {
+      let atmFolder = window.gui.addFolder('Atmosphere');
+
+      atmFolder.add(this.app.atmos, "size", 0.0, 1000.0);
+     
+
+      atmFolder.close();
     }
 
     createDebugCategory() {

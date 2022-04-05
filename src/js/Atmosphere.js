@@ -60,26 +60,29 @@ class Atmosphere {
   }
 
   render() {
-    // Render 
-    window.renderer.setRenderTarget(this._target);
-    window.renderer.render(this.app.scene, this.app.camera);
-
-    window.renderer.setRenderTarget( null );
-
-
-    this.material.uniforms.inverseProjection.value = this.app.camera.projectionMatrixInverse;
-    this.material.uniforms.inverseView.value = this.app.camera.matrixWorld;
-    this.material.uniforms.tDiffuse.value = this._target.texture;
-    this.material.uniforms.tDepth.value = this._target.depthTexture;
-    this.material.uniforms.cameraNear.value = this.app.camera.near;
-    this.material.uniforms.cameraFar.value = this.app.camera.far;
-    this.material.uniforms.cameraPosition.value = this.app.camera.position;
-    this.material.uniforms.planetPosition.value = new THREE.Vector3(0, 0, 0);
-    this.material.uniforms.planetRadius.value = this.app.planet.size;
-    this.material.uniforms.atmosphereRadius.value = this.app.planet.size + this.size;
-    this.material.uniformsNeedUpdate = true;
-
-    window.renderer.render( this._postScene, this._postCamera );
+    if (this.size) {
+      
+      // Workaround for rendering the post processing scene
+      window.renderer.setRenderTarget(this._target);
+      window.renderer.render(this.app.scene, this.app.camera);
+      window.renderer.setRenderTarget( null );
+  
+      // Update uniform values
+      this.material.uniforms.inverseProjection.value = this.app.camera.projectionMatrixInverse;
+      this.material.uniforms.inverseView.value = this.app.camera.matrixWorld;
+      this.material.uniforms.tDiffuse.value = this._target.texture;
+      this.material.uniforms.tDepth.value = this._target.depthTexture;
+      this.material.uniforms.cameraNear.value = this.app.camera.near;
+      this.material.uniforms.cameraFar.value = this.app.camera.far;
+      this.material.uniforms.cameraPosition.value = this.app.camera.position;
+      this.material.uniforms.planetPosition.value = new THREE.Vector3(0, 0, 0);
+      this.material.uniforms.planetRadius.value = this.app.planet.size;
+      this.material.uniforms.atmosphereRadius.value = this.app.planet.size + this.size;
+      this.material.uniformsNeedUpdate = true;
+  
+      // Render
+      window.renderer.render( this._postScene, this._postCamera );
+    }
   }
 
 
