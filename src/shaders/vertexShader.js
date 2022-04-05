@@ -1,8 +1,6 @@
 // https://threejs.org/docs/#api/en/renderers/webgl/WebGLProgram
 const vertex = /* glsl */ `
 
-
-
 varying vec2 vUv;
 
 void main() {

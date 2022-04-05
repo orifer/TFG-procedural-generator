@@ -23,7 +23,7 @@ class Planet {
     this.normalScale = 3.0;
     this.displacementScale = 50.0;
     this.resolution = 1024;
-    this.size = 1000;
+    this.size = 2048;
     this.waterLevel = 0;
 
     this.displayMap = "textureMap";
@@ -69,7 +69,7 @@ class Planet {
       this.app.directionalLight.intensity = 0.
       this.rotate = false
     } else if (this.geo.type == 'PlaneGeometry') {
-      this.geo = new THREE.SphereGeometry( 2048, 128, 128 );
+      this.geo = new THREE.SphereGeometry( this.size, 128, 128 );
       this.app.ambientLight.intensity = 0.04
       this.app.directionalLight.intensity = 1.2
     }
@@ -90,7 +90,7 @@ class Planet {
 
     this.material = new THREE.MeshStandardMaterial();
 
-    this.geo = new THREE.SphereGeometry( 2048, 128, 128 );
+    this.geo = new THREE.SphereGeometry( this.size, 128, 128 );
     this.ground = new THREE.Mesh(this.geo, this.material);
     this.view.add(this.ground);
   }
