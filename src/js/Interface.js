@@ -63,6 +63,7 @@ class Interface {
       matFolder.add(this.app.planet, "wireframe").onChange(value => { this.app.planet.updateMaterial(); });
       matFolder.add(this.app.planet, "rotate");
 
+      matFolder.close();
     }
 
     createDebugCategory() {
@@ -71,12 +72,15 @@ class Interface {
 
       // Display button
       debugFolder.add(this.app.planet, "switchGeometry");
+
+      debugFolder.close();
     }
 
     createCameraCategory() {
       let cameraFolder = window.gui.addFolder('Camera');
       cameraFolder.add(this.app.controls, "autoRotate").name('Rotate');
       cameraFolder.add(this.app.camera, "fov", 20, 120).name("FOV").onChange(value => { this.app.camera.updateProjectionMatrix() });
+      cameraFolder.close();
     }
 
 }
