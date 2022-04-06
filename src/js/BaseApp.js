@@ -41,7 +41,7 @@ class BaseApp {
         this.scene.add(this.ambientLight);
 
         this.directionalLight = new THREE.DirectionalLight( 0xffffff, 1.2 );
-        this.directionalLight.position.set( 1, 1, 0);
+        this.directionalLight.position.set( 5000, 5000, 0);
         this.scene.add(this.directionalLight);
         window.light = this.directionalLight;
 

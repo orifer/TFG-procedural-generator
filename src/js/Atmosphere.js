@@ -55,8 +55,6 @@ class Atmosphere {
 
     this._postScene = new THREE.Scene();
     this._postScene.add( this.postQuad );
-
-    console.log(this.app.planet.size);
   }
 
   render() {
