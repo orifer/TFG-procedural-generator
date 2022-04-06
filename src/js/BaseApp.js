@@ -8,7 +8,11 @@ class BaseApp {
     constructor() {
 
         // Camera
-        this.camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 100000 );
+        const fov = 60;
+        const aspect = window.innerWidth / window.innerHeight;
+        const near = 0.1;
+        const far = 999999.0;
+        this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
         this.camera.position.z = 1024*7;
         window.camera = this.camera;
 
