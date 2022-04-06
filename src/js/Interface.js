@@ -70,8 +70,7 @@ class Interface {
     createAtmosphereCategory() {
       let atmFolder = window.gui.addFolder('Atmosphere');
 
-      atmFolder.add(this.app.atmos, "size", 0.0, 1000.0);
-     
+      atmFolder.add(this.app.atmos, "size", 0.0, 1000.0).listen();
 
       atmFolder.close();
     }

@@ -1,6 +1,7 @@
 import * as THREE from "https://cdn.skypack.dev/three@0.136";
 import fragmentShader from '../shaders/atmosFrag.js'
 import vertexShader from '../shaders/vertexShader.js'
+import Utils from './Utils.js';
 
 class Atmosphere {
 
@@ -10,7 +11,7 @@ class Atmosphere {
     this.app = app;
     this.view = new THREE.Object3D();
 
-    this.size = 200;
+    this.size = 0;
     this.createScene();
   }
 
@@ -58,13 +59,13 @@ class Atmosphere {
   }
 
   render() {
+    // Workaround for rendering the post processing scene
+    window.renderer.setRenderTarget(this._target);
+    window.renderer.render(this.app.scene, this.app.camera);
+    window.renderer.setRenderTarget( null );
+
     if (this.size) {
-      
-      // Workaround for rendering the post processing scene
-      window.renderer.setRenderTarget(this._target);
-      window.renderer.render(this.app.scene, this.app.camera);
-      window.renderer.setRenderTarget( null );
-  
+
       // Update uniform values
       this.material.uniforms.inverseProjection.value = this.app.camera.projectionMatrixInverse;
       this.material.uniforms.inverseView.value = this.app.camera.matrixWorld;
@@ -81,6 +82,19 @@ class Atmosphere {
       // Render
       window.renderer.render( this._postScene, this._postCamera );
     }
+  }
+
+  update() {
+    if (this.app.playing) {
+
+      // If time is between 10 and 20, increase the size of the atmosphere
+      if (this.app.time > 7 && this.app.time < 15) {
+        this.size += Utils.getRandomInt(0, 0.5);
+      }
+
+    }
+
+    this.render();
   }
 
 

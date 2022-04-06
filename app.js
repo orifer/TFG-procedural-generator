@@ -9,7 +9,7 @@ export default class app extends BaseApp {
     constructor () {
         super();
 
-        this.time = 10;
+        this.time = 0;
         this.playing = false;
 
         // Planet
@@ -18,7 +18,6 @@ export default class app extends BaseApp {
 
         // Atmos
         this.atmos = new Atmosphere(this);
-        this.scene.add(this.atmos.view);
 
         // Interface (GUI)
         this.interface = new Interface(this);
@@ -33,7 +32,7 @@ export default class app extends BaseApp {
         
         super.render();
         this.planet.update();
-        this.atmos.render();
+        this.atmos.update();
     }
 
 }
