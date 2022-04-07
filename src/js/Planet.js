@@ -21,7 +21,7 @@ class Planet {
     this.roughness = 0.8;
     this.metalness = 0.5;
     this.normalScale = 3.0;
-    this.displacementScale = 50.0;
+    this.displacementScale = 30.0;
     this.resolution = 1024;
     this.size = 2048;
     this.waterLevel = 0;
