@@ -87,9 +87,11 @@ class Atmosphere {
   update() {
     if (this.app.playing) {
 
-      // If time is between 10 and 20, increase the size of the atmosphere
-      if (this.app.time > 7 && this.app.time < 15) {
-        this.size += Utils.getRandomInt(0, 0.5);
+      // If time is between 5 and 20, increase the size of the atmosphere progressively
+      if (this.app.time > 5 && this.app.time < 20) {
+        var increasingSpeed1 = 0.0001;
+        var increasingSpeed2 = 0.3;
+        this.size += Math.min( THREE.MathUtils.smoothstep(this.size, 0, 1) + increasingSpeed1, Utils.getRandomInt(0.01, increasingSpeed2));
       }
 
     }
