@@ -147,8 +147,12 @@ vec3 planeToCartesian(vec2 vUv) {
 
 void main() {
 
-    // Solid greyish color
-    vec3 baseColor = vec3( smoothstep(6.0,0.0,u_time)+0.3 , 0.3*smoothstep(5.0,0.0,u_time)+0.3, 0.1*smoothstep(1.0,0.0,u_time)+0.3);
+    // Solid color from red to grey
+    vec3 baseColor = vec3( 
+        smoothstep(8.0,0.0,u_time)+0.3,     //R
+        0.3*smoothstep(5.0,0.0,u_time)+0.3, //G
+        0.2*smoothstep(3.0,0.0,u_time)+0.3  //B
+    );
     // vec3 baseColor = vec3(0.3, 0.3, 0.3);
 
     // Modify the vertex position to be projected into a sphere
