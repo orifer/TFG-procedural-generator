@@ -3,7 +3,7 @@ import Planet from './src/js/Planet.js'
 import Interface from './src/js/Interface.js'
 import Atmosphere from './src/js/Atmosphere.js'
 import Sun from './src/js/Sun.js';
-
+import Stars from './src/js/Stars.js';
 
 export default class app extends BaseApp {
 
@@ -16,6 +16,7 @@ export default class app extends BaseApp {
         this.sun = new Sun(this);
         this.planet = new Planet(this);
         this.atmos = new Atmosphere(this);
+        this.stars = new Stars(this);
 
         // Interface (GUI)
         this.interface = new Interface(this);
