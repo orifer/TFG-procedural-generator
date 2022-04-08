@@ -18,7 +18,7 @@ class Atmosphere {
   createScene() {
 
     this._target = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
-    this._target.texture.minFilter = THREE.NearestFilter;
+    // this._target.texture.minFilter = THREE.NearestFilter;
     this._target.texture.magFilter = THREE.NearestFilter;
     this._target.texture.generateMipmaps = false;
     this._target.stencilBuffer = false;
