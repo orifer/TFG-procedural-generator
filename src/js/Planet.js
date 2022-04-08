@@ -1,4 +1,4 @@
-import * as THREE from "https://cdn.skypack.dev/three@0.136";
+import * as THREE from 'three';
 import TextureMap from './maps/TextureMap.js'
 import NormalMap from './maps/NormalMap.js'
 import HeightMap from './maps/HeightMap.js';
@@ -34,7 +34,50 @@ class Planet {
     this.renderScene();
   }
 
-  update() {
+  createScene() {
+    this.textureMap = new TextureMap();
+    this.heightMap = new HeightMap();
+    this.normalMap = new NormalMap();
+
+    this.material = new THREE.MeshStandardMaterial();
+
+    this.geo = new THREE.SphereGeometry( this.size, 128, 128 );
+    this.ground = new THREE.Mesh(this.geo, this.material);
+    
+    // Add to main scene
+    this.view.add(this.ground);
+    this.app.scene.add(this.view);
+  }
+
+  renderScene() {
+    this.initSeed();
+    this.seed = Utils.getRandomInt(0, 1) * 1000.0;
+    this.updatePlanetName();
+    this.updateNormalScaleForRes(this.resolution);
+
+    let resMin = 0.01;
+    let resMax = 5.0;
+    
+    this.textureMap.render({
+      time: this.app.time,
+      resolution: this.resolution
+    });
+
+    this.heightMap.render({
+      resolution: this.resolution
+    });
+
+    this.normalMap.render({
+      resolution: this.resolution,
+      waterLevel: this.waterLevel,
+      heightMap: this.heightMap.map.texture,
+      textureMap: this.textureMap.map.texture
+    });
+
+    this.updateMaterial();
+  }
+
+  render() {
     if (this.app.playing) {
 
       if (this.rotate) {
@@ -47,7 +90,6 @@ class Planet {
         resolution: this.resolution
       });
     }
-    
   }
 
   updatePlanetName() {
@@ -81,47 +123,6 @@ class Planet {
   randomize() {
     this.seedString = new String(Math.floor(100000 + Math.random() * 900000));
     this.renderScene();
-  }
-
-  createScene() {
-    this.textureMap = new TextureMap();
-    this.heightMap = new HeightMap();
-    this.normalMap = new NormalMap();
-
-    this.material = new THREE.MeshStandardMaterial();
-
-    this.geo = new THREE.SphereGeometry( this.size, 128, 128 );
-    this.ground = new THREE.Mesh(this.geo, this.material);
-    this.view.add(this.ground);
-  }
-
-
-  renderScene() {
-    this.initSeed();
-    this.seed = Utils.getRandomInt(0, 1) * 1000.0;
-    this.updatePlanetName();
-    this.updateNormalScaleForRes(this.resolution);
-
-    let resMin = 0.01;
-    let resMax = 5.0;
-    
-    this.textureMap.render({
-      time: this.app.time,
-      resolution: this.resolution
-    });
-
-    this.heightMap.render({
-      resolution: this.resolution
-    });
-
-    this.normalMap.render({
-      resolution: this.resolution,
-      waterLevel: this.waterLevel,
-      heightMap: this.heightMap.map.texture,
-      textureMap: this.textureMap.map.texture
-    });
-
-    this.updateMaterial();
   }
 
   updateMaterial() {      

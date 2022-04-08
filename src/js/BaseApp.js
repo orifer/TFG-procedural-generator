@@ -1,6 +1,6 @@
-import * as THREE from "https://cdn.skypack.dev/three@0.136";
-import { OrbitControls } from "https://cdn.skypack.dev/three@0.136/examples/jsm/controls/OrbitControls.js";
-import Stats from "https://cdn.skypack.dev/three@0.136/examples/jsm/libs/stats.module";
+import * as THREE from 'three';
+import { OrbitControls } from 'https://unpkg.com/three@0.139/examples/jsm/controls/OrbitControls.js';
+import Stats from "https://unpkg.com/three@0.139/examples/jsm/libs/stats.module";
 
 
 class BaseApp {
@@ -18,15 +18,18 @@ class BaseApp {
 
         // Scene
         this.scene = new THREE.Scene();
+        // this.scene.background = new THREE.Color( 0xffffff );
 
         // Renderer
         this.renderer = new THREE.WebGLRenderer({
-            alpha: false,
+            alpha: true,
             antialias: true
         });
         this.renderer.setPixelRatio( window.devicePixelRatio );
         this.renderer.setSize( window.innerWidth, window.innerHeight );
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.autoClear = false;
+        this.renderer.setClearColor( 0x000000, 0 );
         window.renderer = this.renderer;
 
         // Add to html
@@ -41,7 +44,7 @@ class BaseApp {
         this.scene.add(this.ambientLight);
 
         this.directionalLight = new THREE.DirectionalLight( 0xffffff, 1.2 );
-        this.directionalLight.position.set( 5000, 5000, 0);
+        // this.directionalLight.position.set( 1, 1, 0);
         this.scene.add(this.directionalLight);
         window.light = this.directionalLight;
 

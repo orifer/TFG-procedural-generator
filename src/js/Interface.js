@@ -12,23 +12,26 @@ class Interface {
       window.gui = new GUI({ autoPlace: false });
 
       this.createRightPanel();
-      this.createPlanetCategory();
-      this.createAtmosphereCategory();
-      this.createDebugCategory();
-      this.createCameraCategory();
+      if (app.planet) this.createPlanetCategory();
+      if (app.atmos)  this.createAtmosphereCategory();
+      if (app.planet) this.createDebugCategory();
+      if (app.camera) this.createCameraCategory();
 
+      if (app.planet) {
+        
+        // Load the planet name
+        this.app.planet.updatePlanetName();
+  
+        // Resolution
+        window.gui.add(this.app.planet, "resolution", [256, 512, 1024, 2048, 4096, 8192]).name("Resolution").onChange(value => { this.app.planet.renderScene() });
+  
+        // Seed
+        window.gui.add(this.app.planet, "seedString").listen().onFinishChange(value => { this.app.planet.renderScene() }).name("Seed");
+  
+        // New planet button
+        window.gui.add(this.app.planet, "randomize").name("New planet");
+      }
 
-      // Load the planet name
-      this.app.planet.updatePlanetName();
-
-      // Resolution
-      window.gui.add(this.app.planet, "resolution", [256, 512, 1024, 2048, 4096, 8192]).name("Resolution").onChange(value => { this.app.planet.renderScene() });
-
-      // Seed
-      window.gui.add(this.app.planet, "seedString").listen().onFinishChange(value => { this.app.planet.renderScene() }).name("Seed");
-
-      // New planet button
-      window.gui.add(this.app.planet, "randomize").name("New planet");
 
       // Play/stop simulation
       window.gui.add(this.app, "playing").name("Play/Stop");

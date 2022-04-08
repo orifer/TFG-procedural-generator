@@ -1,4 +1,4 @@
-import * as THREE from "https://cdn.skypack.dev/three@0.136";
+import * as THREE from 'three';
 import fragmentShader from '../shaders/atmosFrag.js'
 import vertexShader from '../shaders/vertexShader.js'
 import Utils from './Utils.js';
@@ -18,7 +18,6 @@ class Atmosphere {
   createScene() {
 
     this._target = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
-    this._target.texture.format = THREE.RGBFormat;
     this._target.texture.minFilter = THREE.NearestFilter;
     this._target.texture.magFilter = THREE.NearestFilter;
     this._target.texture.generateMipmaps = false;
@@ -42,13 +41,15 @@ class Atmosphere {
       inverseView: { value: null },
       planetPosition: { value: null },
       planetRadius: { value: null },
-      atmosphereRadius: { value: null }
+      atmosphereRadius: { value: null },
+      sunPosition: { value: this.app.sun.position },
     }
 
     this.material =  new THREE.ShaderMaterial({
       uniforms: uniforms,
       fragmentShader: fragmentShader,
       vertexShader: vertexShader,
+      depthWrite: false,
     })
 
     this.postPlane = new THREE.PlaneBufferGeometry( 2, 2 );
@@ -60,9 +61,9 @@ class Atmosphere {
 
   render() {
     // Workaround for rendering the post processing scene
-    window.renderer.setRenderTarget(this._target);
-    window.renderer.render(this.app.scene, this.app.camera);
-    window.renderer.setRenderTarget( null );
+    renderer.setRenderTarget(this._target);
+    renderer.render(this.app.scene, this.app.camera);
+    renderer.setRenderTarget( null );
 
     if (this.size) {
 
@@ -80,8 +81,9 @@ class Atmosphere {
       this.material.uniformsNeedUpdate = true;
   
       // Render
-      window.renderer.render( this._postScene, this._postCamera );
+      renderer.render( this._postScene, this._postCamera );
     }
+
   }
 
   update() {

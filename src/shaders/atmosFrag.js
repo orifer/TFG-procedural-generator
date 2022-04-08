@@ -21,6 +21,7 @@ const atmosFrag = /* glsl */ `
     uniform mat4 inverseProjection;
     uniform mat4 inverseView;
 
+    uniform vec3 sunPosition;
     uniform vec3 planetPosition;
     uniform float planetRadius;
     uniform float atmosphereRadius;
@@ -335,7 +336,7 @@ const atmosFrag = /* glsl */ `
         vec3 cameraDirection = normalize(posWS - cameraPosition);
 
         vec3 diffuse = texture2D(tDiffuse, vUv).xyz;
-        vec3 lightDir = normalize(vec3(5000, 5000, 0));
+        vec3 lightDir = normalize(sunPosition); // sunDir, pasarlo por uniform
 
         // Wether to render a physically realistic atmosphere or a simple accurate version
         int scatteringType = 1;
