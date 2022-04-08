@@ -1,9 +1,9 @@
-import * as THREE from "https://cdn.skypack.dev/three@0.136";
+import * as THREE from 'three';
 
 class Map {
 
   setup() {
-    let tempRes = 1000;
+    let tempRes = 128;
     this.texture = new THREE.WebGLRenderTarget(tempRes, tempRes, {minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBAFormat});
     this.textureCamera = new THREE.OrthographicCamera(-tempRes/2, tempRes/2, tempRes/2, -tempRes/2, -100, 100);
     this.textureCamera.position.z = 10;
@@ -30,10 +30,9 @@ class Map {
     this.geo = new THREE.PlaneGeometry(resolution, resolution);
     this.plane.geometry = this.geo;
 
-    window.renderer.setRenderTarget(this.texture);
-    window.renderer.render(this.textureScene, this.textureCamera);
-
-    window.renderer.setRenderTarget(null);
+    renderer.setRenderTarget(this.texture);
+    renderer.render(this.textureScene, this.textureCamera);
+    renderer.setRenderTarget(null);
     this.geo.dispose();
   }
 

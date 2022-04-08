@@ -1,4 +1,4 @@
-import * as THREE from "https://cdn.skypack.dev/three@0.136";
+import * as THREE from 'three';
 import fragShader from '../../shaders/heightMapFrag.js'
 import vertShader from '../../shaders/vertexShader.js'
 import Map from './Map.js'
