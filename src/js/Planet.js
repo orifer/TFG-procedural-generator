@@ -77,7 +77,7 @@ class Planet {
     this.updateMaterial();
   }
 
-  render() {
+  update() {
     if (this.app.playing) {
 
       if (this.rotate) {

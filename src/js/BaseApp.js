@@ -13,7 +13,7 @@ class BaseApp {
         const near = 0.1;
         const far = 999999.0;
         this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-        this.camera.position.z = 1024*7;
+        this.camera.position.z = 7000;
         window.camera = this.camera;
 
         // Scene
@@ -28,7 +28,7 @@ class BaseApp {
         this.renderer.setPixelRatio( window.devicePixelRatio );
         this.renderer.setSize( window.innerWidth, window.innerHeight );
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer.autoClear = false;
+        // this.renderer.autoClear = false;
         this.renderer.setClearColor( 0x000000, 0 );
         window.renderer = this.renderer;
 

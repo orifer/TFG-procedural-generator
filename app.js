@@ -30,14 +30,9 @@ export default class app extends BaseApp {
             this.time += 0.016;
         }
         
-        this.planet.render();
+        this.planet.update();
         this.atmos.update();
-        
-        this.renderer.autoClear = false;
-        // renderer.clearDepth();
-        this.sun.render();
-        
-        renderer.autoClear = true;
+        this.sun.update();        
     }
 
 }
