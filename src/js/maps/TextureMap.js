@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import fragShader from '../../shaders/textureMapFrag.js'
-import vertShader from '../../shaders/textureMapVert.js'
+import fragShader from '../../shaders/textureMap/textureMapFrag.js'
+import vertShader from '../../shaders/textureMap/textureMapVert.js'
 import Map from './Map.js'
 
 class TextureMap extends Map {

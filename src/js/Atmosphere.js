@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import fragmentShader from '../shaders/atmosFrag.js'
-import vertexShader from '../shaders/vertexShader.js'
+import fragmentShader from '../shaders/atmosphere/atmosFrag.js'
+import vertexShader from '../shaders/atmosphere/atmosVertex.js'
 import Utils from './Utils.js';
 
 class Atmosphere {

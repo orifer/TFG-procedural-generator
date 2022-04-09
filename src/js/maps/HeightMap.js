@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import fragShader from '../../shaders/heightMapFrag.js'
+import fragShader from '../../shaders/heightMap/heightMapFrag.js'
 import vertShader from '../../shaders/vertexShader.js'
 import Map from './Map.js'
 

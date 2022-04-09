@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import vertShader from '../../shaders/vertexShader.js'
-import fragShader from '../../shaders/normalMapFrag.js'
+import fragShader from '../../shaders/normalMap/normalMapFrag.js'
 import Map from './Map.js'
 
 class NormalMap extends Map {
