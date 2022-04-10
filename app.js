@@ -33,7 +33,7 @@ export default class app extends BaseApp {
         
         this.planet.update();
         this.atmos.update();
-        this.sun.update();        
+        this.sun.update();       
     }
 
 }

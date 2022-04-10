@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'https://unpkg.com/three@0.139/examples/jsm/controls/OrbitControls.js';
 import Stats from "https://unpkg.com/three@0.139/examples/jsm/libs/stats.module";
+import { Vector3 } from 'three';
 
 
 class BaseApp {
@@ -8,12 +9,12 @@ class BaseApp {
     constructor() {
 
         // Camera
-        const fov = 60;
+        const fov = 35;
         const aspect = window.innerWidth / window.innerHeight;
-        const near = 0.1;
-        const far = 999999.0;
+        const near = 10;
+        const far = 9999999.0;
         this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-        this.camera.position.z = 7000;
+        this.camera.position.z = 10000;
         window.camera = this.camera;
 
         // Scene

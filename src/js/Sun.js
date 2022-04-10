@@ -10,8 +10,8 @@ class Sun {
     this.app = app;
     this.view = new THREE.Object3D();
 
-    this.size = 2000;
-    this.position = new THREE.Vector3(50000., 0, 0);
+    this.size = 8000;
+    this.position = new THREE.Vector3(200000, 0, 0);
     this.app.directionalLight.position.copy(this.position);
 
     this.createScene();
@@ -20,12 +20,12 @@ class Sun {
   createScene() {
 
     // Sun 
-    const geometryCorona = new THREE.SphereBufferGeometry(this.size, 30, 30);
+    const geometryCorona = new THREE.SphereBufferGeometry(this.size, 16, 16);
     const materialCorona = new THREE.ShaderMaterial({
       side: THREE.BackSide,
       uniforms: {
-        time: {value: 0 },
-        size: {value: this.size }
+        uSize: {value: this.size },
+        uCenter: {value: this.position }
       },
       vertexShader: vertShader,
       fragmentShader: fragShader,
@@ -40,14 +40,8 @@ class Sun {
   }
 
   update() {
-    
   }
 
 }
 
 export default Sun;
-
-
-
-
-
