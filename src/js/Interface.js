@@ -30,6 +30,9 @@ class Interface {
   
         // New planet button
         window.gui.add(this.app.planet, "randomize").name("New planet");
+
+
+        window.gui.add(this.app, "time", 0., 60.).listen();
       }
 
 
