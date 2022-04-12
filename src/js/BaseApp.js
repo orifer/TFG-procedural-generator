@@ -17,9 +17,8 @@ class BaseApp {
         this.camera.position.z = 10000;
         window.camera = this.camera;
 
-        // Scene
+        // Main scene
         this.scene = new THREE.Scene();
-        // this.scene.background = new THREE.Color( 0xffffff );
 
         // Renderer
         this.renderer = new THREE.WebGLRenderer({

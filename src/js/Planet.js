@@ -35,7 +35,7 @@ class Planet {
   }
 
   createScene() {
-    this.textureMap = new TextureMap();
+    this.textureMap = new TextureMap(this.app);
     this.heightMap = new HeightMap();
     this.normalMap = new NormalMap();
 
@@ -62,7 +62,7 @@ class Planet {
       time: this.app.time,
       resolution: this.resolution
     });
-
+    
     this.heightMap.render({
       resolution: this.resolution
     });
@@ -71,7 +71,7 @@ class Planet {
       resolution: this.resolution,
       waterLevel: this.waterLevel,
       heightMap: this.heightMap.map.texture,
-      textureMap: this.textureMap.map.texture
+      textureMap: this.textureMap.texture
     });
 
     this.updateMaterial();
@@ -136,12 +136,12 @@ class Planet {
     }
 
     if (this.displayMap == "textureMap") {
-      this.material.map = this.textureMap.map.texture;
-      this.material.displacementMap = this.heightMap.map.texture;
-      this.material.displacementScale = this.displacementScale;
+      this.material.map = this.textureMap.texture;
+      // this.material.displacementMap = this.heightMap.map.texture;
+      // this.material.displacementScale = this.displacementScale;
 
-      this.material.normalMap = this.normalMap.map.texture;
-      this.material.normalScale = new THREE.Vector2(this.normalScale, this.normalScale);
+      // this.material.normalMap = this.normalMap.map.texture;
+      // this.material.normalScale = new THREE.Vector2(this.normalScale, this.normalScale);
     }
     else if (this.displayMap == "heightMap") {
       this.material.map = this.heightMap.map.texture;
