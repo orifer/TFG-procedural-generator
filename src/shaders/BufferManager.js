@@ -24,7 +24,7 @@ class BufferManager {
     }
 
     render(scene, camera, toScreen = false) {
-        renderer.setRenderTarget(this.readBuffer);
+        renderer.setRenderTarget(this.writeBuffer);
         if (toScreen) {
             renderer.render(scene, camera);
         } else {

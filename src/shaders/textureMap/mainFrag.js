@@ -37,7 +37,7 @@ uniform sampler2D iChannel3;
 #define MUSIC_END_TIME 235.
 #define STORY_END_TIME 250.
 
-// #define buf(p) texture2D(iChannel0,(p)/uResolution.xy)
+// #define buf(p) texture(iChannel0,(p)/uResolution.xy)
 #define buf(p) textureLod(iChannel0,(p)/uResolution.xy,0.)
 
 #define CAMERA_DIST 25.
@@ -103,7 +103,7 @@ vec4 climate(vec2 fragCoord, vec2 pass) {
     vec2 p = fragCoord * MAP_RES / uResolution.xy;
     if (p.x < 0.5) p.x = 0.5;
     vec2 uv = p / uResolution.xy;
-    return texture2D(iChannel1, uv + pass);
+    return texture(iChannel1, uv + pass);
 }
 
 vec4 map_land(vec2 fragCoord, bool ocean) {
@@ -132,9 +132,9 @@ vec4 map_flow(vec2 fragCoord) {
     vec2 p = fragCoord * MAP_RES / uResolution.xy;
     if (p.x < 1.) p.x = 1.;
     vec2 uv = p / uResolution.xy;
-    vec2 v = texture2D(iChannel1, uv + PASS4).xy;
+    vec2 v = texture(iChannel1, uv + PASS4).xy;
     
-    vec4 c = texture2D(iChannel2, fragCoord/uResolution.xy);
+    vec4 c = texture(iChannel2, fragCoord/uResolution.xy);
     float flow = (c.x > 0.) ? 1. : c.y;
     flow *= clamp(length(v), 0., 1.);
     
@@ -157,7 +157,7 @@ vec4 map_temp(vec2 fragCoord) {
 }
 
 vec4 map_life(vec2 fragCoord) {
-    vec4 c = texture2D(iChannel3, fragCoord/uResolution.xy);
+    vec4 c = texture(iChannel3, fragCoord/uResolution.xy);
     float vege = c.x;
     float prey = c.y * 2.;
     float pred = max(c.z, 0.);
@@ -195,7 +195,11 @@ vec4 map_sat(vec2 fragCoord) {
     float lat = 180. * uv.y - 90.;
     float lon = 360. * uv.x - 180.;
     float height = MAP_HEIGHT(y);
-    vec2 grad = vec2(buf(p+E).z - buf(p+W).z, buf(p+N).z - buf(p+S).z);
+    
+    // Esto causa que se vean los bloques negros
+    // vec2 grad = vec2(buf(p+E).z - buf(p+W).z, buf(p+N).z - buf(p+S).z);
+    vec2 grad = vec2(buf(uv+E).z - buf(uv+W).z, buf(uv+N).z - buf(uv+S).z);
+
     float light = cos(atan(grad.y, grad.x) + 0.25*PI);
     float illum = 0.75 + 0.25 * light * clamp(log(1. + length(grad)), 0., 1.);
     float clouds = 1.;
@@ -229,7 +233,7 @@ vec4 map_sat(vec2 fragCoord) {
     veg = mix(veg, vec3(0.18, 0.34, 0.04), smoothstep( 0., 20., temp));
     veg = mix(veg, vec3(0.05, 0.23, 0.04), smoothstep(20., 30., temp));
 
-    float moisture = texture2D(iChannel3, uv).w;
+    float moisture = texture(iChannel3, uv).w;
     vec4 land = vec4(0,0,0,1);
     land.rgb = mix(dry, veg, plant_growth(moisture, temp));
     //land.rgb = mix(dry, veg, moisture/5.);
@@ -249,7 +253,7 @@ vec4 map_sat(vec2 fragCoord) {
         r = land;
     }
     
-    float vapour = texture2D(iChannel2, uv).w;
+    float vapour = texture(iChannel2, uv).w;
     r.rgb = mix(r.rgb, vec3(1), 0.3 * clouds * log(1. + vapour) * smoothstep(0., LAND_END_TIME, uTime));
     return r;
 }
@@ -294,11 +298,9 @@ vec2 project(vec2 fragCoord, float scale, float zoom) {
 
 void main() {
     gl_FragColor = map(vUv);
-    // gl_FragColor = map(vUv/uResolution.xy);
 
     gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1./1.5));
     gl_FragColor.a = 1.;
-
 }
 
 

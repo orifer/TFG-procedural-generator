@@ -48,27 +48,29 @@ class TextureMap {
         uTime: { value: 0 },
         uFrame: { value: 0 },
         uResolution: { value: this.resolution },
-        iChannel0: { value: null },
-        iChannel1: { value: null },
+        iChannel0: { value: null }
       });
 
   }
 
   render(props) {
-
+    
     // Geo buffer
     this.bufferGeo.uniforms.uTime.value = props.time;
-    this.bufferGeo.uniforms.uFrame.value = this.counter++
+    this.bufferGeo.uniforms.uFrame.value = this.counter++;
     this.bufferGeo.uniforms.uResolution.value = new THREE.Vector3(props.resolution, props.resolution, window.devicePixelRatio);
-    this.bufferMain.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture
+    this.bufferGeo.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture;
     this.targetGeo.render(this.bufferGeo.scene, this.orthoCamera);
 
     // Main buffer
     this.bufferMain.uniforms.uTime.value = props.time;
+    this.bufferMain.uniforms.uFrame.value = this.counter++;
     this.bufferMain.uniforms.uResolution.value = new THREE.Vector3(props.resolution, props.resolution, window.devicePixelRatio);
-    this.bufferMain.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture
+    this.bufferMain.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture;
     this.targetMain.render(this.bufferMain.scene, this.orthoCamera, true);
 
+    // Save the result texture
+    // this.texture = this.targetGeo.readBuffer.texture;
     this.texture = this.targetMain.readBuffer.texture;
   }
 
