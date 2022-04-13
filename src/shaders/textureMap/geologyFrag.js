@@ -14,19 +14,19 @@ varying vec3 vPosition; // Vertex position
 
 uniform float uTime; // Time in seconds since load
 uniform float uFrame; // Frame number
-uniform vec2 uResolution; // Canvas size (width,height)
+uniform vec3 uResolution; // Canvas size (width,height)
 uniform sampler2D iChannel0;
 
 // Hash scales //
-float HASHSCALE1 = 443.8975;
-vec3 HASHSCALE3 = vec3(.1031, .1030, .0973);
+#define HASHSCALE1 .1031
+#define HASHSCALE3 vec3(.1031, .1030, .0973)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 #define PI 3.14159265359
 
-
-#define buf(p) textureLod(iChannel0, fract(p), 0.)
+#define buf(p) textureLod(iChannel0,fract((p) / uResolution.xy),0.)
+// #define buf(p) textureLod(iChannel0,fract(p),0.)
 
 
 #define OCEAN_START_TIME 15.
@@ -170,49 +170,8 @@ float FBM( vec3 p ) {
     return f;
 }
 
-// Transforms a 2D vertex coordinate to 3D cartesian coordinates given latitude and longitude
-// This is used to deform and wrap a 2D plane into a 3D Sphere
-vec3 planeToCartesian(vec2 vUv) {
-    float scale = 2.0;
-    float lat = 180. * vUv.y - 90.;
-    float lon = 360. * vUv.x;
-    
-    return scale * vec3( sin(lon*PI/180.) * cos(lat*PI/180.), sin(lat*PI/180.), cos(lon*PI/180.) * cos(lat*PI/180.));
-}
 
-
-// Creates a heightmap of a terrain with craters
-float protoplanet(vec2 uv) {
-    float height = 0.;
-
-     // Modify the vertex position to be projected into a sphere
-     vec3 p = planeToCartesian(uv);
-
-    // Multiple passes various crater sizes
-    for (float i = 0.; i < 5.; i++) {
-        
-        // Generate the craters
-        float c = craters(vec3(0.5 * pow(2.2, i) * p));
-
-        // Generate the FBM noise
-        float noise = 0.4 * exp(-3. * c) * FBM( vec3(10. * p) );
-
-        // Constrain a value to lie between two further values
-        float x = 3. * pow(0.4, i);
-        float min = 0.;
-        float max = 1.;
-        float w = clamp(x, min, max);
-
-        // Mix and add the result
-        height += w * (c + noise);
-    }
-
-    // Play with the contrast
-    return pow(height, 3.);
-}
-
-
-// float hash13(vec3);
+float hash13(vec3);
 vec2 plate_move(float q, float uFrame, float uTime) {
     if (uTime >= TECTONICS_END_TIME && uTime < STORY_END_TIME) return vec2(0);
     vec2 v = vec2(cos(2.*PI*q), sin(2.*PI*q));
@@ -229,6 +188,9 @@ vec2 plate_move(float q, float uFrame, float uTime) {
 vec2 move(float q) {
     return plate_move(q, uFrame, uTime);
 }
+
+
+
 
 
 float slope(vec2 p, vec2 q) {
@@ -249,6 +211,49 @@ vec2 rec(vec2 p) { // direction of water flow at point
     return d;
 }
 
+// Transforms a 2D vertex coordinate to 3D cartesian coordinates given latitude and longitude
+// This is used to deform and wrap a 2D plane into a 3D Sphere
+vec3 planeToCartesian(vec2 uv) {
+    float scale = 1.5;
+    float lat = 180. * uv.y - 90.;
+    float lon = 360. * uv.x;
+    
+    return scale * vec3( sin(lon*PI/180.) * cos(lat*PI/180.), sin(lat*PI/180.), cos(lon*PI/180.) * cos(lat*PI/180.));
+}
+
+// Creates a heightmap of a terrain with craters
+float protoplanet(vec2 uv) {
+    float height = 0.;
+
+     // Modify the vertex position to be projected into a sphere
+     vec3 p = planeToCartesian(uv);
+
+    // Multiple passes various crater sizes
+    for (float i = 0.; i < 5.; i++) {
+        
+        // Generate the craters
+        float c = craters(vec3(0.4 * pow(2.2, i) * p));
+
+        // Generate the FBM noise
+        float noise = 0.4 * exp(-3. * c) * FBM(10. * p);
+
+        // Constrain a value to lie between two further values
+        float x = 3. * pow(0.4, i);
+        float min = 0.;
+        float max = 1.;
+        float w = clamp(x, min, max);
+
+        // Mix and add the result
+        height += w * (c + noise);
+    }
+
+    // Play with the contrast
+    return pow(height, 3.);
+}
+
+
+
+
 
 
 
@@ -256,16 +261,13 @@ vec2 rec(vec2 p) { // direction of water flow at point
 
 
 void main() {
+    vec2 p = vUv * uResolution.xy;
 
-    vec2 p = vUv;
-
-    if (uTime < OCEAN_START_TIME) {
-    // if(uTime < OCEAN_START_TIME && mod(uFrame, 50.) < 1. || uFrame < 10.) {
+    if(uTime < OCEAN_START_TIME && mod(uFrame, 50.) < 1. || uFrame < 10.) {
         gl_FragColor = vec4(0);
         gl_FragColor.x = -1.;
         gl_FragColor.w = hash12(p);
-        gl_FragColor.z = clamp(15. - 3.5 * protoplanet(p), 0., 15.);
-        // gl_FragColor.z = clamp(15. - 3.5 * protoplanet(p / uResolution.xy), 0., 15.);
+        gl_FragColor.z = clamp(15. - 3.5 * protoplanet(p / uResolution.xy), 0., 15.);
         return;
     }
     
@@ -273,11 +275,13 @@ void main() {
     
     if (uTime < OCEAN_START_TIME) return;
     float smoothstart = smoothstep(OCEAN_START_TIME, OCEAN_END_TIME, uTime);
-    
+
+
     vec4 n = buf(p + N);
     vec4 e = buf(p + E);
     vec4 s = buf(p + S);
     vec4 w = buf(p + W);
+
     
     if (uTime < TECTONICS_END_TIME || uTime > STORY_END_TIME) {
         // diffuse uplift through plate
@@ -289,7 +293,7 @@ void main() {
         gl_FragColor.y = max(0., gl_FragColor.y + 0.1 * dy);
     }
     
-    // tectonic uplift
+    // Tectonic uplift
     float max_uplift = 1.;
     if (gl_FragColor.z - OCEAN_DEPTH > 1.) max_uplift = 1. / (gl_FragColor.z - OCEAN_DEPTH);
     gl_FragColor.z += clamp(2. * gl_FragColor.y - 1., 0., max_uplift);
@@ -338,9 +342,9 @@ void main() {
     
     bool subduct = false;
     float prev_uplift = gl_FragColor.y;
-    
+
     if (mod(uFrame, 5000.) < 10.) {
-        // generate new plate boundaries
+        // generate new plate boundaries;
         gl_FragColor.x = -1.;
     } else if (gl_FragColor.x < 0.) { // no plate under this point yet
         if (length(hash33(vec3(p,uFrame))) < 7e-3) {

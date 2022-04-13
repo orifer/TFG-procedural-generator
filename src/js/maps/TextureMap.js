@@ -15,18 +15,17 @@ class TextureMap {
   }
 
   setup() {
-    
-    // Temporal
-    this.counter = 0
-    this.width = 1024;
-    this.height = 1024;
+    this.counter = 0;
+    this.width = 2048;
+    this.height = 2048;
     this.resolution = new THREE.Vector3(this.width, this.height, window.devicePixelRatio);
-    this.texture = null;
-    this.orthoCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1)
+    this.orthoCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, -1, 1)
 
+    // Targets
     this.targetMain = new BufferManager(this.app.renderer, { width: this.width, height: this.height });
     this.targetGeo = new BufferManager(this.app.renderer, { width: this.width, height: this.height });
 
+    // Buffers
     this.bufferMain = new BufferShader(
       VERT,
       BUFFER_MAIN_FRAG,
@@ -54,17 +53,16 @@ class TextureMap {
   }
 
   render(props) {
-    
     // Geo buffer
     this.bufferGeo.uniforms.uTime.value = props.time;
-    this.bufferGeo.uniforms.uFrame.value = this.counter++;
+    this.bufferGeo.uniforms.uFrame.value = this.counter;
     this.bufferGeo.uniforms.uResolution.value = new THREE.Vector3(props.resolution, props.resolution, window.devicePixelRatio);
     this.bufferGeo.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture;
     this.targetGeo.render(this.bufferGeo.scene, this.orthoCamera);
 
     // Main buffer
     this.bufferMain.uniforms.uTime.value = props.time;
-    this.bufferMain.uniforms.uFrame.value = this.counter++;
+    this.bufferMain.uniforms.uFrame.value = this.counter;
     this.bufferMain.uniforms.uResolution.value = new THREE.Vector3(props.resolution, props.resolution, window.devicePixelRatio);
     this.bufferMain.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture;
     this.targetMain.render(this.bufferMain.scene, this.orthoCamera, true);
@@ -72,6 +70,8 @@ class TextureMap {
     // Save the result texture
     // this.texture = this.targetGeo.readBuffer.texture;
     this.texture = this.targetMain.readBuffer.texture;
+
+    this.counter++;
   }
 
 }
