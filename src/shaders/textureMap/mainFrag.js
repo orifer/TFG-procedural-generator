@@ -37,7 +37,6 @@ uniform sampler2D iChannel3;
 #define MUSIC_END_TIME 235.
 #define STORY_END_TIME 250.
 
-// #define buf(p) texture(iChannel0,(p)/uResolution.xy)
 #define buf(p) textureLod(iChannel0,(p)/uResolution.xy,0.)
 
 #define CAMERA_DIST 25.
@@ -93,11 +92,11 @@ vec3 fromlatlon(float lat, float lon) {
     return vec3(sin(lon*PI/180.) * cos(lat*PI/180.), sin(lat*PI/180.), cos(lon*PI/180.) * cos(lat*PI/180.));
 }
 
-vec3 sun_pos(float t) {
-    float month = mod(t/2., 12.);
-    float delta = 1. - 2. * smoothstep(1.5, 4.5, month) + 2. * smoothstep(7.5, 10.5, month);
-    return fromlatlon(23.5 * delta, -360. * t/15.);
-}
+// vec3 sun_pos(float t) {
+//     float month = mod(t/2., 12.);
+//     float delta = 1. - 2. * smoothstep(1.5, 4.5, month) + 2. * smoothstep(7.5, 10.5, month);
+//     return fromlatlon(23.5 * delta, -360. * t/15.);
+// }
 
 vec4 climate(vec2 fragCoord, vec2 pass) {
     vec2 p = fragCoord * MAP_RES / uResolution.xy;
@@ -196,27 +195,27 @@ vec4 map_sat(vec2 fragCoord) {
     float lon = 360. * uv.x - 180.;
     float height = MAP_HEIGHT(y);
     
-    // Esto causa que se vean los bloques negros
-    // vec2 grad = vec2(buf(p+E).z - buf(p+W).z, buf(p+N).z - buf(p+S).z);
-    vec2 grad = vec2(buf(uv+E).z - buf(uv+W).z, buf(uv+N).z - buf(uv+S).z);
+    vec2 grad = vec2(buf(p+E).z - buf(p+W).z, buf(p+N).z - buf(p+S).z);
 
-    float light = cos(atan(grad.y, grad.x) + 0.25*PI);
-    float illum = 0.75 + 0.25 * light * clamp(log(1. + length(grad)), 0., 1.);
+    // float light = cos(atan(grad.y, grad.x) + 0.25*PI);
+    // float illum = 0.75 + 0.25 * light * clamp(log(1. + length(grad)), 0., 1.);
+    // float light = 0.;
+    // float illum = 0.;
     float clouds = 1.;
     
     vec4 ocean = mix(vec4(0.01, 0.02, 0.08, 1), vec4(0.11, 0.28, 0.51, 1), y / OCEAN_DEPTH);
     
-    if ((SLOWING_START_TIME < uTime && uTime < STORY_END_TIME)) {
-        vec3 q = fromlatlon(lat, lon);
-        vec2 ngrad = normalize(grad);
-        vec3 orient = normalize(fromlatlon(lat - ngrad.y, lon - ngrad.x) - q);
-        vec3 normal = normalize(mix(q, orient, 0.25 * clamp(log(1. + length(grad)), 0., 1.)));
-        vec3 sun = sun_pos(uTime);
-        float m = smoothstep(-1., 0., uTime - DAYNIGHT_START_TIME);
-        illum = clamp(mix(illum, dot(normal, sun), m), 0., 1.);
-        clouds *= mix(1., dot(q, sun), m);
-        ocean *= mix(1., dot(q, sun), m);
-    }
+    // if ((SLOWING_START_TIME < uTime && uTime < STORY_END_TIME)) {
+    //     vec3 q = fromlatlon(lat, lon);
+    //     vec2 ngrad = normalize(grad);
+    //     vec3 orient = normalize(fromlatlon(lat - ngrad.y, lon - ngrad.x) - q);
+    //     vec3 normal = normalize(mix(q, orient, 0.25 * clamp(log(1. + length(grad)), 0., 1.)));
+        // vec3 sun = sun_pos(uTime);
+        // float m = smoothstep(-1., 0., uTime - DAYNIGHT_START_TIME);
+        // illum = clamp(mix(illum, dot(normal, sun), m), 0., 1.);
+        // clouds *= mix(1., dot(q, sun), m);
+        // ocean *= mix(1., dot(q, sun), m);
+    // }
     
     float temp0 = climate(p, PASS3).z;
     float temp = temp0 - mix(4., 3., smoothstep(WARMING_START_TIME, WARMING_END_TIME, uTime)) * height;
@@ -237,12 +236,13 @@ vec4 map_sat(vec2 fragCoord) {
     vec4 land = vec4(0,0,0,1);
     land.rgb = mix(dry, veg, plant_growth(moisture, temp));
     //land.rgb = mix(dry, veg, moisture/5.);
-    land.rgb *= illum;
+    // land.rgb *= illum;
     if (uTime < LAND_END_TIME) {
         float c = (15. - y) / 3.5;
         float heat = clamp(2. / pow(uTime + 1., 2.), 0., 1.);
         vec4 rock = mix(vec4(0.58, 0.57, 0.55, 1), vec4(0.15, 0.13, 0.1, 1), smoothstep(0., 3., c));
-        rock *= light * clamp(0.2 * length(grad), 0., 1.);
+        rock *= clamp(0.2 * length(grad), 0., 1.);
+        // rock *= light * clamp(0.2 * length(grad), 0., 1.);
         rock += 5. * c * heat * vec4(1., 0.15, 0.05, 1.);
         land = mix(rock, land, smoothstep(LAND_START_TIME, LAND_END_TIME, uTime));
     }
@@ -262,16 +262,16 @@ vec4 map_sat(vec2 fragCoord) {
 vec4 map(vec2 uv) {
     vec2 p = uv * uResolution.xy;
     vec4 fragColor = map_sat(p);
-    if (uTime < SLOWING_START_TIME - 10.) {
-        float s = LAND_END_TIME + 5.;
-        float t = uTime + uv.x;
-        fragColor = mix(fragColor, map_plates(p), smoothstep(s - 1., s + 1., t)); s += 8.;
-        fragColor = mix(fragColor, map_rivers(p), smoothstep(s - 1., s + 1., t)); s += 8.;
-        fragColor = mix(fragColor, map_temp(p),   smoothstep(s - 1., s + 1., t)); s += 16.;
-        fragColor = mix(fragColor, map_flow(p),   smoothstep(s - 1., s + 1., t)); s += 16.;
-        fragColor = mix(fragColor, map_life(p),   smoothstep(s - 1., s + 1., t)); s += 18.;
-        fragColor = mix(fragColor, map_sat(p),    smoothstep(s - 1., s + 1., t));
-    }
+    // if (uTime < SLOWING_START_TIME - 10.) {
+    //     float s = LAND_END_TIME + 5.;
+    //     float t = uTime + uv.x;
+    //     fragColor = mix(fragColor, map_plates(p), smoothstep(s - 1., s + 1., t)); s += 8.;
+    //     fragColor = mix(fragColor, map_rivers(p), smoothstep(s - 1., s + 1., t)); s += 8.;
+    //     fragColor = mix(fragColor, map_temp(p),   smoothstep(s - 1., s + 1., t)); s += 16.;
+    //     fragColor = mix(fragColor, map_flow(p),   smoothstep(s - 1., s + 1., t)); s += 16.;
+    //     fragColor = mix(fragColor, map_life(p),   smoothstep(s - 1., s + 1., t)); s += 18.;
+    //     fragColor = mix(fragColor, map_sat(p),    smoothstep(s - 1., s + 1., t));
+    // }
     return fragColor;
 }
 
