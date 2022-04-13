@@ -54,6 +54,7 @@ class Planet {
     this.seed = Utils.getRandomInt(0, 1) * 1000.0;
     this.updatePlanetName();
     this.updateNormalScaleForRes(this.resolution);
+    this.textureMap.updateResolution(this.resolution);
 
     let resMin = 0.01;
     let resMax = 5.0;

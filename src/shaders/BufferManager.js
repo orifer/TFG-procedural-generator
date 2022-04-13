@@ -2,9 +2,6 @@ import * as THREE from 'three';
 
 class BufferManager {
 
-    // public readBuffer: THREE.WebGLRenderTarget
-    // public writeBuffer: THREE.WebGLRenderTarget
-
     constructor(renderer = THREE.WebGLRenderer, {width, height}) {
         this.readBuffer = new THREE.WebGLRenderTarget(width, height, {
             minFilter: THREE.LinearFilter,

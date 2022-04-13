@@ -16,8 +16,8 @@ class TextureMap {
 
   setup() {
     this.counter = 0;
-    this.width = 2048;
-    this.height = 2048;
+    this.width = 1024;
+    this.height = 1024;
     this.resolution = new THREE.Vector3(this.width, this.height, window.devicePixelRatio);
     this.orthoCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, -1, 1)
 
@@ -53,6 +53,7 @@ class TextureMap {
   }
 
   render(props) {
+  
     // Geo buffer
     this.bufferGeo.uniforms.uTime.value = props.time;
     this.bufferGeo.uniforms.uFrame.value = this.counter;
@@ -65,13 +66,18 @@ class TextureMap {
     this.bufferMain.uniforms.uFrame.value = this.counter;
     this.bufferMain.uniforms.uResolution.value = new THREE.Vector3(props.resolution, props.resolution, window.devicePixelRatio);
     this.bufferMain.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture;
-    this.targetMain.render(this.bufferMain.scene, this.orthoCamera, true);
+    this.targetMain.render(this.bufferMain.scene, this.orthoCamera);
 
     // Save the result texture
     // this.texture = this.targetGeo.readBuffer.texture;
     this.texture = this.targetMain.readBuffer.texture;
 
     this.counter++;
+  }
+
+  updateResolution(res) {
+    this.targetMain = new BufferManager(this.app.renderer, { width: res, height: res });
+    this.targetGeo = new BufferManager(this.app.renderer, { width: res, height: res });
   }
 
 }
