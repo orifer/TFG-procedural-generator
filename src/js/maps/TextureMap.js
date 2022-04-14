@@ -77,15 +77,27 @@ class TextureMap {
   }
 
   updateResolution(res) {
+    if (this.width != res) {
+      this.width = res;
+      this.height = res;
 
-    
-    this.targetMain.readBuffer.width = res;
-    this.targetMain.readBuffer.height = res;
-    this.targetMain.writeBuffer.width = res;
-    this.targetMain.writeBuffer.height = res;
+      // Clear memory disposing the rendering context
+      this.targetMain.dispose();
+      this.targetGeo.dispose();
 
-    // this.targetMain = new BufferManager(this.app.renderer, { width: res, height: res });
-    // this.targetGeo = new BufferManager(this.app.renderer, { width: res, height: res });
+      this.targetMain = new BufferManager(this.app.renderer, { width: this.width, height: this.height });
+      this.targetGeo = new BufferManager(this.app.renderer, { width: this.width, height: this.height });
+
+      // this.targetMain.readBuffer.width = res;
+      // this.targetMain.readBuffer.height = res;
+      // this.targetMain.writeBuffer.width = res;
+      // this.targetMain.writeBuffer.height = res;
+
+      // this.targetGeo.readBuffer.width = res;
+      // this.targetGeo.readBuffer.height = res;
+      // this.targetGeo.writeBuffer.width = res;
+      // this.targetGeo.writeBuffer.height = res;
+    }
   }
 
 }

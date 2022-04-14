@@ -31,6 +31,11 @@ class BufferManager {
         this.swap()
     }
 
+    dispose() {
+        this.readBuffer.dispose();
+        this.writeBuffer.dispose();
+    }
+
 }
 
 export default BufferManager;
