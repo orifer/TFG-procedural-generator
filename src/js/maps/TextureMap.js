@@ -25,7 +25,7 @@ class TextureMap {
     this.targetMain = new BufferManager(this.app.renderer, { width: this.width, height: this.height });
     this.targetGeo = new BufferManager(this.app.renderer, { width: this.width, height: this.height });
 
-    // Buffers
+    // Main buffer
     this.bufferMain = new BufferShader(
       VERT,
       BUFFER_MAIN_FRAG,
@@ -33,13 +33,14 @@ class TextureMap {
         uTime: { value: 0 },
         uFrame: { value: 0 },
         uResolution: { value: this.resolution },
+        uSelectedMap: { value: 0 },
         iChannel0: { value: null },
         iChannel1: { value: null },
         iChannel2: { value: null },
         iChannel3: { value: null },
       });
 
-
+    // Geo buffer
     this.bufferGeo = new BufferShader(
       VERT,
       BUFFER_GEO_FRAG,
@@ -53,7 +54,7 @@ class TextureMap {
   }
 
   render(props) {
-  
+
     // Geo buffer
     this.bufferGeo.uniforms.uTime.value = props.time;
     this.bufferGeo.uniforms.uFrame.value = this.counter;
@@ -65,19 +66,26 @@ class TextureMap {
     this.bufferMain.uniforms.uTime.value = props.time;
     this.bufferMain.uniforms.uFrame.value = this.counter;
     this.bufferMain.uniforms.uResolution.value = new THREE.Vector3(props.resolution, props.resolution, window.devicePixelRatio);
+    this.bufferMain.uniforms.uSelectedMap.value = props.selectedMap;
     this.bufferMain.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture;
     this.targetMain.render(this.bufferMain.scene, this.orthoCamera);
 
     // Save the result texture
-    // this.texture = this.targetGeo.readBuffer.texture;
     this.texture = this.targetMain.readBuffer.texture;
 
     this.counter++;
   }
 
   updateResolution(res) {
-    this.targetMain = new BufferManager(this.app.renderer, { width: res, height: res });
-    this.targetGeo = new BufferManager(this.app.renderer, { width: res, height: res });
+
+    
+    this.targetMain.readBuffer.width = res;
+    this.targetMain.readBuffer.height = res;
+    this.targetMain.writeBuffer.width = res;
+    this.targetMain.writeBuffer.height = res;
+
+    // this.targetMain = new BufferManager(this.app.renderer, { width: res, height: res });
+    // this.targetGeo = new BufferManager(this.app.renderer, { width: res, height: res });
   }
 
 }

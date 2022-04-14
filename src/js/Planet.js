@@ -25,6 +25,7 @@ class Planet {
     this.resolution = 1024;
     this.size = 2048;
     this.waterLevel = 0;
+    this.selectedMap = 0;
 
     this.displayMap = "textureMap";
     this.wireframe = false;
@@ -61,7 +62,8 @@ class Planet {
     
     this.textureMap.render({
       time: this.app.time,
-      resolution: this.resolution
+      resolution: this.resolution,
+      selectedMap: this.selectedMap,
     });
     
     this.heightMap.render({
@@ -88,7 +90,8 @@ class Planet {
       // Actualizar shader
       this.textureMap.render({
         time: this.app.time,
-        resolution: this.resolution
+        resolution: this.resolution,
+        selectedMap: this.selectedMap
       });
     }
   }

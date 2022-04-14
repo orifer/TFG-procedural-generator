@@ -14,6 +14,9 @@ varying vec3 vPosition; // Vertex position
 
 uniform float uTime; // Time in seconds since load
 uniform vec2 uResolution; // Canvas size (width,height)
+uniform int uSelectedMap; // The map to show
+
+// Buffers
 uniform sampler2D iChannel0;
 uniform sampler2D iChannel1;
 uniform sampler2D iChannel2;
@@ -40,12 +43,14 @@ vec3 fromlatlon(float lat, float lon) {
     return vec3(sin(lon*PI/180.) * cos(lat*PI/180.), sin(lat*PI/180.), cos(lon*PI/180.) * cos(lat*PI/180.));
 }
 
+
 vec4 climate(vec2 fragCoord, vec2 pass) {
     vec2 p = fragCoord * MAP_RES / uResolution.xy;
     if (p.x < 0.5) p.x = 0.5;
     vec2 uv = p / uResolution.xy;
     return texture(iChannel1, uv + pass);
 }
+
 
 vec4 map_land(vec2 fragCoord, bool ocean) {
     vec2 p = fragCoord;
@@ -63,6 +68,7 @@ vec4 map_land(vec2 fragCoord, bool ocean) {
     fragColor.w = MAP_HEIGHT(y);
     return fragColor;
 }
+
 
 vec4 map_flow(vec2 fragCoord) {
     float mbar = climate(fragCoord, PASS3).x;
@@ -84,6 +90,7 @@ vec4 map_flow(vec2 fragCoord) {
     return fragColor;
 }
 
+
 vec4 map_temp(vec2 fragCoord) {
     float height = MAP_HEIGHT(buf(fragCoord).z);
     float temp0 = climate(fragCoord, PASS3).z;
@@ -96,6 +103,7 @@ vec4 map_temp(vec2 fragCoord) {
     fragColor = mix(fragColor, r, 0.35);
     return fragColor;
 }
+
 
 vec4 map_life(vec2 fragCoord) {
     vec4 c = texture(iChannel3, fragCoord/uResolution.xy);
@@ -110,6 +118,7 @@ vec4 map_life(vec2 fragCoord) {
     return fragColor;
 }
 
+
 vec4 map_plates(vec2 fragCoord) {
     vec2 p = fragCoord;
     float q = buf(p).x;
@@ -121,6 +130,7 @@ vec4 map_plates(vec2 fragCoord) {
     return fragColor;
 }
 
+
 vec4 map_rivers(vec2 fragCoord) {
     vec4 fragColor = map_land(fragCoord, true);
     float flow = buf(fragCoord).w;
@@ -128,6 +138,7 @@ vec4 map_rivers(vec2 fragCoord) {
                         clamp(0.15 * log(floor(flow)), 0., 1.));
     return fragColor;
 }
+
 
 vec4 map_sat(vec2 fragCoord) {
     vec2 p = fragCoord;
@@ -138,37 +149,19 @@ vec4 map_sat(vec2 fragCoord) {
     float height = MAP_HEIGHT(y);
     
     vec2 grad = vec2(buf(p+E).z - buf(p+W).z, buf(p+N).z - buf(p+S).z);
-
-    // float light = cos(atan(grad.y, grad.x) + 0.25*PI);
-    // float illum = 0.75 + 0.25 * light * clamp(log(1. + length(grad)), 0., 1.);
-    // float light = 0.;
-    // float illum = 0.;
     float clouds = 1.;
-    
     vec4 ocean = mix(vec4(0.01, 0.02, 0.08, 1), vec4(0.11, 0.28, 0.51, 1), y / OCEAN_DEPTH);
-    
-    // if ((SLOWING_START_TIME < uTime && uTime < STORY_END_TIME)) {
-    //     vec3 q = fromlatlon(lat, lon);
-    //     vec2 ngrad = normalize(grad);
-    //     vec3 orient = normalize(fromlatlon(lat - ngrad.y, lon - ngrad.x) - q);
-    //     vec3 normal = normalize(mix(q, orient, 0.25 * clamp(log(1. + length(grad)), 0., 1.)));
-        // vec3 sun = sun_pos(uTime);
-        // float m = smoothstep(-1., 0., uTime - DAYNIGHT_START_TIME);
-        // illum = clamp(mix(illum, dot(normal, sun), m), 0., 1.);
-        // clouds *= mix(1., dot(q, sun), m);
-        // ocean *= mix(1., dot(q, sun), m);
-    // }
-    
+
     float temp0 = climate(p, PASS3).z;
     float temp = temp0 - mix(4., 3., smoothstep(WARMING_START_TIME, WARMING_END_TIME, uTime)) * height;
     
-    // dry land
+    // Dry land
     vec3 dry = vec3(0.89, 0.9, 0.89);
     dry = mix(dry, vec3(0.11, 0.10, 0.05), smoothstep(-10., 0., temp));
     dry = mix(dry, vec3(1.00, 0.96, 0.71), smoothstep( 0., 20., temp));
     dry = mix(dry, vec3(0.81, 0.48, 0.31), smoothstep(20., 30., temp));
 
-    // vegetation
+    // Vegetation
     vec3 veg = vec3(0.89, 0.9, 0.89);
     veg = mix(veg, vec3(0.56, 0.49, 0.28), smoothstep(-10., 0., temp));
     veg = mix(veg, vec3(0.18, 0.34, 0.04), smoothstep( 0., 20., temp));
@@ -177,17 +170,16 @@ vec4 map_sat(vec2 fragCoord) {
     float moisture = texture(iChannel3, uv).w;
     vec4 land = vec4(0,0,0,1);
     land.rgb = mix(dry, veg, plant_growth(moisture, temp));
-    //land.rgb = mix(dry, veg, moisture/5.);
-    // land.rgb *= illum;
+
     if (uTime < LAND_END_TIME) {
         float c = (15. - y) / 3.5;
         float heat = clamp(2. / pow(uTime + 1., 2.), 0., 1.);
         vec4 rock = mix(vec4(0.58, 0.57, 0.55, 1), vec4(0.15, 0.13, 0.1, 1), smoothstep(0., 3., c));
         rock *= clamp(0.2 * length(grad), 0., 1.);
-        // rock *= light * clamp(0.2 * length(grad), 0., 1.);
         rock += 5. * c * heat * vec4(1., 0.15, 0.05, 1.);
         land = mix(rock, land, smoothstep(LAND_START_TIME, LAND_END_TIME, uTime));
     }
+
     vec4 r = vec4(0,0,0,1);
     if (y < OCEAN_DEPTH && uTime > OCEAN_START_TIME) {
         r = mix(land, ocean, smoothstep(0., 2., uTime - OCEAN_START_TIME));
@@ -203,7 +195,16 @@ vec4 map_sat(vec2 fragCoord) {
 
 vec4 map(vec2 uv) {
     vec2 p = uv * uResolution.xy;
-    vec4 fragColor = map_sat(p);
+    
+    // Show map to view
+    if (uSelectedMap == 0) return map_sat(p);    // Normal view
+    if (uSelectedMap == 1) return map_plates(p); // Plates view
+    if (uSelectedMap == 2) return map_rivers(p); // Rivers view
+    if (uSelectedMap == 3) return map_flow(p);   // Flow view
+    if (uSelectedMap == 4) return map_temp(p);   // Temperature view
+    // if (uSelectedMap == 5) return map_life(p);   // Life view
+    // ToDo: smooth swap
+
     // if (uTime < SLOWING_START_TIME - 10.) {
     //     float s = LAND_END_TIME + 5.;
     //     float t = uTime + uv.x;
@@ -214,7 +215,7 @@ vec4 map(vec2 uv) {
     //     fragColor = mix(fragColor, map_life(p),   smoothstep(s - 1., s + 1., t)); s += 18.;
     //     fragColor = mix(fragColor, map_sat(p),    smoothstep(s - 1., s + 1., t));
     // }
-    return fragColor;
+    return map_sat(p);
 }
 
 

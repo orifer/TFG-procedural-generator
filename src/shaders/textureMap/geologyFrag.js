@@ -49,22 +49,16 @@ float craters(vec3 x) {
 }
 
 
-
-
-
-
 vec2 move(float q) {
     return plate_move(q, uFrame, uTime);
 }
-
-
-
 
 
 float slope(vec2 p, vec2 q) {
     if (p == q) return 0.;
     return (buf(q).z - buf(p).z) / distance(p,q);
 }
+
 
 vec2 rec(vec2 p) { // direction of water flow at point
     vec2 d = vec2(0);
@@ -79,6 +73,7 @@ vec2 rec(vec2 p) { // direction of water flow at point
     return d;
 }
 
+
 // Transforms a 2D vertex coordinate to 3D cartesian coordinates given latitude and longitude
 // This is used to deform and wrap a 2D plane into a 3D Sphere
 vec3 planeToCartesian(vec2 uv) {
@@ -88,6 +83,7 @@ vec3 planeToCartesian(vec2 uv) {
     
     return scale * vec3( sin(lon*PI/180.) * cos(lat*PI/180.), sin(lat*PI/180.), cos(lon*PI/180.) * cos(lat*PI/180.));
 }
+
 
 // Creates a heightmap of a terrain with craters
 float protoplanet(vec2 uv) {

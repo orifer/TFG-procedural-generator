@@ -27,17 +27,26 @@ class Interface {
   
         // Seed
         window.gui.add(this.app.planet, "seedString").listen().onFinishChange(value => { this.app.planet.renderScene() }).name("Seed");
-  
-        // New planet button
-        window.gui.add(this.app.planet, "randomize").name("New planet");
-
-
-        window.gui.add(this.app, "time", 0., 60.).listen();
       }
 
+      // Map visualization
+      var selectedMapOptions  = { 
+        Normal: 0, 
+        Plates: 1, 
+        Rivers: 2,
+        Flow: 3,
+        Temperature: 4,
+      };
+      window.gui.add(this.app.planet, "selectedMap", selectedMapOptions).name("selectedMap").onChange(value => { this.app.planet.renderScene() });
+      
+      // Time
+      window.gui.add(this.app, "time", 0., 60.).listen();
 
       // Play/stop simulation
       window.gui.add(this.app, "playing").name("Play/Stop");
+
+      // New planet button
+      window.gui.add(this.app.planet, "randomize").name("New planet");
       
       window.gui.close();
     }
