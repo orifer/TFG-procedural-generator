@@ -1,13 +1,13 @@
 // https://threejs.org/docs/#api/en/renderers/webgl/WebGLProgram
-const fragmentShader = /* glsl */ `
+import COMMON from '../../shaders/textureMap/commonFrag.js';
 
-/*
-################################
-||  Variables and constants   ||
-################################
-*/
+const fragmentShader = COMMON + /* glsl */ `
 
-float PI = 3.14159265358979323846264338;
+
+// ################################################################
+// ||                   VARIABLES & QUALIFIERS                   ||
+// ################################################################
+
 
 varying vec2 vUv; // The "coordinates" in UV mapping representation
 varying vec3 vPosition; // Vertex position
@@ -17,100 +17,14 @@ uniform float uFrame; // Frame number
 uniform vec3 uResolution; // Canvas size (width,height)
 uniform sampler2D iChannel0;
 
-// Hash scales //
-#define HASHSCALE1 .1031
-#define HASHSCALE3 vec3(.1031, .1030, .0973)
-
 ///////////////////////////////////////////////////////////////////////////////
-
-#define PI 3.14159265359
 
 #define buf(p) textureLod(iChannel0,fract((p) / uResolution.xy),0.)
-// #define buf(p) textureLod(iChannel0,fract(p),0.)
 
 
-#define OCEAN_START_TIME 15.
-#define LAND_START_TIME 20.
-#define OCEAN_END_TIME 25.
-#define LAND_END_TIME 30.
-#define SLOWING_START_TIME 113.
-#define DAYNIGHT_START_TIME 120.
-#define HUMAN_START_TIME 125.
-#define TECTONICS_END_TIME 126.
-#define CO2_START_TIME 180.
-#define WARMING_START_TIME 200.
-#define WARMING_END_TIME 220.
-#define OVERLAY_END_TIME 230.
-#define MUSIC_END_TIME 235.
-#define STORY_END_TIME 250.
-
-#define CAMERA_DIST 25.
-#define DEEP_WATER vec4(0.01, 0.02, 0.08, 1)
-#define SHALLOW_WATER vec4(0.11, 0.28, 0.51, 1)
-#define WARM vec4(1.,0.5,0.,1)
-#define COOL vec4(0.,0.5,1.,1)
-
-#define OCEAN_DEPTH ocean_depth(uTime)
-
-#define ATMOSPHERE_THICKNESS 0.2
-
-#define MAP_HEIGHT(y) (0.4 * max(0., (y) - OCEAN_DEPTH))
-
-#define MAP_LOD max(1., floor(log2(uResolution.x / 144.)))
-#define MAP_ZOOM pow(2., MAP_LOD)
-#define MAP_RES (uResolution.xy / MAP_ZOOM)
-
-#define PASS1 vec2(0.0,0.0)
-#define PASS2 vec2(0.0,0.5)
-#define PASS3 vec2(0.5,0.0)
-#define PASS4 vec2(0.5,0.5)
-
-#define N  vec2( 0, 1)
-#define NE vec2( 1, 1)
-#define E  vec2( 1, 0)
-#define SE vec2( 1,-1)
-#define S  vec2( 0,-1)
-#define SW vec2(-1,-1)
-#define W  vec2(-1, 0)
-#define NW vec2(-1, 1)
-
-
-
-
-///////////////////////////////////////////////////////////////////////////////
-
-float ocean_depth(float t) {
-    if (TECTONICS_END_TIME < t && t < STORY_END_TIME) t = TECTONICS_END_TIME;
-    float d = 7.25 + 0.25 * sin(t/5.);
-    d *= smoothstep(OCEAN_START_TIME, OCEAN_END_TIME, t);
-    return d;
-}
-
-
-// Hash function 3-3
-// IN:  vec3
-// OUT: vec3
-vec3 hash33(vec3 p3) {
-    p3 = fract(p3 * HASHSCALE3);
-    p3 += dot(p3, p3.yxz+19.19);
-    return fract((p3.xxy + p3.yxx)*p3.zyx);
-}
-
-
-//  Hash function 3-1
-// IN:  vec3
-// OUT: float
-float hash13(vec3 p3) {
-    p3  = fract(p3 * HASHSCALE1);
-    p3 += dot(p3, p3.yzx + 19.19);
-    return fract((p3.x + p3.y) * p3.z);
-}
-
-float hash12(vec2 p) {
-	vec3 p3  = fract(vec3(p.xyx) * HASHSCALE1);
-    p3 += dot(p3, p3.yzx + 19.19);
-    return fract((p3.x + p3.y) * p3.z);
-}
+// ################################################################
+// ||                         FUNCTIONS                          ||
+// ################################################################
 
 
 // Generate procedural craters based on https://www.shadertoy.com/view/MtjGRD
@@ -135,55 +49,9 @@ float craters(vec3 x) {
 }
 
 
-// Noise function
-// By David Hoskins, May 2014. @ https://www.shadertoy.com/view/4dsXWn
-// License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
-float Noise(vec3 p) {
-    vec3 i = floor(p);
-    vec3 f = fract(p); 
-    f *= f * (3.0-2.0*f);
-
-    return mix(
-        mix(mix(hash13(i + vec3(0.,0.,0.)), hash13(i + vec3(1.,0.,0.)),f.x),
-        mix(hash13(i + vec3(0.,1.,0.)), hash13(i + vec3(1.,1.,0.)),f.x),f.y),
-        mix(mix(hash13(i + vec3(0.,0.,1.)), hash13(i + vec3(1.,0.,1.)),f.x),
-        mix(hash13(i + vec3(0.,1.,1.)), hash13(i + vec3(1.,1.,1.)),f.x),f.y),
-        f.z
-    );
-}
 
 
-// Fractal Brownian Motion noise function developed by Ken Perlin
-float FBM( vec3 p ) {
-    mat3 m = mat3( 0.00,  0.80,  0.60,
-                -0.80,  0.36, -0.48,
-                -0.60, -0.48,  0.64 ) * 1.7;
 
-    float f;
-    f += 0.5000   * Noise(p); p = m*p;
-    f += 0.2500   * Noise(p); p = m*p;
-    f += 0.1250   * Noise(p); p = m*p;
-    f += 0.0625   * Noise(p); p = m*p;
-    f += 0.03125  * Noise(p); p = m*p;
-    f += 0.015625 * Noise(p);
-
-    return f;
-}
-
-
-float hash13(vec3);
-vec2 plate_move(float q, float uFrame, float uTime) {
-    if (uTime >= TECTONICS_END_TIME && uTime < STORY_END_TIME) return vec2(0);
-    vec2 v = vec2(cos(2.*PI*q), sin(2.*PI*q));
-    if (hash13(vec3(v,uFrame)) < 0.05) {
-        if (hash13(vec3(v+1.,uFrame)) < abs(v.x) / (abs(v.x) + abs(v.y))) {
-            return vec2(sign(v.x),0.);
-        } else {
-            return vec2(0.,sign(v.y));
-        }
-    }
-    return vec2(0);
-}
 
 vec2 move(float q) {
     return plate_move(q, uFrame, uTime);
@@ -252,12 +120,9 @@ float protoplanet(vec2 uv) {
 }
 
 
-
-
-
-
-
-
+// ################################################################
+// ||                           MAIN                             ||
+// ################################################################
 
 
 void main() {

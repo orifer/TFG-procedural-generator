@@ -1,13 +1,13 @@
 // https://threejs.org/docs/#api/en/renderers/webgl/WebGLProgram
-const fragmentShader = /* glsl */ `
+import COMMON from '../../shaders/textureMap/commonFrag.js';
 
-/*
-################################
-||  Variables and constants   ||
-################################
-*/
+const fragmentShader = COMMON + /* glsl */ `
 
-// float PI = 3.14159265358979323846264338;
+
+// ################################################################
+// ||                   VARIABLES & QUALIFIERS                   ||
+// ################################################################
+
 
 varying vec2 vUv; // The "coordinates" in UV mapping representation
 varying vec3 vPosition; // Vertex position
@@ -19,84 +19,26 @@ uniform sampler2D iChannel1;
 uniform sampler2D iChannel2;
 uniform sampler2D iChannel3;
 
-
 ///////////////////////////////////////////////////////////////////////////////
-
-#define OCEAN_START_TIME 15.
-#define LAND_START_TIME 20.
-#define OCEAN_END_TIME 25.
-#define LAND_END_TIME 30.
-#define SLOWING_START_TIME 113.
-#define DAYNIGHT_START_TIME 120.
-#define HUMAN_START_TIME 125.
-#define TECTONICS_END_TIME 126.
-#define CO2_START_TIME 180.
-#define WARMING_START_TIME 200.
-#define WARMING_END_TIME 220.
-#define OVERLAY_END_TIME 230.
-#define MUSIC_END_TIME 235.
-#define STORY_END_TIME 250.
 
 #define buf(p) textureLod(iChannel0,(p)/uResolution.xy,0.)
 
 #define CAMERA_DIST 25.
+
 #define DEEP_WATER vec4(0.01, 0.02, 0.08, 1)
 #define SHALLOW_WATER vec4(0.11, 0.28, 0.51, 1)
 #define WARM vec4(1.,0.5,0.,1)
 #define COOL vec4(0.,0.5,1.,1)
 
-#define OCEAN_DEPTH ocean_depth(uTime)
 
-#define ATMOSPHERE_THICKNESS 0.2
+// ################################################################
+// ||                         FUNCTIONS                          ||
+// ################################################################
 
-#define MAP_HEIGHT(y) (0.4 * max(0., (y) - OCEAN_DEPTH))
-
-#define MAP_LOD max(1., floor(log2(uResolution.x / 144.)))
-#define MAP_ZOOM pow(2., MAP_LOD)
-#define MAP_RES (uResolution.xy / MAP_ZOOM)
-
-#define PASS1 vec2(0.0,0.0)
-#define PASS2 vec2(0.0,0.5)
-#define PASS3 vec2(0.5,0.0)
-#define PASS4 vec2(0.5,0.5)
-
-#define N  vec2( 0, 1)
-#define NE vec2( 1, 1)
-#define E  vec2( 1, 0)
-#define SE vec2( 1,-1)
-#define S  vec2( 0,-1)
-#define SW vec2(-1,-1)
-#define W  vec2(-1, 0)
-#define NW vec2(-1, 1)
-
-#define PI 3.14159265359
-
-
-///////////////////////////////////////////////////////////////////////////////
-
-float ocean_depth(float t) {
-    if (TECTONICS_END_TIME < t && t < STORY_END_TIME) t = TECTONICS_END_TIME;
-    float d = 7.25 + 0.25 * sin(t/5.);
-    d *= smoothstep(OCEAN_START_TIME, OCEAN_END_TIME, t);
-    return d;
-}
-
-float plant_growth(float moisture, float temp) {
-    float growth = clamp(moisture / 3., 0., 1.);
-    // https://www2.nrel.colostate.edu/projects/century/MANUAL/html_manual/man96.html#FIG3-8B
-    growth *= smoothstep(0., 25., temp) - smoothstep(25., 35., temp);
-    return growth;
-}
 
 vec3 fromlatlon(float lat, float lon) {
     return vec3(sin(lon*PI/180.) * cos(lat*PI/180.), sin(lat*PI/180.), cos(lon*PI/180.) * cos(lat*PI/180.));
 }
-
-// vec3 sun_pos(float t) {
-//     float month = mod(t/2., 12.);
-//     float delta = 1. - 2. * smoothstep(1.5, 4.5, month) + 2. * smoothstep(7.5, 10.5, month);
-//     return fromlatlon(23.5 * delta, -360. * t/15.);
-// }
 
 vec4 climate(vec2 fragCoord, vec2 pass) {
     vec2 p = fragCoord * MAP_RES / uResolution.xy;
@@ -292,8 +234,9 @@ vec2 project(vec2 fragCoord, float scale, float zoom) {
 }
 
 
-
-///////////////////////////////////////////////////////////////////////////////
+// ################################################################
+// ||                           MAIN                             ||
+// ################################################################
 
 
 void main() {
