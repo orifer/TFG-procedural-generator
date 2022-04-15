@@ -38,7 +38,7 @@ class Planet {
     this.renderScene();
   }
 
-  
+
   createScene() {
     this.textureMap = new TextureMap(this.app.renderer, this.resolution);
     this.heightMap = new HeightMap();
@@ -174,7 +174,6 @@ class Planet {
     if (value == 1024) this.normalScale = 0.6;
     if (value == 2048) this.normalScale = 1.1;
     if (value == 4096) this.normalScale = 2.0;
-    if (value == 8192) this.normalScale = 3.0;
   }
 
 }
