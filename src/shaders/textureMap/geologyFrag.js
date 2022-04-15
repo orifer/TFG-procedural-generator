@@ -77,7 +77,7 @@ vec2 rec(vec2 p) { // direction of water flow at point
 // Transforms a 2D vertex coordinate to 3D cartesian coordinates given latitude and longitude
 // This is used to deform and wrap a 2D plane into a 3D Sphere
 vec3 planeToCartesian(vec2 uv) {
-    float scale = 3.5;
+    float scale = 1.5;
     float lat = 180. * uv.y - 90.;
     float lon = 360. * uv.x;
     

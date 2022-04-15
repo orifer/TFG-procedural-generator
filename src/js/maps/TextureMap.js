@@ -73,7 +73,8 @@ class TextureMap {
     // Save the result texture
     this.texture = this.targetMain.readBuffer.texture;
 
-    this.counter++;
+    // ToDo: Unify shaders and use just one time measurement
+    this.counter = props.time*60.0;
   }
 
 
