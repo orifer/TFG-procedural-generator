@@ -14,7 +14,7 @@ varying vec3 vPosition; // Vertex position
 
 uniform float uTime; // Time in seconds since load
 uniform vec2 uResolution; // Canvas size (width,height)
-uniform int uSelectedMap; // The map to show
+uniform int uDisplayTextureMap; // The map to show
 
 // Buffers
 uniform sampler2D iChannel0;
@@ -197,12 +197,12 @@ vec4 map(vec2 uv) {
     vec2 p = uv * uResolution.xy;
     
     // Show map to view
-    if (uSelectedMap == 0) return map_sat(p);    // Normal view
-    if (uSelectedMap == 1) return map_plates(p); // Plates view
-    if (uSelectedMap == 2) return map_rivers(p); // Rivers view
-    if (uSelectedMap == 3) return map_flow(p);   // Flow view
-    if (uSelectedMap == 4) return map_temp(p);   // Temperature view
-    // if (uSelectedMap == 5) return map_life(p);   // Life view
+    if (uDisplayTextureMap == 0) return map_sat(p);    // Normal view
+    if (uDisplayTextureMap == 1) return map_plates(p); // Plates view
+    if (uDisplayTextureMap == 2) return map_rivers(p); // Rivers view
+    if (uDisplayTextureMap == 3) return map_flow(p);   // Flow view
+    if (uDisplayTextureMap == 4) return map_temp(p);   // Temperature view
+    // if (uDisplayTextureMap == 5) return map_life(p);   // Life view
     // ToDo: smooth swap
 
     // if (uTime < SLOWING_START_TIME - 10.) {

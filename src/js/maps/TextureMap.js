@@ -32,7 +32,7 @@ class TextureMap {
         uTime: { value: 0 },
         uFrame: { value: 0 },
         uResolution: { value: this.resolutionVector },
-        uSelectedMap: { value: 0 },
+        uDisplayTextureMap: { value: 0 },
         iChannel0: { value: null },
         iChannel1: { value: null },
         iChannel2: { value: null },
@@ -66,7 +66,7 @@ class TextureMap {
     this.bufferMain.uniforms.uTime.value = props.time;
     this.bufferMain.uniforms.uFrame.value = this.counter;
     this.bufferMain.uniforms.uResolution.value = new THREE.Vector3(props.resolution, props.resolution, window.devicePixelRatio);
-    this.bufferMain.uniforms.uSelectedMap.value = props.selectedMap;
+    this.bufferMain.uniforms.uDisplayTextureMap.value = props.displayTextureMap;
     this.bufferMain.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture;
     this.targetMain.render(this.bufferMain.scene, this.orthoCamera);
 

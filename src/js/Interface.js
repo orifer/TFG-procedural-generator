@@ -37,7 +37,7 @@ class Interface {
         Flow: 3,
         Temperature: 4,
       };
-      window.gui.add(this.app.planet, "selectedMap", selectedMapOptions).name("selectedMap").onChange(value => { this.app.planet.renderScene() });
+      window.gui.add(this.app.planet, "displayTextureMap", selectedMapOptions).name("selectedMap").onChange(value => { this.app.planet.renderScene() });
       
       // Time
       window.gui.add(this.app, "time", 0., 60.).listen();

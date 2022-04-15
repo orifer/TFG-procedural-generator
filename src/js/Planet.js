@@ -29,7 +29,7 @@ class Planet {
     this.rotate = true;
 
     // Texture map to display
-    this.selectedMap = 0;
+    this.displayTextureMap = 0;
 
     // Map to display
     this.displayMap = "textureMap";
@@ -64,7 +64,7 @@ class Planet {
     this.textureMap.render({
       time: this.app.time,
       resolution: this.resolution,
-      selectedMap: this.selectedMap,
+      displayTextureMap: this.displayTextureMap,
     });
     
     this.heightMap.render({
@@ -93,7 +93,7 @@ class Planet {
       this.textureMap.render({
         time: this.app.time,
         resolution: this.resolution,
-        selectedMap: this.selectedMap
+        displayTextureMap: this.displayTextureMap
       });
     }
   }
