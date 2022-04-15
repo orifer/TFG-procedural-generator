@@ -102,7 +102,6 @@ class TextureMap {
 
     // HeightMap buffer
     this.bufferHeightMap.uniforms.uTime.value = props.time;
-    this.bufferHeightMap.uniforms.uFrame.value = this.counter;
     this.bufferHeightMap.uniforms.uResolution.value = new THREE.Vector3(props.resolution, props.resolution, window.devicePixelRatio);
     this.bufferHeightMap.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture;
     this.targetHeightMap.render(this.bufferHeightMap.scene, this.orthoCamera);
