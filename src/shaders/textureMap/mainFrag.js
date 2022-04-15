@@ -203,35 +203,8 @@ vec4 map(vec2 uv) {
     if (uDisplayTextureMap == 3) return map_flow(p);   // Flow view
     if (uDisplayTextureMap == 4) return map_temp(p);   // Temperature view
     // if (uDisplayTextureMap == 5) return map_life(p);   // Life view
-    // ToDo: smooth swap
 
-    // if (uTime < SLOWING_START_TIME - 10.) {
-    //     float s = LAND_END_TIME + 5.;
-    //     float t = uTime + uv.x;
-    //     fragColor = mix(fragColor, map_plates(p), smoothstep(s - 1., s + 1., t)); s += 8.;
-    //     fragColor = mix(fragColor, map_rivers(p), smoothstep(s - 1., s + 1., t)); s += 8.;
-    //     fragColor = mix(fragColor, map_temp(p),   smoothstep(s - 1., s + 1., t)); s += 16.;
-    //     fragColor = mix(fragColor, map_flow(p),   smoothstep(s - 1., s + 1., t)); s += 16.;
-    //     fragColor = mix(fragColor, map_life(p),   smoothstep(s - 1., s + 1., t)); s += 18.;
-    //     fragColor = mix(fragColor, map_sat(p),    smoothstep(s - 1., s + 1., t));
-    // }
     return map_sat(p);
-}
-
-
-vec2 project(vec2 fragCoord, float scale, float zoom) {
-    vec2 p = (2. * fragCoord.xy - uResolution.xy) / uResolution.x;
-    p /= scale;
-    vec3 dir = normalize(vec3(PI * p, -zoom * (CAMERA_DIST - 1.)));
-    float b = CAMERA_DIST * dir.z;
-    float h = b*b - CAMERA_DIST*CAMERA_DIST + 1.;
-    if (h >= 0.) {
-        vec3 q = vec3(0., 0., CAMERA_DIST) - dir * (b + sqrt(h));
-        p = zoom * vec2(atan(q.x, q.z) / PI, 0.5 - acos(q.y / length(q)) / PI);
-    } else {
-        return vec2(0,99);
-    }
-    return p;
 }
 
 
