@@ -2,9 +2,6 @@ import * as THREE from 'three';
 
 class BufferShader {
 
-    // public material: THREE.ShaderMaterial
-    // public scene: THREE.Scene
-
     constructor(vertexShader, fragmentShader, uniforms = {}) {
         this.uniforms = uniforms;
         this.material = new THREE.ShaderMaterial({

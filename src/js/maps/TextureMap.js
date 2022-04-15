@@ -9,21 +9,20 @@ import VERT from '../../shaders/vertexShader.js'
 
 class TextureMap {
 
-  constructor(app) {
-    this.app = app;
+  constructor(renderer, resolution) {
+    this.renderer = renderer;
+    this.resolution = resolution;
     this.setup();
   }
 
   setup() {
     this.counter = 0;
-    this.width = 1024;
-    this.height = 1024;
-    this.resolution = new THREE.Vector3(this.width, this.height, window.devicePixelRatio);
+    this.resolutionVector = new THREE.Vector3(this.resolution, this.resolution, window.devicePixelRatio);
     this.orthoCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, -1, 1)
 
     // Targets
-    this.targetMain = new BufferManager(this.app.renderer, { width: this.width, height: this.height });
-    this.targetGeo = new BufferManager(this.app.renderer, { width: this.width, height: this.height });
+    this.targetMain = new BufferManager(this.renderer, { width: this.resolution, height: this.resolution });
+    this.targetGeo = new BufferManager(this.renderer, { width: this.resolution, height: this.resolution });
 
     // Main buffer
     this.bufferMain = new BufferShader(
@@ -32,7 +31,7 @@ class TextureMap {
       {
         uTime: { value: 0 },
         uFrame: { value: 0 },
-        uResolution: { value: this.resolution },
+        uResolution: { value: this.resolutionVector },
         uSelectedMap: { value: 0 },
         iChannel0: { value: null },
         iChannel1: { value: null },
@@ -47,11 +46,12 @@ class TextureMap {
       {
         uTime: { value: 0 },
         uFrame: { value: 0 },
-        uResolution: { value: this.resolution },
+        uResolution: { value: this.resolutionVector },
         iChannel0: { value: null }
       });
 
   }
+
 
   render(props) {
 
@@ -76,30 +76,22 @@ class TextureMap {
     this.counter++;
   }
 
+
   updateResolution(res) {
-    if (this.width != res) {
-      this.width = res;
-      this.height = res;
+    
+    if (this.resolution != res) {
+      // Set new resolution
+      this.resolution = res;
 
       // Clear memory disposing the rendering context
       this.targetMain.dispose();
       this.targetGeo.dispose();
-
-      this.targetMain = new BufferManager(this.app.renderer, { width: this.width, height: this.height });
-      this.targetGeo = new BufferManager(this.app.renderer, { width: this.width, height: this.height });
-
-      // this.targetMain.readBuffer.width = res;
-      // this.targetMain.readBuffer.height = res;
-      // this.targetMain.writeBuffer.width = res;
-      // this.targetMain.writeBuffer.height = res;
-
-      // this.targetGeo.readBuffer.width = res;
-      // this.targetGeo.readBuffer.height = res;
-      // this.targetGeo.writeBuffer.width = res;
-      // this.targetGeo.writeBuffer.height = res;
+      
+      // Create new buffers with new resolution
+      this.targetMain = new BufferManager(this.renderer, { width: this.resolution, height: this.resolution });
+      this.targetGeo = new BufferManager(this.renderer, { width: this.resolution, height: this.resolution });
     }
   }
 
-}
 
-export default TextureMap;
+} export default TextureMap;

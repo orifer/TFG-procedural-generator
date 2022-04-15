@@ -12,31 +12,35 @@ class Planet {
 
     // Main app
     this.app = app;
+    this.view = new THREE.Object3D();
+
+    this.resolution = 1024;
+    this.size = 2048;
 
     this.seedString = "Earth";
     this.initSeed();
 
-    this.view = new THREE.Object3D();
-
+    // Material properties
     this.roughness = 0.8;
     this.metalness = 0.5;
     this.normalScale = 3.0;
     this.displacementScale = 30.0;
-    this.resolution = 1024;
-    this.size = 2048;
-    this.waterLevel = 0;
-    this.selectedMap = 0;
-
-    this.displayMap = "textureMap";
     this.wireframe = false;
     this.rotate = true;
 
+    // Texture map to display
+    this.selectedMap = 0;
+
+    // Map to display
+    this.displayMap = "textureMap";
+    
     this.createScene();
     this.renderScene();
   }
 
+  
   createScene() {
-    this.textureMap = new TextureMap(this.app);
+    this.textureMap = new TextureMap(this.app.renderer, this.resolution);
     this.heightMap = new HeightMap();
     this.normalMap = new NormalMap();
 
@@ -50,15 +54,12 @@ class Planet {
     this.app.scene.add(this.view);
   }
 
+
   renderScene() {
     this.initSeed();
-    this.seed = Utils.getRandomInt(0, 1) * 1000.0;
     this.updatePlanetName();
     this.updateNormalScaleForRes(this.resolution);
     this.textureMap.updateResolution(this.resolution);
-
-    let resMin = 0.01;
-    let resMax = 5.0;
     
     this.textureMap.render({
       time: this.app.time,
@@ -72,13 +73,14 @@ class Planet {
 
     this.normalMap.render({
       resolution: this.resolution,
-      waterLevel: this.waterLevel,
+      waterLevel: 0.,
       heightMap: this.heightMap.map.texture,
       textureMap: this.textureMap.texture
     });
 
     this.updateMaterial();
   }
+
 
   update() {
     if (this.app.playing) {
@@ -96,6 +98,7 @@ class Planet {
     }
   }
 
+
   updatePlanetName() {
     let planetName = document.getElementById("planetName");
     if (planetName != null) {
@@ -103,10 +106,14 @@ class Planet {
     }
   }
 
+
   initSeed() {
     // https://github.com/davidbau/seedrandom 
     window.rng = new Math.seedrandom(this.seedString);
+    this.seed = Utils.getRandomInt(0, 1) * 1000.0;
+    // WIP 
   }
+
 
   switchGeometry() {    
     if (this.geo.type == 'SphereGeometry') {
