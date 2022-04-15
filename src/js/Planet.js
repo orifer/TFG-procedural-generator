@@ -1,10 +1,8 @@
 import * as THREE from 'three';
 import TextureMap from './maps/TextureMap.js'
-import NormalMap from './maps/NormalMap.js'
-import HeightMap from './maps/HeightMap.js';
-
 import * as seedrandom from 'https://cdn.jsdelivr.net/npm/seedrandom@3.0.5/seedrandom.min.js';
 import Utils from './Utils.js';
+
 
 class Planet {
 
@@ -23,7 +21,7 @@ class Planet {
     // Material properties
     this.roughness = 0.8;
     this.metalness = 0.5;
-    this.normalScale = 3.0;
+    this.normalScale = 1.0;
     this.displacementScale = 30.0;
     this.wireframe = false;
     this.rotate = true;
@@ -41,12 +39,8 @@ class Planet {
 
   createScene() {
     this.textureMap = new TextureMap(this.app.renderer, this.resolution);
-    this.heightMap = new HeightMap();
-    this.normalMap = new NormalMap();
-
     this.material = new THREE.MeshStandardMaterial();
-
-    this.geo = new THREE.SphereGeometry( this.size, 128, 128 );
+    this.geo = new THREE.SphereGeometry( this.size, 256, 256 );
     this.ground = new THREE.Mesh(this.geo, this.material);
     
     // Add to main scene
@@ -67,16 +61,8 @@ class Planet {
       displayTextureMap: this.displayTextureMap,
     });
     
-    this.heightMap.render({
-      resolution: this.resolution
-    });
-
-    this.normalMap.render({
-      resolution: this.resolution,
-      waterLevel: 0.,
-      heightMap: this.heightMap.map.texture,
-      textureMap: this.textureMap.texture
-    });
+    this.heightMap = this.textureMap.heightMapTexture;
+    this.normalMap = this.textureMap.normalMapTexture;
 
     this.updateMaterial();
   }
@@ -84,10 +70,10 @@ class Planet {
 
   update() {
     if (this.app.playing) {
-
       if (this.rotate) {
         this.ground.rotation.y += 0.001;  
       }
+
 
       // Actualizar shader
       this.textureMap.render({
@@ -122,7 +108,7 @@ class Planet {
       this.app.directionalLight.intensity = 0.
       this.rotate = false
     } else if (this.geo.type == 'PlaneGeometry') {
-      this.geo = new THREE.SphereGeometry( this.size, 128, 128 );
+      this.geo = new THREE.SphereGeometry( this.size, 256, 256 );
       this.app.ambientLight.intensity = 0.04
       this.app.directionalLight.intensity = 1.2
     }
@@ -131,10 +117,12 @@ class Planet {
     this.ground.geometry = this.geo
   }
 
+
   randomize() {
     this.seedString = new String(Math.floor(100000 + Math.random() * 900000));
     this.renderScene();
   }
+
 
   updateMaterial() {      
     this.material.roughness = this.roughness;
@@ -148,19 +136,19 @@ class Planet {
 
     if (this.displayMap == "textureMap") {
       this.material.map = this.textureMap.texture;
-      // this.material.displacementMap = this.heightMap.map.texture;
-      // this.material.displacementScale = this.displacementScale;
+      this.material.displacementMap = this.heightMap;
+      this.material.displacementScale = this.displacementScale;
 
-      // this.material.normalMap = this.normalMap.map.texture;
-      // this.material.normalScale = new THREE.Vector2(this.normalScale, this.normalScale);
+      this.material.normalMap = this.normalMap;
+      this.material.normalScale = new THREE.Vector2(this.normalScale, this.normalScale);
     }
     else if (this.displayMap == "heightMap") {
-      this.material.map = this.heightMap.map.texture;
+      this.material.map = this.heightMap;
       this.material.displacementMap = null;
       this.material.normalMap = null;
     }
     else if (this.displayMap == "normalMap") {
-      this.material.map = this.normalMap.map.texture;
+      this.material.map = this.normalMap;
       this.material.displacementMap = null;
       this.material.normalMap = null;
     }
@@ -168,14 +156,14 @@ class Planet {
     this.material.needsUpdate = true;
   }
   
+
   updateNormalScaleForRes(value) {
     if (value == 256) this.normalScale = 0.25;
     if (value == 512) this.normalScale = 0.5;
-    if (value == 1024) this.normalScale = 0.6;
-    if (value == 2048) this.normalScale = 1.1;
-    if (value == 4096) this.normalScale = 2.0;
+    if (value == 1024) this.normalScale = 0.2;
+    if (value == 2048) this.normalScale = 0.7;
+    if (value == 4096) this.normalScale = 0.8;
   }
 
-}
-
-export default Planet;
+  
+} export default Planet;

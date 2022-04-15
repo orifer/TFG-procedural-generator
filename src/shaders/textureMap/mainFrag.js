@@ -201,7 +201,7 @@ vec4 map(vec2 uv) {
     if (uDisplayTextureMap == 1) return map_plates(p); // Plates view
     if (uDisplayTextureMap == 2) return map_rivers(p); // Rivers view
     if (uDisplayTextureMap == 3) return map_flow(p);   // Flow view
-    if (uDisplayTextureMap == 4) return map_temp(p);   // Temperature view
+    // if (uDisplayTextureMap == 4) return map_temp(p);   // Temperature view
     // if (uDisplayTextureMap == 5) return map_life(p);   // Life view
 
     return map_sat(p);
@@ -221,8 +221,4 @@ void main() {
 }
 
 
-
-
-
-`;
-export default fragmentShader;
+`; export default fragmentShader;

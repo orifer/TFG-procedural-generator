@@ -5,7 +5,11 @@ import BufferShader from '../../shaders/BufferShader.js';
 
 import BUFFER_MAIN_FRAG from '../../shaders/textureMap/mainFrag.js';
 import BUFFER_GEO_FRAG from '../../shaders/textureMap/geologyFrag.js'
+import BUFFER_HEIGHTMAP_FRAG from '../../shaders/heightMap/heightMapFrag.js';
+import BUFFER_NORMALMAP_FRAG from '../../shaders/normalMap/normalMapFrag.js';
+
 import VERT from '../../shaders/vertexShader.js'
+
 
 class TextureMap {
 
@@ -23,6 +27,9 @@ class TextureMap {
     // Targets
     this.targetMain = new BufferManager(this.renderer, { width: this.resolution, height: this.resolution });
     this.targetGeo = new BufferManager(this.renderer, { width: this.resolution, height: this.resolution });
+    this.targetHeightMap = new BufferManager(this.renderer, { width: this.resolution, height: this.resolution });
+    this.targetNormalMap = new BufferManager(this.renderer, { width: this.resolution, height: this.resolution });
+
 
     // Main buffer
     this.bufferMain = new BufferShader(
@@ -39,6 +46,7 @@ class TextureMap {
         iChannel3: { value: null },
       });
 
+
     // Geo buffer
     this.bufferGeo = new BufferShader(
       VERT,
@@ -48,6 +56,28 @@ class TextureMap {
         uFrame: { value: 0 },
         uResolution: { value: this.resolutionVector },
         iChannel0: { value: null }
+      });
+
+
+    // HeightMap buffer
+    this.bufferHeightMap = new BufferShader(
+      VERT,
+      BUFFER_HEIGHTMAP_FRAG,
+      {
+        uTime: { value: 0 },
+        uFrame: { value: 0 },
+        uResolution: { value: this.resolutionVector },
+        iChannel0: { value: null }
+      });
+
+
+    // NormalMap buffer
+    this.bufferNormalMap = new BufferShader(
+      VERT,
+      BUFFER_NORMALMAP_FRAG,
+      {
+        uResolution: { value: this.resolutionVector },
+        uHeightMap: { value: null }
       });
 
   }
@@ -70,14 +100,29 @@ class TextureMap {
     this.bufferMain.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture;
     this.targetMain.render(this.bufferMain.scene, this.orthoCamera);
 
-    // Save the result texture
+    // HeightMap buffer
+    this.bufferHeightMap.uniforms.uTime.value = props.time;
+    this.bufferHeightMap.uniforms.uFrame.value = this.counter;
+    this.bufferHeightMap.uniforms.uResolution.value = new THREE.Vector3(props.resolution, props.resolution, window.devicePixelRatio);
+    this.bufferHeightMap.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture;
+    this.targetHeightMap.render(this.bufferHeightMap.scene, this.orthoCamera);
+
+    // NormalMap buffer
+    this.bufferNormalMap.uniforms.uResolution.value = new THREE.Vector3(props.resolution, props.resolution, window.devicePixelRatio);
+    this.bufferNormalMap.uniforms.uHeightMap.value = this.targetHeightMap.readBuffer.texture;
+    this.targetNormalMap.render(this.bufferNormalMap.scene, this.orthoCamera);
+
+    // Save the result textures
     this.texture = this.targetMain.readBuffer.texture;
+    this.heightMapTexture = this.targetHeightMap.readBuffer.texture;
+    this.normalMapTexture = this.targetNormalMap.readBuffer.texture;
 
     // ToDo: Unify shaders and use just one time measurement
     this.counter = props.time*60.0;
   }
 
 
+  // This won't be used in the future
   updateResolution(res) {
     
     if (this.resolution != res) {
