@@ -188,7 +188,7 @@ vec4 map_sat(vec2 fragCoord) {
     }
     
     float vapour = texture(iChannel2, uv).w;
-    r.rgb = mix(r.rgb, vec3(1), 0.3 * clouds * log(1. + vapour) * smoothstep(0., LAND_END_TIME, uTime));
+    r.rgb = mix(r.rgb, vec3(1), 0.5 * clouds * log(1. + vapour) * smoothstep(0., LAND_END_TIME, uTime));
     return r;
 }
 
