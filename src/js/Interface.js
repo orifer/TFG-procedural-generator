@@ -35,7 +35,8 @@ class Interface {
         Plates: 1, 
         Rivers: 2,
         Flow: 3,
-        // Temperature: 4,
+        Temperature: 4,
+        Life: 5,
       };
       window.gui.add(this.app.planet, "displayTextureMap", selectedMapOptions).name("selectedMap").onChange(value => { this.app.planet.renderScene() });
       
