@@ -1,4 +1,6 @@
 // https://threejs.org/docs/#api/en/renderers/webgl/WebGLProgram
+// Inspired & based on David A. Robert's work <https://davidar.io>
+
 import COMMON from '../../shaders/textureMap/commonFrag.js';
 
 const fragmentShader = COMMON + /* glsl */ `
@@ -16,7 +18,7 @@ uniform float uTime; // Time in seconds since load
 uniform vec2 uResolution; // Canvas size (width,height)
 uniform int uDisplayTextureMap; // The map to show
 
-// Buffers
+// Texture channels from other buffers
 uniform sampler2D iChannel0;
 uniform sampler2D iChannel1;
 uniform sampler2D iChannel2;
@@ -25,8 +27,6 @@ uniform sampler2D iChannel3;
 ///////////////////////////////////////////////////////////////////////////////
 
 #define buf(p) textureLod(iChannel0,(p)/uResolution.xy,0.)
-
-#define CAMERA_DIST 25.
 
 #define DEEP_WATER vec4(0.01, 0.02, 0.08, 1)
 #define SHALLOW_WATER vec4(0.11, 0.28, 0.51, 1)

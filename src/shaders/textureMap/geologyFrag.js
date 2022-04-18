@@ -1,4 +1,7 @@
 // https://threejs.org/docs/#api/en/renderers/webgl/WebGLProgram
+// Plate tectonics and hydraulic erosion model
+// Inspired & based on David A. Robert's work <https://davidar.io>
+
 import COMMON from '../../shaders/textureMap/commonFrag.js';
 
 const fragmentShader = COMMON + /* glsl */ `
@@ -15,6 +18,8 @@ varying vec3 vPosition; // Vertex position
 uniform float uTime; // Time in seconds since load
 uniform float uFrame; // Frame number
 uniform vec3 uResolution; // Canvas size (width,height)
+
+// Texture channels from other buffers
 uniform sampler2D iChannel0;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -254,8 +259,4 @@ void main() {
 }
 
 
-
-
-
-`;
-export default fragmentShader;
+`; export default fragmentShader;

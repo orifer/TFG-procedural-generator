@@ -1,4 +1,6 @@
 // https://threejs.org/docs/#api/en/renderers/webgl/WebGLProgram
+// Inspired & based on David A. Robert's work <https://davidar.io>
+
 const fragmentShader = /* glsl */ `
 
 
