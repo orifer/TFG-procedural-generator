@@ -13,10 +13,10 @@ class Atmosphere {
 
     this.size = 0;
     this.densityFalloff = 10.;
-    this.opticalDepthPoints = 8.;
-    this.inScatterPoints = 8.;
+    this.opticalDepthPoints = 12.;
+    this.inScatterPoints = 12.;
     this.waveLengths = new THREE.Vector3(700, 530, 440);
-    this.scatteringStrength = 8.;
+    this.scatteringStrength = 32.;
 
     this.createScene();
   }
@@ -106,8 +106,8 @@ class Atmosphere {
       // If time is between 15 and 20, increase the size of the atmosphere progressively
       if (this.app.time > 15 && this.app.time < 20) {
         var increasingSpeed1 = 0.0005;
-        var increasingSpeed2 = 0.003;
-        this.size += Math.min( THREE.MathUtils.smoothstep(this.size, 0, 1) + increasingSpeed1, Utils.getRandomInt(0.0002, increasingSpeed2));
+        var increasingSpeed2 = 0.0008;
+        this.size += Math.min( THREE.MathUtils.smoothstep(this.size, 0, 1) + increasingSpeed1, Utils.getRandomInt(0.0001, increasingSpeed2));
       }
 
     }

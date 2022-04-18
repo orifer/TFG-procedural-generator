@@ -83,15 +83,17 @@ class Interface {
       matFolder.close();
     }
 
+
     createAtmosphereCategory() {
       let atmFolder = window.gui.addFolder('Atmosphere');
 
-      atmFolder.add(this.app.atmos, "size", 0.0, 5.0).listen();
+      atmFolder.add(this.app.atmos, "size", 0.0, 2.0).listen();
       atmFolder.add(this.app.atmos, "densityFalloff", -5.0, 50.0);
       atmFolder.add(this.app.atmos, "opticalDepthPoints", 0, 32, 1);
       atmFolder.add(this.app.atmos, "inScatterPoints", 0, 32, 1);
       atmFolder.add(this.app.atmos, "scatteringStrength", 0, 64);
 
+      // Wavelengths
       let waveFolder = atmFolder.addFolder('Wavelengths (nm)');
       waveFolder.add(this.app.atmos.waveLengths, "x").name("Red");
       waveFolder.add(this.app.atmos.waveLengths, "y").name("Green");
@@ -100,6 +102,7 @@ class Interface {
 
       atmFolder.close();
     }
+
 
     createDebugCategory() {
       let debugFolder = window.gui.addFolder('Debug');
