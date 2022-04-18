@@ -11,10 +11,12 @@ class Atmosphere {
     this.app = app;
     this.view = new THREE.Object3D();
 
-    this.size = 1;
+    this.size = 0;
     this.densityFalloff = 10.;
     this.opticalDepthPoints = 8.;
     this.inScatterPoints = 8.;
+    this.waveLengths = new THREE.Vector3(700, 530, 440);
+    this.scatteringStrength = 8.;
 
     this.createScene();
   }
@@ -48,6 +50,7 @@ class Atmosphere {
       densityFalloff: { value: this.densityFalloff },
       opticalDepthPoints: { value: this.opticalDepthPoints },
       inScatterPoints: { value: this.inScatterPoints },
+      scatteringCoefficients: { value: null },
     }
 
     this.material =  new THREE.ShaderMaterial({
@@ -85,8 +88,12 @@ class Atmosphere {
       this.material.uniforms.densityFalloff.value = this.densityFalloff;
       this.material.uniforms.opticalDepthPoints.value = this.opticalDepthPoints;
       this.material.uniforms.inScatterPoints.value = this.inScatterPoints;
-      
-  
+
+      var scatterR = Math.pow(400 / this.waveLengths.x, 4) * this.scatteringStrength;
+      var scatterG = Math.pow(400 / this.waveLengths.y, 4) * this.scatteringStrength;
+      var scatterB = Math.pow(400 / this.waveLengths.z, 4) * this.scatteringStrength;
+      var scatteringCoefficients = new THREE.Vector3(scatterR, scatterG, scatterB);
+      this.material.uniforms.scatteringCoefficients.value = scatteringCoefficients;
 
       // Render
       renderer.render( this._postScene, this._postCamera );

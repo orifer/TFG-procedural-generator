@@ -13,6 +13,7 @@ class Planet {
     this.view = new THREE.Object3D();
 
     this.resolution = 1024;
+    this.subdivisions = 128;
     this.size = 1;
 
     this.seedString = "Earth";
@@ -22,7 +23,7 @@ class Planet {
     this.roughness = 0.8;
     this.metalness = 0.5;
     this.normalScale = 1.0;
-    this.displacementScale = 0.0;
+    this.displacementScale = 0.004;
     this.wireframe = false;
     this.rotate = true;
 
@@ -40,7 +41,7 @@ class Planet {
   createScene() {
     this.textureMap = new TextureMap(this.app.renderer, this.resolution);
     this.material = new THREE.MeshStandardMaterial();
-    this.geo = new THREE.SphereGeometry( this.size, 256, 256 );
+    this.geo = new THREE.SphereGeometry( this.size, this.subdivisions, this.subdivisions );
     this.ground = new THREE.Mesh(this.geo, this.material);
     
     // Add to main scene
@@ -85,45 +86,6 @@ class Planet {
   }
 
 
-  updatePlanetName() {
-    let planetName = document.getElementById("planetName");
-    if (planetName != null) {
-      planetName.innerHTML = this.seedString;
-    }
-  }
-
-
-  initSeed() {
-    // https://github.com/davidbau/seedrandom 
-    window.rng = new Math.seedrandom(this.seedString);
-    this.seed = Utils.getRandomInt(0, 1) * 1000.0;
-    // WIP 
-  }
-
-
-  switchGeometry() {    
-    if (this.geo.type == 'SphereGeometry') {
-      this.geo = new THREE.PlaneGeometry( 1024*8, 1024*4 );
-      this.app.ambientLight.intensity = 1.8
-      this.app.directionalLight.intensity = 0.
-      this.rotate = false
-    } else if (this.geo.type == 'PlaneGeometry') {
-      this.geo = new THREE.SphereGeometry( this.size, 256, 256 );
-      this.app.ambientLight.intensity = 0.04
-      this.app.directionalLight.intensity = 1.2
-    }
-
-    this.ground.geometry.dispose()
-    this.ground.geometry = this.geo
-  }
-
-
-  randomize() {
-    this.seedString = new String(Math.floor(100000 + Math.random() * 900000));
-    this.renderScene();
-  }
-
-
   updateMaterial() {      
     this.material.roughness = this.roughness;
     this.material.metalness = this.metalness;
@@ -155,14 +117,56 @@ class Planet {
 
     this.material.needsUpdate = true;
   }
-  
+
+
+  switchGeometry() {
+    if (this.geo.type == 'SphereGeometry') {
+      this.geo = new THREE.PlaneGeometry( 6, 3 );
+      this.app.ambientLight.intensity = 1.6
+      this.app.directionalLight.intensity = 0.
+      this.rotate = false
+    } else if (this.geo.type == 'PlaneGeometry') {
+      this.geo = new THREE.SphereGeometry( this.size, this.subdivisions, this.subdivisions );
+      this.app.ambientLight.intensity = 0.04
+      this.app.directionalLight.intensity = 1.
+    }
+
+    this.ground.geometry.dispose()
+    this.ground.geometry = this.geo
+  }
+
+
+  updateGeometry() {
+    this.geo = new THREE.SphereGeometry( this.size, this.subdivisions, this.subdivisions );
+    this.ground.geometry.dispose()
+    this.ground.geometry = this.geo
+  }
+
+
+  updatePlanetName() {
+    let planetName = document.getElementById("planetName");
+    if (planetName != null) {
+      planetName.innerHTML = this.seedString;
+    }
+  }
+
+
+  initSeed() {
+    // https://github.com/davidbau/seedrandom 
+    window.rng = new Math.seedrandom(this.seedString);
+    this.seed = Utils.getRandomInt(0, 1) * 1000.0;
+    // WIP 
+  }
+
+
+  randomize() {
+    this.seedString = new String(Math.floor(100000 + Math.random() * 900000));
+    this.renderScene();
+  }
+
 
   updateNormalScaleForRes(value) {
-    if (value == 256) this.normalScale = 0.25;
-    if (value == 512) this.normalScale = 0.5;
-    if (value == 1024) this.normalScale = 0.2;
-    if (value == 2048) this.normalScale = 0.7;
-    if (value == 4096) this.normalScale = 0.8;
+    this.normalScale = value * 0.0002;
   }
 
   

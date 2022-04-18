@@ -31,8 +31,9 @@ const atmosFrag = /* glsl */ `
     uniform float densityFalloff;
     uniform float opticalDepthPoints;
     uniform float inScatterPoints;
+    uniform vec3  scatteringCoefficients;
 
-
+    
 // ################################################################
 // ||                         FUNCTIONS                          ||
 // ################################################################
@@ -101,25 +102,26 @@ const atmosFrag = /* glsl */ `
     }
 
 
-    float calculateLight(vec3 rayOrigin, vec3 rayDir, float rayLength) {
+    vec3 calculateLight(vec3 rayOrigin, vec3 rayDir, float rayLength, vec3 originalCol) {
         vec3 dirToSun = normalize(sunPosition);
         vec3 inScatterPoint = rayOrigin;
         float stepSize = rayLength / (inScatterPoints - 1.0);
-        float inScatteredLight = 0.0;
+        vec3 inScatteredLight = vec3(0.0);
+        float viewRayOpticalDepth = 0.0;
 
         for (float i = 0.; i < inScatterPoints; i++) {
             // Ray to atmosphere
             float sunRayLength = raySphere(planetPosition, atmosphereRadius, inScatterPoint, dirToSun).y;
             float sunRayOpticalDepth = opticalDepth(inScatterPoint, dirToSun, sunRayLength);
-            float viewRayOpticalDepth = opticalDepth(inScatterPoint, -rayDir, stepSize * i);
-            float transmittance = exp(-(sunRayOpticalDepth + viewRayOpticalDepth));
+            viewRayOpticalDepth = opticalDepth(inScatterPoint, -rayDir, stepSize * i);
+            vec3 transmittance = exp(-(sunRayOpticalDepth + viewRayOpticalDepth) * scatteringCoefficients);
             float localDensity = densityAtPoint(inScatterPoint);
 
-            inScatteredLight += localDensity * transmittance * stepSize;
+            inScatteredLight += localDensity * transmittance * scatteringCoefficients * stepSize;
             inScatterPoint += rayDir * stepSize;
         }
-
-        return inScatteredLight;
+        float originalColTransmittance = exp(-viewRayOpticalDepth);
+        return originalCol * originalColTransmittance + inScatteredLight;
     }
 
 
@@ -152,8 +154,8 @@ const atmosFrag = /* glsl */ `
         if (dstThroughAtmosphere > 0.0) {
             float epsilon = 0.0001; // This is for removing the noise artifacts caused by precision issues
             vec3 pointInAtmosphere = rayOrigin + rayDirection * (dstToAtmosphere + epsilon);
-            float light = calculateLight(pointInAtmosphere, rayDirection, dstThroughAtmosphere - epsilon * 2.);
-            gl_FragColor = originalCol * (1.0 - light) + light;
+            vec3 light = calculateLight(pointInAtmosphere, rayDirection, dstThroughAtmosphere - epsilon * 2., originalCol.xyz);
+            gl_FragColor = vec4(light, 0.0);
         }
 
     }
