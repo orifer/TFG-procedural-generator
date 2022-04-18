@@ -13,8 +13,8 @@ class Atmosphere {
 
     this.size = 0;
     this.densityFalloff = 10.;
-    this.opticalDepthPoints = 12.;
-    this.inScatterPoints = 12.;
+    this.opticalDepthPoints = 8.;
+    this.inScatterPoints = 8.;
     this.waveLengths = new THREE.Vector3(700, 530, 440);
     this.scatteringStrength = 32.;
 
