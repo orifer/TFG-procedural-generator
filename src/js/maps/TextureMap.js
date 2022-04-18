@@ -5,6 +5,9 @@ import BufferShader from '../../shaders/BufferShader.js';
 
 import BUFFER_MAIN_FRAG from '../../shaders/textureMap/mainFrag.js';
 import BUFFER_GEO_FRAG from '../../shaders/textureMap/geologyFrag.js'
+import BUFFER_CIRCULATION_FRAG from '../../shaders/textureMap/circulationFrag.js'
+import BUFFER_WIND_FRAG from '../../shaders/textureMap/windFrag.js'
+import BUFFER_SOIL_FRAG from '../../shaders/textureMap/soilFrag.js'
 import BUFFER_HEIGHTMAP_FRAG from '../../shaders/heightMap/heightMapFrag.js';
 import BUFFER_NORMALMAP_FRAG from '../../shaders/normalMap/normalMapFrag.js';
 
@@ -27,6 +30,9 @@ class TextureMap {
     // Targets
     this.targetMain = new BufferManager(this.renderer, { width: this.resolution, height: this.resolution });
     this.targetGeo = new BufferManager(this.renderer, { width: this.resolution, height: this.resolution });
+    this.targetCirculation = new BufferManager(this.renderer, { width: this.resolution, height: this.resolution });
+    this.targetWind = new BufferManager(this.renderer, { width: this.resolution, height: this.resolution });
+    this.targetSoil = new BufferManager(this.renderer, { width: this.resolution, height: this.resolution });
     this.targetHeightMap = new BufferManager(this.renderer, { width: this.resolution, height: this.resolution });
     this.targetNormalMap = new BufferManager(this.renderer, { width: this.resolution, height: this.resolution });
 
@@ -56,6 +62,49 @@ class TextureMap {
         uFrame: { value: 0 },
         uResolution: { value: this.resolutionVector },
         iChannel0: { value: null }
+      });
+
+
+    // Circulation buffer
+    this.bufferCirculation = new BufferShader(
+      VERT,
+      BUFFER_CIRCULATION_FRAG,
+      {
+        uTime: { value: 0 },
+        uFrame: { value: 0 },
+        uResolution: { value: this.resolutionVector },
+        iChannel0: { value: null },
+        iChannel1: { value: null },
+      });
+
+
+    // Wind buffer
+    this.bufferWind = new BufferShader(
+      VERT,
+      BUFFER_WIND_FRAG,
+      {
+        uTime: { value: 0 },
+        uFrame: { value: 0 },
+        uResolution: { value: this.resolutionVector },
+        iChannel0: { value: null },
+        iChannel1: { value: null },
+        iChannel2: { value: null },
+        iChannel3: { value: null },
+      });
+
+
+    // Soil buffer
+    this.bufferSoil = new BufferShader(
+      VERT,
+      BUFFER_SOIL_FRAG,
+      {
+        uTime: { value: 0 },
+        uFrame: { value: 0 },
+        uResolution: { value: this.resolutionVector },
+        iChannel0: { value: null },
+        iChannel1: { value: null },
+        iChannel2: { value: null },
+        iChannel3: { value: null },
       });
 
 
@@ -92,12 +141,43 @@ class TextureMap {
     this.bufferGeo.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture;
     this.targetGeo.render(this.bufferGeo.scene, this.orthoCamera);
 
+    // Circulation buffer
+    this.bufferCirculation.uniforms.uTime.value = props.time;
+    this.bufferCirculation.uniforms.uFrame.value = this.counter;
+    this.bufferCirculation.uniforms.uResolution.value = new THREE.Vector3(props.resolution, props.resolution, window.devicePixelRatio);
+    this.bufferCirculation.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture;
+    this.bufferCirculation.uniforms.iChannel1.value = this.targetCirculation.readBuffer.texture;
+    this.targetCirculation.render(this.bufferCirculation.scene, this.orthoCamera);
+
+    // Wind buffer
+    this.bufferWind.uniforms.uTime.value = props.time;
+    this.bufferWind.uniforms.uFrame.value = this.counter;
+    this.bufferWind.uniforms.uResolution.value = new THREE.Vector3(props.resolution, props.resolution, window.devicePixelRatio);
+    this.bufferWind.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture;
+    this.bufferWind.uniforms.iChannel1.value = this.targetCirculation.readBuffer.texture;
+    this.bufferWind.uniforms.iChannel2.value = this.targetWind.readBuffer.texture;
+    this.bufferWind.uniforms.iChannel3.value = this.targetSoil.readBuffer.texture;
+    this.targetWind.render(this.bufferWind.scene, this.orthoCamera);
+
+    // Soil buffer
+    this.bufferSoil.uniforms.uTime.value = props.time;
+    this.bufferSoil.uniforms.uFrame.value = this.counter;
+    this.bufferSoil.uniforms.uResolution.value = new THREE.Vector3(props.resolution, props.resolution, window.devicePixelRatio);
+    this.bufferSoil.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture;
+    this.bufferSoil.uniforms.iChannel1.value = this.targetCirculation.readBuffer.texture;
+    this.bufferSoil.uniforms.iChannel2.value = this.targetWind.readBuffer.texture;
+    this.bufferSoil.uniforms.iChannel3.value = this.targetSoil.readBuffer.texture;
+    this.targetSoil.render(this.bufferSoil.scene, this.orthoCamera);
+
     // Main buffer
     this.bufferMain.uniforms.uTime.value = props.time;
     this.bufferMain.uniforms.uFrame.value = this.counter;
     this.bufferMain.uniforms.uResolution.value = new THREE.Vector3(props.resolution, props.resolution, window.devicePixelRatio);
     this.bufferMain.uniforms.uDisplayTextureMap.value = props.displayTextureMap;
     this.bufferMain.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture;
+    this.bufferMain.uniforms.iChannel1.value = this.targetCirculation.readBuffer.texture;
+    this.bufferMain.uniforms.iChannel2.value = this.targetWind.readBuffer.texture;
+    this.bufferMain.uniforms.iChannel3.value = this.targetSoil.readBuffer.texture;
     this.targetMain.render(this.bufferMain.scene, this.orthoCamera);
 
     // HeightMap buffer
