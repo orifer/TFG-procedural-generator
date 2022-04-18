@@ -72,7 +72,7 @@ class Planet {
   update() {
     if (this.app.playing) {
       if (this.rotate) {
-        this.ground.rotation.y += 0.001;  
+        this.ground.rotation.y -= 0.001;
       }
 
 
