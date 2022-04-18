@@ -7,10 +7,6 @@ const atmosFrag = /* glsl */ `
 // ################################################################
 // ||                   VARIABLES & QUALIFIERS                   ||
 // ################################################################    
-
-
-    #define OPTICAL_DEPTH_POINTS 16.
-    #define IN_SCATTER_POINTS 8.
     
     #define FLT_MAX 3.402823466e+38
 
@@ -22,20 +18,25 @@ const atmosFrag = /* glsl */ `
 
     uniform sampler2D tDiffuse;
     uniform sampler2D tDepth;
+
     uniform mat4 inverseProjection;
     uniform mat4 inverseView;
 
     uniform vec3 sunPosition;
+
     uniform vec3 planetPosition;
     uniform float planetRadius;
-    uniform float atmosphereRadius;
 
+    uniform float atmosphereRadius;
     uniform float densityFalloff;
+    uniform float opticalDepthPoints;
+    uniform float inScatterPoints;
 
 
 // ################################################################
 // ||                         FUNCTIONS                          ||
 // ################################################################
+
 
     // Convert screen coordinates to world coordinates
     vec3 _ScreenToWorld(vec3 pos) {
@@ -87,10 +88,10 @@ const atmosFrag = /* glsl */ `
     // Calculates the average density of the atmosphere along a ray
     float opticalDepth(vec3 rayOrigin, vec3 rayDir, float rayLength) {
         vec3 densitySamplePoint = rayOrigin;
-        float stepSize = rayLength / (OPTICAL_DEPTH_POINTS -1.0);
+        float stepSize = rayLength / (opticalDepthPoints -1.0);
         float opticalDepth = 0.0;
 
-        for (float i = 0.; i < OPTICAL_DEPTH_POINTS; i++) {
+        for (float i = 0.; i < opticalDepthPoints; i++) {
             float localDensity = densityAtPoint(densitySamplePoint);
             opticalDepth += localDensity * stepSize;
             densitySamplePoint += rayDir * stepSize;
@@ -103,10 +104,10 @@ const atmosFrag = /* glsl */ `
     float calculateLight(vec3 rayOrigin, vec3 rayDir, float rayLength) {
         vec3 dirToSun = normalize(sunPosition);
         vec3 inScatterPoint = rayOrigin;
-        float stepSize = rayLength / (IN_SCATTER_POINTS - 1.0);
+        float stepSize = rayLength / (inScatterPoints - 1.0);
         float inScatteredLight = 0.0;
 
-        for (float i = 0.; i < IN_SCATTER_POINTS; i++) {
+        for (float i = 0.; i < inScatterPoints; i++) {
             // Ray to atmosphere
             float sunRayLength = raySphere(planetPosition, atmosphereRadius, inScatterPoint, dirToSun).y;
             float sunRayOpticalDepth = opticalDepth(inScatterPoint, dirToSun, sunRayLength);

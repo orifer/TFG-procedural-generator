@@ -13,6 +13,9 @@ class Atmosphere {
 
     this.size = 1;
     this.densityFalloff = 10.;
+    this.opticalDepthPoints = 8.;
+    this.inScatterPoints = 8.;
+
     this.createScene();
   }
 
@@ -43,6 +46,8 @@ class Atmosphere {
       atmosphereRadius: { value: null },
       sunPosition: { value: this.app.sun.position },
       densityFalloff: { value: this.densityFalloff },
+      opticalDepthPoints: { value: this.opticalDepthPoints },
+      inScatterPoints: { value: this.inScatterPoints },
     }
 
     this.material =  new THREE.ShaderMaterial({
@@ -60,26 +65,32 @@ class Atmosphere {
   }
 
   render() {
-    
     if (this.size) {
+
       // First, render the main scene
       renderer.setRenderTarget(this._target);
       renderer.render(this.app.scene, this.app.camera);
       renderer.setRenderTarget( null );
 
+
       // Update uniform values
-      this.material.uniforms.inverseProjection.value = this.app.camera.projectionMatrixInverse;
-      this.material.uniforms.inverseView.value = this.app.camera.matrixWorld;
       this.material.uniforms.tDiffuse.value = this._target.texture;
       this.material.uniforms.tDepth.value = this._target.depthTexture;
+
+      this.material.uniforms.inverseProjection.value = this.app.camera.projectionMatrixInverse;
+      this.material.uniforms.inverseView.value = this.app.camera.matrixWorld;
       this.material.uniforms.cameraPosition.value = this.app.camera.position;
-      this.material.uniforms.atmosphereRadius.value = this.app.planet.size + this.size;
+
+      this.material.uniforms.atmosphereRadius.value = (1 + this.size) * this.app.planet.size;
       this.material.uniforms.densityFalloff.value = this.densityFalloff;
+      this.material.uniforms.opticalDepthPoints.value = this.opticalDepthPoints;
+      this.material.uniforms.inScatterPoints.value = this.inScatterPoints;
+      
   
+
       // Render
       renderer.render( this._postScene, this._postCamera );
     }
-
   }
 
   update() {
