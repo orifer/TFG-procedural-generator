@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import fragmentShader from '../shaders/atmosphere/atmosFrag.js'
-import vertexShader from '../shaders/atmosphere/atmosVertex.js'
-import Utils from './Utils.js';
+import vertexShader from '../shaders/vertexShader.js'
+import Utils from '../js/Utils.js';
 
 class Atmosphere {
 
@@ -11,14 +11,15 @@ class Atmosphere {
     this.app = app;
     this.view = new THREE.Object3D();
 
-    this.size = 0;
+    this.size = 1;
+    this.densityFalloff = 10.;
     this.createScene();
   }
 
   createScene() {
 
     this._target = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
-    // this._target.texture.minFilter = THREE.NearestFilter;
+    this._target.texture.minFilter = THREE.NearestFilter;
     this._target.texture.magFilter = THREE.NearestFilter;
     this._target.texture.generateMipmaps = false;
     this._target.stencilBuffer = false;
@@ -26,8 +27,6 @@ class Atmosphere {
     this._target.depthTexture = new THREE.DepthTexture();
     this._target.depthTexture.format = THREE.DepthFormat;
     this._target.depthTexture.type = THREE.FloatType;
-
-    window.renderer.setRenderTarget(this._target);
 
     this._postCamera = new THREE.OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
 
@@ -39,10 +38,11 @@ class Atmosphere {
       tDepth: { value: null },
       inverseProjection: { value: null },
       inverseView: { value: null },
-      planetPosition: { value: null },
-      planetRadius: { value: null },
+      planetPosition: { value: new THREE.Vector3(0, 0, 0) },
+      planetRadius: { value: this.app.planet.size },
       atmosphereRadius: { value: null },
       sunPosition: { value: this.app.sun.position },
+      densityFalloff: { value: this.densityFalloff },
     }
 
     this.material =  new THREE.ShaderMaterial({
@@ -60,25 +60,21 @@ class Atmosphere {
   }
 
   render() {
-    // Workaround for rendering the post processing scene
-    renderer.setRenderTarget(this._target);
-    renderer.render(this.app.scene, this.app.camera);
-    renderer.setRenderTarget( null );
-
+    
     if (this.size) {
+      // First, render the main scene
+      renderer.setRenderTarget(this._target);
+      renderer.render(this.app.scene, this.app.camera);
+      renderer.setRenderTarget( null );
 
       // Update uniform values
       this.material.uniforms.inverseProjection.value = this.app.camera.projectionMatrixInverse;
       this.material.uniforms.inverseView.value = this.app.camera.matrixWorld;
       this.material.uniforms.tDiffuse.value = this._target.texture;
       this.material.uniforms.tDepth.value = this._target.depthTexture;
-      this.material.uniforms.cameraNear.value = this.app.camera.near;
-      this.material.uniforms.cameraFar.value = this.app.camera.far;
       this.material.uniforms.cameraPosition.value = this.app.camera.position;
-      this.material.uniforms.planetPosition.value = new THREE.Vector3(0, 0, 0);
-      this.material.uniforms.planetRadius.value = this.app.planet.size;
       this.material.uniforms.atmosphereRadius.value = this.app.planet.size + this.size;
-      this.material.uniformsNeedUpdate = true;
+      this.material.uniforms.densityFalloff.value = this.densityFalloff;
   
       // Render
       renderer.render( this._postScene, this._postCamera );
@@ -89,11 +85,11 @@ class Atmosphere {
   update() {
     if (this.app.playing) {
 
-      // If time is between 5 and 20, increase the size of the atmosphere progressively
-      if (this.app.time > 5 && this.app.time < 20) {
-        var increasingSpeed1 = 0.0001;
-        var increasingSpeed2 = 0.3;
-        this.size += Math.min( THREE.MathUtils.smoothstep(this.size, 0, 1) + increasingSpeed1, Utils.getRandomInt(0.01, increasingSpeed2));
+      // If time is between 15 and 20, increase the size of the atmosphere progressively
+      if (this.app.time > 15 && this.app.time < 20) {
+        var increasingSpeed1 = 0.0005;
+        var increasingSpeed2 = 0.003;
+        this.size += Math.min( THREE.MathUtils.smoothstep(this.size, 0, 1) + increasingSpeed1, Utils.getRandomInt(0.0002, increasingSpeed2));
       }
 
     }

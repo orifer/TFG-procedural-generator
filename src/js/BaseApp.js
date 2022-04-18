@@ -11,10 +11,10 @@ class BaseApp {
         // Camera
         const fov = 35;
         const aspect = window.innerWidth / window.innerHeight;
-        const near = 10;
-        const far = 9999999.0;
+        const near = 0.1;
+        const far = 999999.0;
         this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-        this.camera.position.z = 10000;
+        this.camera.position.z = 5;
         window.camera = this.camera;
 
         // Main scene

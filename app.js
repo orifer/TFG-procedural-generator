@@ -15,7 +15,7 @@ export default class app extends BaseApp {
 
         this.sun = new Sun(this);
         this.planet = new Planet(this);
-        // this.atmos = new Atmosphere(this);
+        this.atmos = new Atmosphere(this);
         this.stars = new Stars(this);
 
         // Interface (GUI)
@@ -32,7 +32,7 @@ export default class app extends BaseApp {
         }
         
         this.planet.update();
-        // this.atmos.update();
+        this.atmos.update();
         this.sun.update();       
     }
 

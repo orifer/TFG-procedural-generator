@@ -13,7 +13,7 @@ class Planet {
     this.view = new THREE.Object3D();
 
     this.resolution = 1024;
-    this.size = 2048;
+    this.size = 1;
 
     this.seedString = "Earth";
     this.initSeed();
@@ -22,7 +22,7 @@ class Planet {
     this.roughness = 0.8;
     this.metalness = 0.5;
     this.normalScale = 1.0;
-    this.displacementScale = 30.0;
+    this.displacementScale = 0.0;
     this.wireframe = false;
     this.rotate = true;
 

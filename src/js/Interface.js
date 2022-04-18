@@ -85,7 +85,8 @@ class Interface {
     createAtmosphereCategory() {
       let atmFolder = window.gui.addFolder('Atmosphere');
 
-      atmFolder.add(this.app.atmos, "size", 0.0, 1000.0).listen();
+      atmFolder.add(this.app.atmos, "size", 0.0, 10.0).listen();
+      atmFolder.add(this.app.atmos, "densityFalloff", -5.0, 50.0);
 
       atmFolder.close();
     }
