@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'https://unpkg.com/three@0.139/examples/jsm/controls/OrbitControls.js';
 import Stats from "https://unpkg.com/three@0.139/examples/jsm/libs/stats.module";
-import { Vector3 } from 'three';
 
 
 class BaseApp {
@@ -57,10 +56,35 @@ class BaseApp {
         this.controls.autoRotateSpeed = 2.0;
         this.controls.zoomSpeed = 0.2;
 
+        // Mouse
+        this.raycaster = new THREE.Raycaster();
+        this.pointer = new THREE.Vector2();
+        this.pointerLeft = false;
+        this.pointerRight = false;
+
         // Events
-        window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
+        window.addEventListener( 'resize', this.onWindowResize.bind(this));
+        window.addEventListener( 'pointermove', this.onPointerMove.bind(this));
+        window.addEventListener( 'pointerup', this.onPointerUp.bind(this));
+        window.addEventListener( 'pointerdown', this.onPointerDown.bind(this));
     }
 
+    onPointerMove( event ) {
+        // calculate pointer position in normalized device coordinates
+        // (-1 to +1) for both components
+        this.pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        this.pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    }
+
+    onPointerDown( event ) {
+        // Left mouse button is down
+        if (event.button === 0) this.mouseClick = true;
+    }
+
+    onPointerUp( event ) {
+        // Left mouse button is up
+        if (event.button === 0) this.mouseClick = false;
+    }
 
     onWindowResize() {
         // Update camera
@@ -76,6 +100,11 @@ class BaseApp {
         requestAnimationFrame( this.render.bind(this) );
         this.controls.update();
         this.stats.update()
+
+        // Update the picking ray with the camera and pointer position
+	    this.raycaster.setFromCamera( this.pointer, this.camera );
+
+        // Render scene
         this.renderer.render( this.scene, this.camera );
     }
 

@@ -18,6 +18,11 @@ varying vec3 vPosition; // Vertex position
 uniform float uTime; // Time in seconds since load
 uniform float uFrame; // Frame number
 uniform vec3 uResolution; // Canvas size (width,height)
+uniform vec2 uMouse; // Mouse position (width,height)
+uniform bool uMouseClick; // True if mouse is pressed
+uniform bool uAddingTerrain; // True if adding terrain
+uniform bool uRemovingTerrain; // True if removing terrain
+
 
 // Texture channels from other buffers
 uniform sampler2D iChannel0;
@@ -252,6 +257,14 @@ void main() {
     } else if (uTime < TECTONICS_END_TIME || uTime > STORY_END_TIME) {
         gl_FragColor.y = max(gl_FragColor.y - 1e-4, 0.);
     }
+
+    // Terraforming
+    float brushSize = 20.; // ToDo: make this a parameter
+    vec2 r = (p - (uMouse.xy*uResolution.xy)) / brushSize;
+    float magnitude = 0.;
+    if (uAddingTerrain) magnitude = 0.5 * exp(-0.5 * dot(r,r));
+    else if (uRemovingTerrain) magnitude = -1. * (0.5 * exp(-0.5 * dot(r,r)));
+    if (uMouseClick) gl_FragColor.z += magnitude;
     
     
     gl_FragColor.y = clamp(gl_FragColor.y, 0., 1.);

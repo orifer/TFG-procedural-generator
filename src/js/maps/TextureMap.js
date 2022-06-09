@@ -61,7 +61,11 @@ class TextureMap {
         uTime: { value: 0 },
         uFrame: { value: 0 },
         uResolution: { value: this.resolutionVector },
-        iChannel0: { value: null }
+        uMouse: { value: new THREE.Vector2(0, 0) },
+        uMouseClick: { value: false },
+        uAddingTerrain: { value: false },
+        uRemovingTerrain: { value: false },
+        iChannel0: { value: null },
       });
 
 
@@ -139,6 +143,10 @@ class TextureMap {
     this.bufferGeo.uniforms.uFrame.value = this.counter;
     this.bufferGeo.uniforms.uResolution.value = new THREE.Vector3(props.resolution, props.resolution, window.devicePixelRatio);
     this.bufferGeo.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture;
+    this.bufferGeo.uniforms.uMouse.value = props.mouse;
+    this.bufferGeo.uniforms.uMouseClick.value = props.mouseClick.value;
+    this.bufferGeo.uniforms.uAddingTerrain.value = props.addingTerrain.value;
+    this.bufferGeo.uniforms.uRemovingTerrain.value = props.removingTerrain.value;
     this.targetGeo.render(this.bufferGeo.scene, this.orthoCamera);
 
     // Circulation buffer

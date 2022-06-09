@@ -11,23 +11,25 @@ class Interface {
       // Create the GUI
       window.gui = new GUI({ autoPlace: false });
 
+      // Load the panels
       this.createRightPanel();
-      if (app.planet) this.createPlanetCategory();
-      if (app.atmos)  this.createAtmosphereCategory();
-      if (app.planet) this.createDebugCategory();
-      if (app.camera) this.createCameraCategory();
+      this.createPlanetCategory();
+      this.createAtmosphereCategory();
+      this.createDebugCategory();
+      this.createCameraCategory();
+      this.createBottomPanel();
+      this.createLeftPanel();
 
-      if (app.planet) {
-        
-        // Load the planet name
-        this.app.planet.updatePlanetName();
-  
-        // Resolution
-        window.gui.add(this.app.planet, "resolution", [256, 512, 1024, 2048, 4096]).name("Resolution").onChange(value => { this.app.planet.renderScene() });
-  
-        // Seed
-        window.gui.add(this.app.planet, "seedString").listen().onFinishChange(value => { this.app.planet.renderScene() }).name("Seed");
-      }
+
+      // Load the planet name
+      this.app.planet.updatePlanetName();
+
+      // Resolution
+      window.gui.add(this.app.planet, "resolution", [256, 512, 1024, 2048, 4096]).name("Resolution").onChange(value => { this.app.planet.renderScene() });
+
+      // Seed
+      window.gui.add(this.app.planet, "seedString").listen().onFinishChange(value => { this.app.planet.renderScene() }).name("Seed");
+    
 
       // Map visualization
       var selectedMapOptions  = { 
@@ -42,9 +44,6 @@ class Interface {
       
       // Time
       window.gui.add(this.app, "time", 0., 60.).listen();
-
-      // Play/stop simulation
-      window.gui.add(this.app, "playing").name("Play/Stop");
 
       // New planet button
       window.gui.add(this.app.planet, "randomize").name("New planet");
@@ -120,6 +119,80 @@ class Interface {
       cameraFolder.add(this.app.controls, "autoRotate").name('Rotate');
       cameraFolder.add(this.app.camera, "fov", 20, 120).name("FOV").onChange(value => { this.app.camera.updateProjectionMatrix() });
       cameraFolder.close();
+    }
+
+
+    createBottomPanel() {
+      // Main container
+      let bottomPanelHolder = document.createElement("div");
+      bottomPanelHolder.setAttribute("id", "bottomPanelHolder");
+      document.body.appendChild(bottomPanelHolder);
+  
+      // Play/stop simulation
+      let playButton = document.createElement("div");
+      playButton.setAttribute("id", "playButton");
+      playButton.innerHTML = "<button class='btn'><i class='fa-solid fa-play fa-3x'></i></button>";
+      playButton.addEventListener("click", () => {
+        if (this.app.playing) {
+          this.app.playing = false;
+          playButton.innerHTML = "<button class='btn'><i class='fa-solid fa-play fa-3x'></i></button>";
+        } else {
+          this.app.playing = true;
+          playButton.innerHTML = "<button class='btn'><i class='fa-solid fa-pause fa-3x'></i></button>";
+        }
+      });
+      bottomPanelHolder.appendChild(playButton);
+    }
+
+
+    createLeftPanel() {
+      // Main container
+      let leftPanelHolder = document.createElement("div");
+      leftPanelHolder.setAttribute("id", "leftPanelHolder");
+      document.body.appendChild(leftPanelHolder);
+
+      // Add Terrain
+      let addTerrainButton = document.createElement("div");
+      addTerrainButton.setAttribute("id", "addTerrainButton");
+      addTerrainButton.innerHTML = "<button title='Pujar terreny' class='btn'><i class='fa-solid fa-paintbrush fa-2x'></i></button>";
+      this.app.addingTerrain = false;
+      addTerrainButton.addEventListener("click", () => {
+        if (this.app.addingTerrain) {
+          this.app.addingTerrain = false;
+          addTerrainButton.innerHTML = "<button class='btn'><i class='fa-solid fa-paintbrush fa-2x'></i></button>";
+          this.app.controls.enabled = true;
+        } else {
+          this.app.addingTerrain = true;
+          this.app.removingTerrain = false;
+          addTerrainButton.innerHTML = "<button class='btn active'><i class='fa-solid fa-ban fa-2x'></i></button>";
+          delTerrainButton.innerHTML = "<button class='btn'><i class='fa-solid fa-eraser fa-2x'></i></button>";
+          this.app.controls.enabled = false;
+        }
+      });
+      leftPanelHolder.appendChild(addTerrainButton);
+
+      // Remove Terrain
+      let delTerrainButton = document.createElement("div");
+      delTerrainButton.setAttribute("id", "delTerrainButton");
+      delTerrainButton.innerHTML = "<button title='Baixar terreny' class='btn'><i class='fa-solid fa-eraser fa-2x'></i></button>";
+      this.app.removingTerrain = false;
+      delTerrainButton.addEventListener("click", () => {
+        if (this.app.removingTerrain) {
+          this.app.removingTerrain = false;
+          delTerrainButton.innerHTML = "<button class='btn'><i class='fa-solid fa-eraser fa-2x'></i></button>";
+          this.app.controls.enabled = true;
+        } else {
+          this.app.removingTerrain = true;
+          this.app.addingTerrain = false;
+          addTerrainButton.innerHTML = "<button class='btn'><i class='fa-solid fa-paintbrush fa-2x'></i></button>";
+          delTerrainButton.innerHTML = "<button class='btn active'><i class='fa-solid fa-ban fa-2x'></i></button>";
+          this.app.controls.enabled = false;
+        }
+      });
+      leftPanelHolder.appendChild(delTerrainButton);
+
+
+      
     }
 
 }

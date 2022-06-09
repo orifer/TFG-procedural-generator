@@ -32,6 +32,9 @@ class Planet {
 
     // Map to display
     this.displayMap = "textureMap";
+
+    // Mouse position on planet
+    this.mouseIntersectUV = new THREE.Vector2(0, 0);
     
     this.createScene();
     this.renderScene();
@@ -60,6 +63,10 @@ class Planet {
       time: this.app.time,
       resolution: this.resolution,
       displayTextureMap: this.displayTextureMap,
+      mouse: this.mouseIntersectUV,
+      mouseClick: { value: false },
+      addingTerrain: { value: false },
+      removingTerrain: { value: false },
     });
     
     this.heightMap = this.textureMap.heightMapTexture;
@@ -75,13 +82,24 @@ class Planet {
         this.ground.rotation.y -= 0.001;
       }
 
-
-      // Actualizar shader
+      // Update shader
       this.textureMap.render({
         time: this.app.time,
         resolution: this.resolution,
-        displayTextureMap: this.displayTextureMap
+        displayTextureMap: this.displayTextureMap,
+        mouse: this.mouseIntersectUV,
+        mouseClick: { value: this.app.mouseClick },
+        addingTerrain: { value: this.app.addingTerrain },
+        removingTerrain: { value: this.app.removingTerrain },
       });
+
+      // Calculate objects intersecting the picking ray via raycasting
+      const intersects = this.app.raycaster.intersectObjects( this.app.scene.children );
+      for ( let i = 0; i < intersects.length; i ++ ) {
+        if (intersects[i].object == this.ground) {
+          this.mouseIntersectUV = intersects[i].uv;
+        }
+      }
     }
   }
 
