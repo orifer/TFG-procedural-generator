@@ -63,8 +63,8 @@ float SmoothNoise( vec3 p ) {
 
 // Credits to uqone https://www.shadertoy.com/view/WdX3D4
 vec3 getStars(in vec3 from, in vec3 dir, float power) {
-	float scale = 1024.;
-	float density = 16.;
+	float scale = 2048.;
+	float density = 20.;
 	vec3 color = vec3(pow(SmoothNoise(dir*scale), density));
 	return pow(color*2.25, vec3(power));
 }
