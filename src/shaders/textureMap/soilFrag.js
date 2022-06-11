@@ -96,55 +96,9 @@ void main() {
     moisture = clamp(moisture, 0., 5.);
     if (height == 0.) moisture = 5.;
     
+    // ToDo: Repasar esto para ver si se puede borrar
     if (uTime < OCEAN_END_TIME) {
         c.xyz = hash32(fragCoord) * vec3(0.5, 1., 2.);
-    } else if(height > 0.) {
-        float reproduction = 2. + clamp(temp, -15., 15.)/30.;
-        // easier for prey to evade predators at higher altitudes which tend to have more hiding places
-        float evasion = clamp(height, 0.5, 1.5);
-        float predation = 2. - evasion;
-        
-        // generalised Lotka-Volterra equations
-        float vege = c.x;
-        float prey = c.y;
-        float pred = max(c.z, 0.);
-        float human = max(-c.z, 0.);
-        float dvege = plant_growth(moisture, temp) - prey;
-        float dprey = reproduction * vege - predation * pred - 0.5;
-        float dpred = predation * prey - 1.;
-        float dt = 0.1;
-        vege += dt * vege * dvege;
-        prey += dt * prey * dprey;
-        pred += dt * pred * dpred;
-        c.xyz = clamp(vec3(vege, prey, pred), 0.01, 5.);
-
-        // diffusion
-        vec4 n = buf(p + N);
-        vec4 e = buf(p + E);
-        vec4 s = buf(p + S);
-        vec4 w = buf(p + W);
-        c.xyz += dt * (max(n,0.) + max(e,0.) + max(s,0.) + max(w,0.) - 4. * c).xyz * vec3(0.25, 0.5, 1.);
-        
-        if (uTime > STORY_END_TIME) {
-            human = 0.;
-        } else if (uTime > HUMAN_START_TIME && uTime < WARMING_START_TIME &&
-                   moisture > 4.9 && 5. < temp && temp < 30.) {
-            int dir = int(4.*hash13(vec3(p,uFrame)));
-            if (length(hash33(vec3(p,uFrame))) < 1e-2) human = 1.;
-            if ((dir == 0 && s.z == -1.) ||
-                (dir == 1 && w.z == -1.) ||
-                (dir == 2 && n.z == -1.) ||
-                (dir == 3 && e.z == -1.)) {
-                human = 1.;
-            }
-        } else if (temp > 35.) {
-            // approximating the maximum wet-bulb temperature by the average (dry-bulb) air temperature
-            // sustained wet-bulb temperature above 35C is fatal for humans:
-            // http://www.pnas.org/content/107/21/9552
-            // photosynthesis of crops also becomes ineffective at similar temperatures
-            human -= 0.01;
-        }
-        if (human > 0.) c.z = -human;
     } else {
         c.xyz = vec3(0);
     }
