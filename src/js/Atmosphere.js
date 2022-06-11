@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import fragmentShader from '../shaders/atmosphere/atmosFrag.js'
 import vertexShader from '../shaders/vertexShader.js'
-import Utils from '../js/Utils.js';
+
 
 class Atmosphere {
 
@@ -11,12 +11,18 @@ class Atmosphere {
     this.app = app;
     this.view = new THREE.Object3D();
 
+    // Atmosphere properties
     this.size = 0;
     this.densityFalloff = 10.;
-    this.opticalDepthPoints = 8.;
-    this.inScatterPoints = 8.;
+    this.opticalDepthPoints = 12.;
+    this.inScatterPoints = 12.;
     this.waveLengths = new THREE.Vector3(700, 530, 440);
     this.scatteringStrength = 32.;
+
+    // Animation properties
+    this.startTime = 16;
+    this.endTime = 25;
+    this.finalSize = .1;
 
     this.createScene();
   }
@@ -84,7 +90,7 @@ class Atmosphere {
       this.material.uniforms.inverseView.value = this.app.camera.matrixWorld;
       this.material.uniforms.cameraPosition.value = this.app.camera.position;
 
-      this.material.uniforms.atmosphereRadius.value = (1 + this.size) * this.app.planet.size;
+      this.material.uniforms.atmosphereRadius.value = this.app.planet.size + this.size;
       this.material.uniforms.densityFalloff.value = this.densityFalloff;
       this.material.uniforms.opticalDepthPoints.value = this.opticalDepthPoints;
       this.material.uniforms.inScatterPoints.value = this.inScatterPoints;
@@ -103,13 +109,10 @@ class Atmosphere {
   update() {
     if (this.app.playing) {
 
-      // If time is between 15 and 20, increase the size of the atmosphere progressively
-      if (this.app.time > 15 && this.app.time < 20) {
-        var increasingSpeed1 = 0.0005;
-        var increasingSpeed2 = 0.0008;
-        this.size += Math.min( THREE.MathUtils.smoothstep(this.size, 0, 1) + increasingSpeed1, Utils.getRandomInt(0.0001, increasingSpeed2));
+      // Increase the size of the atmosphere progressively 
+      if (this.app.time > this.startTime && this.app.time < this.endTime) {
+        this.size = 0.0001 + (THREE.MathUtils.smoothstep((this.app.time-this.startTime)/(this.endTime-this.startTime), 0., 1.) * this.finalSize);
       }
-
     }
 
     this.render();
