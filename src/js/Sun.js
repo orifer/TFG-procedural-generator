@@ -32,9 +32,9 @@ class Sun {
       transparent: true
     });
 
-    const coronaMesh = new THREE.Mesh(geometryCorona, materialCorona);
-    coronaMesh.position.copy(this.position);
-    this.view.add(coronaMesh);
+    this.coronaMesh = new THREE.Mesh(geometryCorona, materialCorona);
+    this.coronaMesh.position.copy(this.position);
+    this.view.add(this.coronaMesh);
 
     this.app.scene.add(this.view);
   }

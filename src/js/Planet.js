@@ -174,6 +174,9 @@ class Planet {
     window.rng = new Math.seedrandom(this.seedString);
     this.seed = Utils.getRandomInt(0, 1) * 1000.0;
     // WIP 
+
+    // Alternativa con three
+    console.log(THREE.MathUtils.seededRandom());
   }
 
 

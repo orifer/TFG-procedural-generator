@@ -2,6 +2,9 @@ import * as THREE from 'three';
 import { OrbitControls } from 'https://unpkg.com/three@0.139/examples/jsm/controls/OrbitControls.js';
 import Stats from "https://unpkg.com/three@0.139/examples/jsm/libs/stats.module";
 
+import { EffectComposer  } from 'https://unpkg.com/three@0.139/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'https://unpkg.com/three@0.139/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'https://unpkg.com/three@0.139/examples/jsm/postprocessing/UnrealBloomPass.js';
 
 class BaseApp {
 
@@ -69,6 +72,35 @@ class BaseApp {
         window.addEventListener( 'pointerdown', this.onPointerDown.bind(this));
     }
 
+    postProcessing() {
+        this.composer = new EffectComposer( this.renderer );
+        this.composer.addPass(  new RenderPass( this.scene, this.camera ) );
+        this.composer.addPass(  new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 2.5, 1., 0.6 ) );
+        // https://threejs.org/examples/webgl_postprocessing_unreal_bloom.html
+    }
+
+    updatePostProcessing() {
+        // Update post-processing bloom
+        if (this.playing && this.time > 3 && this.time < 8) {
+            this.composer.passes[1].strength = 2.5 - (THREE.MathUtils.smoothstep((this.time-3.)/8., 0., 1.)*2.5);
+            this.composer.passes[1].threshold = 0.6 + THREE.MathUtils.smoothstep((this.time-3.)/8., 0., 1.)*0.4;
+        }
+    }
+
+    render(timestamp) {
+        requestAnimationFrame( this.render.bind(this) );
+        this.controls.update();
+        this.stats.update()
+        this.updatePostProcessing();
+
+        // Update the picking ray with the camera and pointer position
+	    this.raycaster.setFromCamera( this.pointer, this.camera );
+
+        // Render scene
+        // this.renderer.render( this.scene, this.camera );
+        this.composer.render();
+    }
+
     onPointerMove( event ) {
         // calculate pointer position in normalized device coordinates
         // (-1 to +1) for both components
@@ -93,19 +125,6 @@ class BaseApp {
 
         // Update renderer
         this.renderer.setSize( window.innerWidth, window.innerHeight );
-    }
-    
-
-    render(timestamp) {
-        requestAnimationFrame( this.render.bind(this) );
-        this.controls.update();
-        this.stats.update()
-
-        // Update the picking ray with the camera and pointer position
-	    this.raycaster.setFromCamera( this.pointer, this.camera );
-
-        // Render scene
-        this.renderer.render( this.scene, this.camera );
     }
 
 }

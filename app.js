@@ -21,6 +21,7 @@ export default class app extends BaseApp {
         // Interface (GUI)
         this.interface = new Interface(this);
 
+        super.postProcessing();
         this.render();
     }
 

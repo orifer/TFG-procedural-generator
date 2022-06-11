@@ -171,9 +171,12 @@ vec4 map_sat(vec2 fragCoord) {
     vec4 land = vec4(0,0,0,1);
     land.rgb = mix(dry, veg, plant_growth(moisture, temp));
 
+    // Initial rock and heat
     if (uTime < LAND_END_TIME) {
         float c = (15. - y) / 3.5;
-        float heat = clamp(2. / pow(uTime + 1., 2.), 0., 1.);
+        // float heat = clamp(2. / pow(uTime + 1., 2.), 0., 1.);
+        float heat = clamp(8. / pow(uTime + 1., 2.), 0., .35);
+        // float heat = clamp( smoothstep(14.,-14.,uTime) ,0., .4);
         vec4 rock = mix(vec4(0.58, 0.57, 0.55, 1), vec4(0.15, 0.13, 0.1, 1), smoothstep(0., 3., c));
         rock *= clamp(0.2 * length(grad), 0., 1.);
         rock += 5. * c * heat * vec4(1., 0.15, 0.05, 1.);
