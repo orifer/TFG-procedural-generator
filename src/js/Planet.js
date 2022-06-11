@@ -176,7 +176,7 @@ class Planet {
     // WIP 
 
     // Alternativa con three
-    console.log(THREE.MathUtils.seededRandom());
+    // console.log(THREE.MathUtils.seededRandom());
   }
 
 
