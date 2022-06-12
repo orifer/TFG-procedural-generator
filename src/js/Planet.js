@@ -143,6 +143,7 @@ class Planet {
       this.app.ambientLight.intensity = 1.6
       this.app.directionalLight.intensity = 0.
       this.rotate = false
+      this.app.atmos.size = 0.;
     } else if (this.geo.type == 'PlaneGeometry') {
       this.geo = new THREE.SphereGeometry( this.size, this.subdivisions, this.subdivisions );
       this.app.ambientLight.intensity = 0.04
