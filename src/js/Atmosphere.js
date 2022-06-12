@@ -115,7 +115,10 @@ class Atmosphere {
       }
     }
 
-    this.render();
+    // Render the atmosphere if we are looking at the planet in sphere mode
+    if (this.app.planet.geo.type == 'SphereGeometry') {
+      this.render();
+    }
   }
 
 
