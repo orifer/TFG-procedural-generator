@@ -16,13 +16,19 @@ class Atmosphere {
     this.densityFalloff = 4.;
     this.opticalDepthPoints = 12.;
     this.inScatterPoints = 12.;
-    this.waveLengths = new THREE.Vector3(700, 530, 440);
+    this.waveLengths = new THREE.Vector3(400, 500, 550);
     this.scatteringStrength = 64.;
 
     // Animation properties
-    this.startTime = 16;
-    this.endTime = 25;
-    this.finalSize = 0.02;
+    this.startTime = 10;
+    this.endTime = 22;
+    this.finalSize = 0.1;
+    this.startWaveLengths = new THREE.Vector3(400, 500, 550);
+
+    this.startTime2 = 22;
+    this.endTime2 = 30;
+    this.finalSize2 = 0.02;
+    this.finalWaveLengths = new THREE.Vector3(700, 530, 440);
 
     this.createScene();
   }
@@ -109,9 +115,16 @@ class Atmosphere {
   update() {
     if (this.app.playing) {
 
-      // Increase the size of the atmosphere progressively 
+      // Increase the size of the atmosphere progressively. Starting atmosphere, more thick and redish.
       if (this.app.time > this.startTime && this.app.time < this.endTime) {
         this.size = 0.0001 + (THREE.MathUtils.smoothstep((this.app.time-this.startTime)/(this.endTime-this.startTime), 0., 1.) * this.finalSize);
+      }
+      // Final atmosphere, more thin and blueish.
+      else if (this.app.time > this.startTime2 && this.app.time < this.endTime2) {
+        this.size = this.finalSize - ((THREE.MathUtils.smoothstep((this.app.time-this.startTime2)/(this.endTime2-this.startTime2), 0., 1.) * (this.finalSize - this.finalSize2)));
+        this.waveLengths.x = this.startWaveLengths.x - ((THREE.MathUtils.smoothstep((this.app.time-this.startTime2)/(this.endTime2-this.startTime2), 0., 1.) * (this.startWaveLengths.x - this.finalWaveLengths.x)));
+        this.waveLengths.y = this.startWaveLengths.y - ((THREE.MathUtils.smoothstep((this.app.time-this.startTime2)/(this.endTime2-this.startTime2), 0., 1.) * (this.startWaveLengths.y - this.finalWaveLengths.y)));
+        this.waveLengths.z = this.startWaveLengths.z - ((THREE.MathUtils.smoothstep((this.app.time-this.startTime2)/(this.endTime2-this.startTime2), 0., 1.) * (this.startWaveLengths.z - this.finalWaveLengths.z)));
       }
     }
 

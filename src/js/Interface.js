@@ -94,9 +94,9 @@ class Interface {
 
       // Wavelengths
       let waveFolder = atmFolder.addFolder('Wavelengths (nm)');
-      waveFolder.add(this.app.atmos.waveLengths, "x", 400., 700.).name("Red");
-      waveFolder.add(this.app.atmos.waveLengths, "y", 400., 700.).name("Green");
-      waveFolder.add(this.app.atmos.waveLengths, "z", 400., 700.).name("Blue");
+      waveFolder.add(this.app.atmos.waveLengths, "x", 400., 700.).name("Red").listen();
+      waveFolder.add(this.app.atmos.waveLengths, "y", 400., 700.).name("Green").listen();
+      waveFolder.add(this.app.atmos.waveLengths, "z", 400., 700.).name("Blue").listen();
       waveFolder.close();
 
       atmFolder.close();
