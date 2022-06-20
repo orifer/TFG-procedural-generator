@@ -13,16 +13,16 @@ class Atmosphere {
 
     // Atmosphere properties
     this.size = 0;
-    this.densityFalloff = 10.;
+    this.densityFalloff = 4.;
     this.opticalDepthPoints = 12.;
     this.inScatterPoints = 12.;
     this.waveLengths = new THREE.Vector3(700, 530, 440);
-    this.scatteringStrength = 32.;
+    this.scatteringStrength = 64.;
 
     // Animation properties
     this.startTime = 16;
     this.endTime = 25;
-    this.finalSize = .1;
+    this.finalSize = 0.02;
 
     this.createScene();
   }

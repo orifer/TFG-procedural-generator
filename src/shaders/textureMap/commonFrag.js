@@ -16,15 +16,9 @@ const fragmentShader = /* glsl */ `
 #define LAND_START_TIME 20.
 #define OCEAN_END_TIME 25.
 #define LAND_END_TIME 30.
-#define SLOWING_START_TIME 113.
-#define DAYNIGHT_START_TIME 120.
-#define HUMAN_START_TIME 125.
 #define TECTONICS_END_TIME 126.
-#define CO2_START_TIME 180.
 #define WARMING_START_TIME 200.
 #define WARMING_END_TIME 220.
-#define OVERLAY_END_TIME 230.
-#define MUSIC_END_TIME 235.
 #define STORY_END_TIME 250.
 
 #define OCEAN_DEPTH ocean_depth(uTime)
@@ -58,9 +52,19 @@ const fragmentShader = /* glsl */ `
 
 float hash13(vec3);
 vec2 plate_move(float q, float uFrame, float uTime) {
+    // q = plate color (0.-1.)
+
+    // No movement outside the time range
     if (uTime >= TECTONICS_END_TIME && uTime < STORY_END_TIME) return vec2(0);
+    
+    // Get a pseudorandom value between (0,0) and (1,1)
     vec2 v = vec2(cos(2.*PI*q), sin(2.*PI*q));
+
+    // Chances of movement in the current frame (0.5 = 50% chance)
+    // ToDo: Change this value via uniform
     if (hash13(vec3(v,uFrame)) < 0.05) {
+
+        // Decide the direction of the movement
         if (hash13(vec3(v+1.,uFrame)) < abs(v.x) / (abs(v.x) + abs(v.y))) {
             return vec2(sign(v.x),0.);
         } else {

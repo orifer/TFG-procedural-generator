@@ -16,7 +16,7 @@ class Planet {
     this.subdivisions = 128;
     this.size = 1;
 
-    this.seedString = "Earth";
+    this.seedString = "Earth-like";
     this.initSeed();
 
     // Material properties

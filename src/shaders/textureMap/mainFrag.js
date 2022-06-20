@@ -105,20 +105,6 @@ vec4 map_temp(vec2 fragCoord) {
 }
 
 
-vec4 map_life(vec2 fragCoord) {
-    vec4 c = texture(iChannel3, fragCoord/uResolution.xy);
-    float vege = c.x;
-    float prey = c.y * 2.;
-    float pred = max(c.z, 0.);
-
-    vec4 fragColor = map_land(fragCoord, true);
-    fragColor = mix(fragColor, vec4(0.0, 1.0, 0.1, 1), 0.75 * smoothstep(0., 5., vege - prey - pred));
-    fragColor = mix(fragColor, vec4(0.8, 0.5, 0.0, 1), 0.75 * smoothstep(0., 5., prey - pred));
-    fragColor = mix(fragColor, vec4(0.5, 0.0, 0.0, 1), 0.75 * smoothstep(0., 5., pred));
-    return fragColor;
-}
-
-
 vec4 map_plates(vec2 fragCoord) {
     vec2 p = fragCoord;
     float q = buf(p).x;
@@ -143,15 +129,19 @@ vec4 map_rivers(vec2 fragCoord) {
 vec4 map_sat(vec2 fragCoord) {
     vec2 p = fragCoord;
     vec2 uv = p / uResolution.xy;
-    float y = buf(p).z;
-    float lat = 180. * uv.y - 90.;
-    float lon = 360. * uv.x - 180.;
-    float height = MAP_HEIGHT(y);
-    
-    vec2 grad = vec2(buf(p+E).z - buf(p+W).z, buf(p+N).z - buf(p+S).z);
-    float clouds = 1.;
-    vec4 ocean = mix(vec4(0.01, 0.02, 0.08, 1), vec4(0.11, 0.28, 0.51, 1), y / OCEAN_DEPTH);
 
+    // Overal heightmap
+    float y = buf(p).z;
+
+    // Land heightmap
+    float height = MAP_HEIGHT(y);
+
+    // Ocean
+    vec4 deepWaterColor = vec4(0.01, 0.02, 0.08, 1);
+    vec4 shallowWaterColor = vec4(0.11, 0.28, 0.51, 1);
+    vec4 ocean = mix(deepWaterColor, shallowWaterColor, y / OCEAN_DEPTH);
+
+    // Temperature
     float temp0 = climate(p, PASS3).z;
     float temp = temp0 - mix(4., 3., smoothstep(WARMING_START_TIME, WARMING_END_TIME, uTime)) * height;
     
@@ -174,9 +164,15 @@ vec4 map_sat(vec2 fragCoord) {
     // Initial rock and heat
     if (uTime < LAND_END_TIME) {
         float c = (15. - y) / 3.5;
+        
+         // Sun position to add depth to the terrain, otherwise it would be too flat
+        vec2 grad = vec2(buf(p+E).z - buf(p+W).z, buf(p+N).z - buf(p+S).z);
+        
+        // Heat
         // float heat = clamp(2. / pow(uTime + 1., 2.), 0., 1.);
         float heat = clamp(8. / pow(uTime + 1., 2.), 0., .35);
-        // float heat = clamp( smoothstep(14.,-14.,uTime) ,0., .4);
+        
+        // Rock texture
         vec4 rock = mix(vec4(0.58, 0.57, 0.55, 1), vec4(0.15, 0.13, 0.1, 1), smoothstep(0., 3., c));
         rock *= clamp(0.2 * length(grad), 0., 1.);
         rock += 5. * c * heat * vec4(1., 0.15, 0.05, 1.);
@@ -190,6 +186,7 @@ vec4 map_sat(vec2 fragCoord) {
         r = land;
     }
     
+    float clouds = 1.;
     float vapour = texture(iChannel2, uv).w;
     r.rgb = mix(r.rgb, vec3(1), 0.5 * clouds * log(1. + vapour) * smoothstep(0., LAND_END_TIME, uTime));
     return r;
@@ -197,6 +194,7 @@ vec4 map_sat(vec2 fragCoord) {
 
 
 vec4 map(vec2 uv) {
+    // Pixel coordinates normalized to the screen resolution
     vec2 p = uv * uResolution.xy;
     
     // Show map to view
@@ -214,6 +212,13 @@ vec4 map(vec2 uv) {
 // ||                           MAIN                             ||
 // ################################################################
 
+// // // Some possible values // // //
+// uResolution 	-> 1024 (default)
+// uv 				-> 0 - 1
+// p 				-> (0,0)-(1024,1024)
+// gl_FragColor.x  -> 0 - 1
+// gl_FragColor.y  -> 0 - 1
+// // // //////////////////// // // //
 
 void main() {
     gl_FragColor = map(vUv);

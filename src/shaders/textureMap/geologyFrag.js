@@ -64,13 +64,15 @@ vec2 move(float q) {
 }
 
 
+// Slope of the terrain between two points
 float slope(vec2 p, vec2 q) {
     if (p == q) return 0.;
     return (buf(q).z - buf(p).z) / distance(p,q);
 }
 
 
-vec2 rec(vec2 p) { // direction of water flow at point
+// Direction of water flow at point p
+vec2 rec(vec2 p) { 
     vec2 d = vec2(0);
     if (slope(p + N,  p) >= slope(p + d, p)) d = N;
     if (slope(p + NE, p) >= slope(p + d, p)) d = NE;
@@ -134,25 +136,39 @@ float protoplanet(vec2 uv) {
 void main() {
     vec2 p = vUv * uResolution.xy;
 
+
+    // ################################################################
+    // ||                          TERRAIN                          ||
+    // ################################################################
     if(uTime < OCEAN_START_TIME && mod(uFrame, 50.) < 1. || uFrame < 10.) {
         gl_FragColor = vec4(0);
+
+        // Generate new plate boundaries
         gl_FragColor.x = -1.;
-        gl_FragColor.w = hash12(p);
+
+        // Rivers
+        gl_FragColor.w = hash12(p); 
+        
+        // Terrain elevation
         gl_FragColor.z = clamp(15. - 3.5 * protoplanet(p / uResolution.xy), 0., 15.);
+        
         return;
     }
     
+    // ################################################################
+    // ||                     HYDRAULIC EROSION                      ||
+    // ################################################################
+
     gl_FragColor = buf(p);
     
     if (uTime < OCEAN_START_TIME) return;
     float smoothstart = smoothstep(OCEAN_START_TIME, OCEAN_END_TIME, uTime);
 
-
+    // Neighbour pixels
     vec4 n = buf(p + N);
     vec4 e = buf(p + E);
     vec4 s = buf(p + S);
     vec4 w = buf(p + W);
-
     
     if (uTime < TECTONICS_END_TIME || uTime > STORY_END_TIME) {
         // diffuse uplift through plate
@@ -168,7 +184,7 @@ void main() {
     float max_uplift = 1.;
     if (gl_FragColor.z - OCEAN_DEPTH > 1.) max_uplift = 1. / (gl_FragColor.z - OCEAN_DEPTH);
     gl_FragColor.z += clamp(2. * gl_FragColor.y - 1., 0., max_uplift);
-    
+
     if (gl_FragColor.z >= OCEAN_DEPTH - 0.05) {
         // thermal erosion
         float dz = 0.;
@@ -189,17 +205,22 @@ void main() {
         if (rec(p + W)  == -W)  gl_FragColor.w += floor(buf(p + W).w);
         if (rec(p + NW) == -NW) gl_FragColor.w += floor(buf(p + NW).w);
 
+        // No slope
         if (rec(p) == vec2(0)) { // local minima
             gl_FragColor.z += 0.001; // extra sediment
+
+        // Slope
         } else {
-            vec4 receiver = buf(p + rec(p));
+            vec4 receiver = buf(p + rec(p)); // punt que reb el flux
             if (gl_FragColor.z >= OCEAN_DEPTH) gl_FragColor.w = floor(gl_FragColor.w) + fract(receiver.w); // basin colouring
+    
             // hydraulic erosion with stream power law
-            float pslope = (gl_FragColor.z - receiver.z) / length(rec(p));
+            float pslope = (gl_FragColor.z - receiver.z) / length(rec(p)); // slope of the stream
             float dz = min(pow(floor(gl_FragColor.w), 0.8) * pow(pslope, 2.), gl_FragColor.z);
             dz *= smoothstart;
             gl_FragColor.z = max(gl_FragColor.z - 0.05 * dz, receiver.z);
         }
+    
     } else {
         gl_FragColor.w = fract(gl_FragColor.w);
     }
@@ -210,19 +231,32 @@ void main() {
     } else if (gl_FragColor.z >= OCEAN_DEPTH - 0.05) {
         gl_FragColor.z += 2.5e-4;
     }
+
+
+    
+
+    // ################################################################
+    // ||                          TECTONICS                         ||
+    // ################################################################
     
     bool subduct = false;
-    float prev_uplift = gl_FragColor.y;
 
+    // Generate new plate boundaries every 80 seconds
     if (mod(uFrame, 5000.) < 10.) {
-        // generate new plate boundaries;
         gl_FragColor.x = -1.;
-    } else if (gl_FragColor.x < 0.) { // no plate under this point yet
-        if (length(hash33(vec3(p,uFrame))) < 7e-3) {
-            // seed a new plate with random velocity
+
+    // No plate under this point yet
+    } else if (gl_FragColor.x < 0.) { 
+
+        // Randomly select a new plate
+        // Todo: Make this a uniform
+        if (length(hash33(vec3(p,uFrame))) < 0.006) {
+            // Seed a new plate with random velocity
             gl_FragColor.x = fract(hash13(vec3(p,uFrame)) + 0.25);
+        
+        // Accretion
         } else {
-            // accretion
+            // Expansion of the current plate
             int dir = int(4.*hash13(vec3(p,uFrame)));
             if(dir == 0) gl_FragColor.x = s.x;
             if(dir == 1) gl_FragColor.x = w.x;
@@ -230,20 +264,29 @@ void main() {
             if(dir == 3) gl_FragColor.x = e.x;
         }
         gl_FragColor.y = clamp(gl_FragColor.y, 0., 1.);
+
+    // Si el moviment es cap al sud
     } else if (move(n.x) == S) {
         if (move(gl_FragColor.x) != S) subduct = true;
         gl_FragColor = n;
+
+    // Si el moviment es cap al oest
     } else if (move(e.x) == W) {
         if (move(gl_FragColor.x) != W) subduct = true;
         gl_FragColor = e;
+
+    // Si el moviment es cap al nord
     } else if (move(s.x) == N) {
         if (move(gl_FragColor.x) != N) subduct = true;
         gl_FragColor = s;
+    
+    // Si el moviment es cap al est
     } else if (move(w.x) == E) {
         if (move(gl_FragColor.x) != E) subduct = true;
         gl_FragColor = w;
+
+    // Rift
     } else if (move(gl_FragColor.x) != vec2(0) && buf(p - move(gl_FragColor.x)).x >= 0.) {
-        // rift
         gl_FragColor.x = -1.;
         if (gl_FragColor.z < OCEAN_DEPTH) {
             gl_FragColor.y = 0.;
@@ -252,13 +295,17 @@ void main() {
         gl_FragColor.w = hash12(p);
     }
     
+    // Subduction
     if (subduct) {
         gl_FragColor.y = 1.;
     } else if (uTime < TECTONICS_END_TIME || uTime > STORY_END_TIME) {
-        gl_FragColor.y = max(gl_FragColor.y - 1e-4, 0.);
+        gl_FragColor.y = max(gl_FragColor.y - 0.0001, 0.);
     }
 
-    // Terraforming
+
+    // ################################################################
+    // ||                          TERRAFORM                         ||
+    // ################################################################
     float brushSize = 20.; // ToDo: make this a parameter
     vec2 r = (p - (uMouse.xy*uResolution.xy)) / brushSize;
     float magnitude = 0.;
