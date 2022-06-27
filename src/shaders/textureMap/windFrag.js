@@ -1,5 +1,5 @@
 // https://threejs.org/docs/#api/en/renderers/webgl/WebGLProgram
-// Wind flow map, atmospheric water vapour, and air pollution model
+// Wind flow map and atmospheric water vapour model
 // Inspired & based on David A. Robert's work <https://davidar.io>
 
 import COMMON from './commonFrag.js';
@@ -23,7 +23,6 @@ uniform vec3 uResolution; // Canvas size (width,height)
 uniform sampler2D iChannel0;
 uniform sampler2D iChannel1;
 uniform sampler2D iChannel2;
-uniform sampler2D iChannel3;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -109,27 +108,21 @@ void main() {
     float temp = climate.y;
     c = texture(iChannel2, fract((fragCoord - v) / uResolution.xy));
     
-    // water vapour advection
+    // Water vapour advection
     float w = c.w;
     float noise = clamp(3. * FBM(vec3(5. * fragCoord/uResolution.xy, uTime)) - 1., 0., 1.);
     if (uTime < OCEAN_END_TIME) w += 0.08 * noise * (1. - smoothstep(OCEAN_START_TIME, OCEAN_END_TIME, uTime));
-    if (height == 0.) w += noise * clamp(temp + 2., 0., 100.)/32. * (0.075 - 3. * div - 0.0045 * (mbar - 1012.));
-    w -= 0.005 * w; // precipitation
-    w -= 0.3 * length(hgrad); // orographic lift
-    gl_FragColor.w = clamp(w, 0., 3.);
-    
-    // pollution advection
-    float co2 = c.z;
-    vec4 d = texture(iChannel3, fragCoord/uResolution.xy);
-    bool human = d.z == -1.;
-    float moisture = d.w;
-    if (human) {
-        co2 += 0.015;
-    } else {
-        co2 -= 0.01 * plant_growth(moisture, temp);
-    }
 
-    gl_FragColor.z = clamp(co2, 0., 3.);
+    // Evaporation
+    if (height == 0.) w += noise * clamp(temp + 2., 0., 100.)/32. * (0.075 - 3. * div - 0.0045 * (mbar - 1012.));
+
+    // Precipitation
+    w -= 0.005 * w;
+
+    // Orographic lift
+    w -= 0.3 * length(hgrad);
+
+    gl_FragColor.w = clamp(w, 0., 3.);
 }
 
 

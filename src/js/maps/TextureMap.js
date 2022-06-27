@@ -164,7 +164,6 @@ class TextureMap {
     this.bufferWind.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture;
     this.bufferWind.uniforms.iChannel1.value = this.targetCirculation.readBuffer.texture;
     this.bufferWind.uniforms.iChannel2.value = this.targetWind.readBuffer.texture;
-    this.bufferWind.uniforms.iChannel3.value = this.targetSoil.readBuffer.texture;
     this.targetWind.render(this.bufferWind.scene, this.orthoCamera);
 
     // Soil buffer

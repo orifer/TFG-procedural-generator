@@ -30,8 +30,8 @@ uniform sampler2D iChannel3;
 
 #define DEEP_WATER vec4(0.01, 0.02, 0.08, 1)
 #define SHALLOW_WATER vec4(0.11, 0.28, 0.51, 1)
-#define WARM vec4(1.,0.5,0.,1)
-#define COOL vec4(0.,0.5,1.,1)
+#define WARM vec4(1.,0.5,0.,1) // Low pressure color (red)
+#define COOL vec4(0.,0.5,1.,1) // High pressure color (blue)
 
 
 // ################################################################
@@ -46,8 +46,8 @@ vec3 fromlatlon(float lat, float lon) {
 
 vec4 climate(vec2 fragCoord, vec2 pass) {
     vec2 p = fragCoord * MAP_RES / uResolution.xy;
-    if (p.x < 0.5) p.x = 0.5;
     vec2 uv = p / uResolution.xy;
+    if (p.x < 0.5) p.x = 0.5;
     return texture(iChannel1, uv + pass);
 }
 
@@ -71,7 +71,10 @@ vec4 map_land(vec2 fragCoord, bool ocean) {
 
 
 vec4 map_flow(vec2 fragCoord) {
+    // Get the pressure from the map
     float mbar = climate(fragCoord, PASS3).x;
+
+    // Color based on pressure (mbar)
     vec4 r = WARM;
     r = mix(r, vec4(1), smoothstep(1000., 1012., floor(mbar)));
     r = mix(r, COOL, smoothstep(1012., 1024., floor(mbar)));
@@ -81,10 +84,12 @@ vec4 map_flow(vec2 fragCoord) {
     vec2 uv = p / uResolution.xy;
     vec2 v = texture(iChannel1, uv + PASS4).xy;
     
+    // Add wind vector
     vec4 c = texture(iChannel2, fragCoord/uResolution.xy);
     float flow = (c.x > 0.) ? 1. : c.y;
     flow *= clamp(length(v), 0., 1.);
     
+    // Mix land, temperature and wind vectors
     vec4 fragColor = map_land(fragCoord, false);
     fragColor = mix(fragColor, r, 0.5 * flow);
     return fragColor;
@@ -94,7 +99,7 @@ vec4 map_flow(vec2 fragCoord) {
 vec4 map_temp(vec2 fragCoord) {
     float height = MAP_HEIGHT(buf(fragCoord).z);
     float temp0 = climate(fragCoord, PASS3).z;
-    float temp = temp0 - mix(4., 3., smoothstep(WARMING_START_TIME, WARMING_END_TIME, uTime)) * height;
+    float temp = temp0 - 3. * height;
     temp = floor(temp/2.)*2.;
     vec4 r = COOL;
     r = mix(r, vec4(1), smoothstep(-20.,  0., temp));
@@ -143,7 +148,7 @@ vec4 map_sat(vec2 fragCoord) {
 
     // Temperature
     float temp0 = climate(p, PASS3).z;
-    float temp = temp0 - mix(4., 3., smoothstep(WARMING_START_TIME, WARMING_END_TIME, uTime)) * height;
+    float temp = temp0 - 3. * height;
     
     // Dry land
     vec3 dry = vec3(0.89, 0.9, 0.89);

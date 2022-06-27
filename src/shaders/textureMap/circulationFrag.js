@@ -26,7 +26,7 @@ uniform sampler2D iChannel1;
 ///////////////////////////////////////////////////////////////////////////////
 
 #define buf(uv) texture(iChannel1, uv)
-#define SIGMA vec4(6,4,1,0)
+#define SIGMA vec4(6,4,1,0) // for gaussian blur
 
 
 // ################################################################
@@ -34,6 +34,7 @@ uniform sampler2D iChannel1;
 // ################################################################
 
 
+// Normal probability density function
 vec4 normpdf(float x) {
 	return 0.39894 * exp(-0.5 * x*x / (SIGMA*SIGMA)) / SIGMA;
 }
@@ -49,8 +50,8 @@ vec4 mslp(vec2 uv) {
         r.x = 1012.5 - 6. * cos(lat*PI/45.); // annual mean
         r.y = 15. * sin(lat*PI/90.); // January/July delta
     } else { // ocean
-        r.x = 1014.5 - 20. * cos(lat*PI/30.);
-        r.y = 20. * sin(lat*PI/35.) * abs(lat)/90.;
+        r.x = 1014.5 - 20. * cos(lat*PI/30.); // annual mean
+        r.y = 20. * sin(lat*PI/35.) * abs(lat)/90.; // delta
     }
     r.z = height;
     return r;
@@ -91,20 +92,6 @@ vec4 pass3(vec2 uv) {
     temp += 1.5 * land;
     float th = 4.;
     
-    if (uTime > WARMING_START_TIME && uTime < STORY_END_TIME + 15.) {
-        // approximation of CO2 forcing
-        // https://www.nature.com/articles/nclimate3036
-        float temp2 = 9. + 50. * tanh(2.2 * exp(-0.5 * pow((lat + 5. * delta)/30., 2.)));
-        temp2 -= mbar - 1012.;
-        temp2 /= 1.8;
-        temp2 += 4. * land;
-        float th2 = 3.;
-        float m = smoothstep(WARMING_START_TIME, WARMING_END_TIME, uTime);
-        m -= smoothstep(5., 15., uTime - STORY_END_TIME);
-        temp = mix(temp, temp2, m);
-        th = mix(th, th2, m);
-    }
-    
     return vec4(mbar, temp - th * height, temp, 0);
 }
 
@@ -132,25 +119,25 @@ vec4 pass4(vec2 uv) {
 void main() {
     vec2 fragCoord = vUv * uResolution.xy;
     vec2 uv = fragCoord / uResolution.xy;
-
-    if (uv.x < 0.5) {
+    
+    if (uv.x < 0.5) {  
+        // Down left 
         if (uv.y < 0.5) {
     		gl_FragColor = pass1(uv - PASS1);
+        
+        // Up left
         } else {
     		gl_FragColor = pass2(uv - PASS2);
         }
     } else {
+        // Down right
         if (uv.y < 0.5) {
     		gl_FragColor = pass3(uv - PASS3);
+        // Up right
         } else {
     		gl_FragColor = pass4(uv - PASS4);
         }
     }
-    
-    // int x = int(fragCoord.x);
-    // int y = int(fragCoord.y);
-
-    // if (x < 256 && y < 3) gl_FragColor.w = texelFetch(iChannel3, ivec2(x,y), 0).x;
 
 }
 

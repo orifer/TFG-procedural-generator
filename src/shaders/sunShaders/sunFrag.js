@@ -14,7 +14,10 @@ uniform float uSize;
 // Brightness to color
 vec3 brightnessToColor(float b) {
     b *= 0.25;
-    return (vec3(b, b*b, b*b*b*b)/0.25)*0.5;
+
+    return (vec3(b, b*b, b*b*b*b)/0.25)*0.5; // orange
+    // return (vec3( b*b*b, b*b, b)/0.25)*0.5; // blue
+    // return (vec3(b, b*b, b*b)/0.25)*0.5; // red
 }
 
 

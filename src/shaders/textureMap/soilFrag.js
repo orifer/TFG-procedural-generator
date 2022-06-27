@@ -1,5 +1,5 @@
 // https://threejs.org/docs/#api/en/renderers/webgl/WebGLProgram
-// Soil moisture, vegetation, predator, prey, and human colonisation model
+// Soil moisture and vegetation
 // Inspired & based on David A. Robert's work <https://davidar.io>
 
 import COMMON from './commonFrag.js';
@@ -96,7 +96,6 @@ void main() {
     moisture = clamp(moisture, 0., 5.);
     if (height == 0.) moisture = 5.;
     
-    // ToDo: Repasar esto para ver si se puede borrar
     if (uTime < OCEAN_END_TIME) {
         c.xyz = hash32(fragCoord) * vec3(0.5, 1., 2.);
     } else {

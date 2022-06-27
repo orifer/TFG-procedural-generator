@@ -23,7 +23,7 @@ class Planet {
     this.roughness = 0.8;
     this.metalness = 0.5;
     this.normalScale = 1.0;
-    this.displacementScale = 0.004;
+    this.displacementScale = 0.002;
     this.wireframe = false;
     this.rotate = true;
 

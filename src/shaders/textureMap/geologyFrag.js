@@ -186,7 +186,7 @@ void main() {
     gl_FragColor.z += clamp(2. * gl_FragColor.y - 1., 0., max_uplift);
 
     if (gl_FragColor.z >= OCEAN_DEPTH - 0.05) {
-        // thermal erosion
+        // Thermal erosion
         float dz = 0.;
         if (abs(e.z - gl_FragColor.z) > 1.) dz += e.z - gl_FragColor.z;
         if (abs(w.z - gl_FragColor.z) > 1.) dz += w.z - gl_FragColor.z;
@@ -194,7 +194,7 @@ void main() {
         if (abs(s.z - gl_FragColor.z) > 1.) dz += s.z - gl_FragColor.z;
         gl_FragColor.z = max(0., gl_FragColor.z + 0.02 * dz);
 
-        // flow accumulation
+        // Flow accumulation
         gl_FragColor.w = 1. + fract(gl_FragColor.w);
         if (rec(p + N)  == -N)  gl_FragColor.w += floor(buf(p + N).w);
         if (rec(p + NE) == -NE) gl_FragColor.w += floor(buf(p + NE).w);
