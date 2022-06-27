@@ -46,8 +46,8 @@ vec3 fromlatlon(float lat, float lon) {
 
 vec4 climate(vec2 fragCoord, vec2 pass) {
     vec2 p = fragCoord * MAP_RES / uResolution.xy;
-    vec2 uv = p / uResolution.xy;
     if (p.x < 0.5) p.x = 0.5;
+    vec2 uv = p / uResolution.xy;
     return texture(iChannel1, uv + pass);
 }
 
