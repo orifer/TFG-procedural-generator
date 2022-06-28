@@ -5,6 +5,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>Procedural Planet Generator</title>
+        <link rel='stylesheet' href='https://unpkg.com/swiper/swiper-bundle.min.css'>
+        <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/css/bootstrap.min.css'>
         <link rel="stylesheet" href="src/css/style.css">
     </head>
 
@@ -17,9 +19,49 @@
     </script>
 
     <body>
+
+        <!-- Main APP -->
         <div id="container"></div>
         <script type="module" src="app.js"></script>
-        <script src="https://kit.fontawesome.com/d56ac1debb.js" crossorigin="anonymous"></script>
-    </body>
 
+        <!-- Play/pause simulation button -->
+        <div class="left-panel">
+            <button id="play-pause-button" class='btn-interface'>
+                <i class='fa-solid fa-play'></i>
+            </button>
+        </div>
+
+
+        <!-- Bottom timeline -->
+        <div class="swiper-container">
+            <div class="swiper-container-wrapper swiper-container-wrapper--timeline">
+                <!-- Timeline -->
+                <ul class="swiper-pagination-custom">
+                <li class='swiper-pagination-switch first active'><span class='switch-title'>Formacio</span></li>
+                <li class='swiper-pagination-switch'><span class='switch-title'>1 Ma</span></li>
+                <li class='swiper-pagination-switch'><span class='switch-title'>3.5 Ma</span></li>
+                <li class='swiper-pagination-switch last'><span class='switch-title'>4.5 Ma</span></li>
+                </ul>
+                <!-- Progressbar -->
+                <div class="swiper-pagination swiper-pagination-progressbar swiper-pagination-horizontal"></div>
+                <!-- Swiper -->
+                <div class="swiper swiper-container swiper-container--timeline">
+                <div class="swiper-wrapper hide">
+                    <!-- Slides -->
+                    <div class="swiper-slide"><span class="title">Swiper Timeline Progressbar</span></div>
+                    <div class="swiper-slide"><span class="title">Title 2</span></div>
+                    <div class="swiper-slide"><span class="title">Title 3</span></div>
+                    <div class="swiper-slide"><span class="title">Title 4</span></div>
+                </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!------------------------------------------------ Script imports ------------------------------------------------------>
+        <script src="https://kit.fontawesome.com/d56ac1debb.js" crossorigin="anonymous"></script>           <!-- FontAwesome -->
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>           <!-- jQuery -->
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/Swiper/6.8.4/swiper-bundle.min.js'></script>    <!-- Swiper -->
+        <!----------------------------------------------------------------------------------------------------------------------->
+    </body>
 </html>

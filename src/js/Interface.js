@@ -122,25 +122,49 @@ class Interface {
 
 
     createBottomPanel() {
-      // Main container
-      let bottomPanelHolder = document.createElement("div");
-      bottomPanelHolder.setAttribute("id", "bottomPanelHolder");
-      document.body.appendChild(bottomPanelHolder);
-  
-      // Play/stop simulation
-      let playButton = document.createElement("div");
-      playButton.setAttribute("id", "playButton");
-      playButton.innerHTML = "<button class='btn'><i class='fa-solid fa-play fa-3x'></i></button>";
-      playButton.addEventListener("click", () => {
-        if (this.app.playing) {
-          this.app.playing = false;
-          playButton.innerHTML = "<button class='btn'><i class='fa-solid fa-play fa-3x'></i></button>";
-        } else {
-          this.app.playing = true;
-          playButton.innerHTML = "<button class='btn'><i class='fa-solid fa-pause fa-3x'></i></button>";
-        }
+
+      // Timeline
+      $(document).ready(function () {
+
+        var mySwiper = new Swiper(".swiper", {
+          autoHeight: true,
+          autoplay: {
+            delay: 5000,
+            disableOnInteraction: false
+          },
+          speed: 500,
+          direction: "horizontal",
+          navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev"
+          },
+          pagination: {
+            el: ".swiper-pagination",
+            type: "progressbar"
+          },
+          loop: false,
+          effect: "slide",
+          spaceBetween: 30,
+          on: {
+            init: function () {
+              $(".swiper-pagination-custom .swiper-pagination-switch").removeClass("active");
+              $(".swiper-pagination-custom .swiper-pagination-switch").eq(0).addClass("active");
+            },
+            slideChangeTransitionStart: function () {
+              $(".swiper-pagination-custom .swiper-pagination-switch").removeClass("active");
+              $(".swiper-pagination-custom .swiper-pagination-switch").eq(mySwiper.realIndex).addClass("active");
+            }
+          }
+        });
+        
+        $(".swiper-pagination-custom .swiper-pagination-switch").click(function () {
+          mySwiper.slideTo($(this).index());
+          $(".swiper-pagination-custom .swiper-pagination-switch").removeClass("active");
+          $(this).addClass("active");
+        });
+      
       });
-      bottomPanelHolder.appendChild(playButton);
+
     }
 
 
@@ -150,21 +174,32 @@ class Interface {
       leftPanelHolder.setAttribute("id", "leftPanelHolder");
       document.body.appendChild(leftPanelHolder);
 
+
+      // Play/stop simulation
+      let playButton = document.getElementById("play-pause-button");
+      playButton.addEventListener("click", () => {
+        playButton.children[0].classList.toggle("fa-play");
+        playButton.children[0].classList.toggle("fa-pause");
+        this.app.playing = !this.app.playing;
+      });
+
+
+      
       // Add Terrain
       let addTerrainButton = document.createElement("div");
       addTerrainButton.setAttribute("id", "addTerrainButton");
-      addTerrainButton.innerHTML = "<button title='Pujar terreny' class='btn'><i class='fa-solid fa-paintbrush fa-2x'></i></button>";
+      addTerrainButton.innerHTML = "<button title='Pujar terreny' class='btn-interface'><i class='fa-solid fa-paintbrush fa-2x'></i></button>";
       this.app.addingTerrain = false;
       addTerrainButton.addEventListener("click", () => {
         if (this.app.addingTerrain) {
           this.app.addingTerrain = false;
-          addTerrainButton.innerHTML = "<button class='btn'><i class='fa-solid fa-paintbrush fa-2x'></i></button>";
+          addTerrainButton.innerHTML = "<button class='btn-interface'><i class='fa-solid fa-paintbrush fa-2x'></i></button>";
           this.app.controls.enabled = true;
         } else {
           this.app.addingTerrain = true;
           this.app.removingTerrain = false;
-          addTerrainButton.innerHTML = "<button class='btn active'><i class='fa-solid fa-ban fa-2x'></i></button>";
-          delTerrainButton.innerHTML = "<button class='btn'><i class='fa-solid fa-eraser fa-2x'></i></button>";
+          addTerrainButton.innerHTML = "<button class='btn-interface active'><i class='fa-solid fa-ban fa-2x'></i></button>";
+          delTerrainButton.innerHTML = "<button class='btn-interface'><i class='fa-solid fa-eraser fa-2x'></i></button>";
           this.app.controls.enabled = false;
         }
       });
@@ -173,18 +208,18 @@ class Interface {
       // Remove Terrain
       let delTerrainButton = document.createElement("div");
       delTerrainButton.setAttribute("id", "delTerrainButton");
-      delTerrainButton.innerHTML = "<button title='Baixar terreny' class='btn'><i class='fa-solid fa-eraser fa-2x'></i></button>";
+      delTerrainButton.innerHTML = "<button title='Baixar terreny' class='btn-interface'><i class='fa-solid fa-eraser fa-2x'></i></button>";
       this.app.removingTerrain = false;
       delTerrainButton.addEventListener("click", () => {
         if (this.app.removingTerrain) {
           this.app.removingTerrain = false;
-          delTerrainButton.innerHTML = "<button class='btn'><i class='fa-solid fa-eraser fa-2x'></i></button>";
+          delTerrainButton.innerHTML = "<button class='btn-interface'><i class='fa-solid fa-eraser fa-2x'></i></button>";
           this.app.controls.enabled = true;
         } else {
           this.app.removingTerrain = true;
           this.app.addingTerrain = false;
-          addTerrainButton.innerHTML = "<button class='btn'><i class='fa-solid fa-paintbrush fa-2x'></i></button>";
-          delTerrainButton.innerHTML = "<button class='btn active'><i class='fa-solid fa-ban fa-2x'></i></button>";
+          addTerrainButton.innerHTML = "<button class='btn-interface'><i class='fa-solid fa-paintbrush fa-2x'></i></button>";
+          delTerrainButton.innerHTML = "<button class='btn-interface active'><i class='fa-solid fa-ban fa-2x'></i></button>";
           this.app.controls.enabled = false;
         }
       });
