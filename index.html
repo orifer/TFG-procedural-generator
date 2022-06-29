@@ -24,36 +24,88 @@
         <div id="container"></div>
         <script type="module" src="app.js"></script>
 
-        <!-- Play/pause simulation button -->
+
+        <!-- Left panel -->
         <div class="left-panel">
+            <!-- Play/pause simulation button -->
             <button id="play-pause-button" class='btn-interface'>
                 <i class='fa-solid fa-play'></i>
             </button>
+            
+            <!-- Terrain -->
+            <div class="terrain-panel">
+                <button id="add-terrain-button" class='btn-interface btn-group' title='Pujar altura del terreny'>
+                    <i class='fa-solid fa-arrows-up-to-line'></i>
+                </button>
+                <button id="del-terrain-button" class='btn-interface btn-group' title='Baixar altura del terreny'>
+                    <i class='fa-solid fa-arrows-down-to-line'></i>
+                </button>
+            </div>
+            
+            <!-- View mode -->
+            <div class="view-panel">
+                <button id="normal-view-button" class='btn-interface btn-group active' title='Vista normal'>
+                    <i class='fa-solid fa-earth-europe'></i>
+                </button>
+                <button id="plates-view-button" class='btn-interface btn-group' title='Plaques tectòniques'>
+                    <i class='fa-solid fa-globe'></i>
+                </button>
+                <button id="rivers-view-button" class='btn-interface btn-group' title='Rius'>
+                    <i class='fa-solid fa-water'></i>
+                </button>
+                <button id="wind-view-button" class='btn-interface btn-group' title='Clima'>
+                    <i class='fa-solid fa-wind'></i>
+                </button>
+                <button id="temperature-view-button" class='btn-interface btn-group' title='Temperatura'>
+                    <i class='fa-solid fa-temperature-half'></i>
+                </button>
+            </div>
         </div>
 
 
+        <!-- Right info -->
+        <div class="swiper swiper-container swiper-container--timeline">
+            <div class="swiper-wrapper">
+                <!-- Slides -->
+                <div class="swiper-slide">
+                    <span class="title">4.600 Ma</span>
+                    <div class="info-text">
+                        <p>La Terra primerenca estava coberta per un oceà de magma: una capa de roca fosa de centenars de quilòmetres de profunditat. Qualsevol aigua present només existiria com a vapor d'aigua a l'atmosfera. Durant aquest període, va estar rebent l'impacte d'una gran quantitat d'asteroides.</p>
+                    </div>
+                </div>
+                <div class="swiper-slide"><span class="title">3.800 Ma</span></div>
+                <div class="swiper-slide"><span class="title">3.700 Ma</span></div>
+                <div class="swiper-slide"><span class="title">3.000 Ma</span></div>
+                <div class="swiper-slide"><span class="title">2.500 Ma</span></div>
+                <div class="swiper-slide"><span class="title">500 Ma</span></div>
+                <div class="swiper-slide"><span class="title">Actualitat</span></div>
+            </div>
+        </div>
+
         <!-- Bottom timeline -->
-        <div class="swiper-container">
+        <div class="swiper-container" style="background: linear-gradient(to top, rgb(56, 56, 56), rgba(34, 34, 34, 0.7), rgba(0, 0, 0, 0)); ">
             <div class="swiper-container-wrapper swiper-container-wrapper--timeline">
-                <!-- Timeline -->
+
+                <!-- Timeline points -->
                 <ul class="swiper-pagination-custom">
-                <li class='swiper-pagination-switch first active'><span class='switch-title'>Formacio</span></li>
-                <li class='swiper-pagination-switch'><span class='switch-title'>1 Ma</span></li>
-                <li class='swiper-pagination-switch'><span class='switch-title'>3.5 Ma</span></li>
-                <li class='swiper-pagination-switch last'><span class='switch-title'>4.5 Ma</span></li>
+                    <li class='swiper-pagination-switch first active'><span class='switch-title'>4.600 Ma</span></li>
+                    <li class='swiper-pagination-switch'><span class='switch-title'>3.800 Ma</span></li>
+                    <li class='swiper-pagination-switch'><span class='switch-title'>3.700 Ma</span></li>
+                    <li class='swiper-pagination-switch'><span class='switch-title'>3.000 Ma</span></li>
+                    <li class='swiper-pagination-switch'><span class='switch-title'>2.500 Ma</span></li>
+                    <li class='swiper-pagination-switch'><span class='switch-title'>500 Ma</span></li>
+                    <li class='swiper-pagination-switch last'><span class='switch-title'>Actualitat</span></li>
                 </ul>
+
                 <!-- Progressbar -->
                 <div class="swiper-pagination swiper-pagination-progressbar swiper-pagination-horizontal"></div>
-                <!-- Swiper -->
-                <div class="swiper swiper-container swiper-container--timeline">
-                <div class="swiper-wrapper hide">
-                    <!-- Slides -->
-                    <div class="swiper-slide"><span class="title">Swiper Timeline Progressbar</span></div>
-                    <div class="swiper-slide"><span class="title">Title 2</span></div>
-                    <div class="swiper-slide"><span class="title">Title 3</span></div>
-                    <div class="swiper-slide"><span class="title">Title 4</span></div>
+
+                <!-- Navigation buttons -->
+                <div class="swiper-button-next">
+                    <p>Fes clic per avançar</p>
+                    <i class='fa-solid fa-chevron-right'></i>
                 </div>
-                </div>
+
             </div>
         </div>
 

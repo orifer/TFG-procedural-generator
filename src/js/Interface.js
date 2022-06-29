@@ -124,14 +124,8 @@ class Interface {
     createBottomPanel() {
 
       // Timeline
-      $(document).ready(function () {
-
-        var mySwiper = new Swiper(".swiper", {
+        var swiper = new Swiper(".swiper", {
           autoHeight: true,
-          autoplay: {
-            delay: 5000,
-            disableOnInteraction: false
-          },
           speed: 500,
           direction: "horizontal",
           navigation: {
@@ -152,81 +146,104 @@ class Interface {
             },
             slideChangeTransitionStart: function () {
               $(".swiper-pagination-custom .swiper-pagination-switch").removeClass("active");
-              $(".swiper-pagination-custom .swiper-pagination-switch").eq(mySwiper.realIndex).addClass("active");
+              $(".swiper-pagination-custom .swiper-pagination-switch").eq(swiper.realIndex).addClass("active");
             }
           }
         });
         
         $(".swiper-pagination-custom .swiper-pagination-switch").click(function () {
-          mySwiper.slideTo($(this).index());
-          $(".swiper-pagination-custom .swiper-pagination-switch").removeClass("active");
-          $(this).addClass("active");
+          // swiper.slideTo($(this).index());
+          // $(".swiper-pagination-custom .swiper-pagination-switch").removeClass("active");
+          // $(this).addClass("active");
         });
       
-      });
+   
 
     }
 
 
+    changeView(view) {
+      this.normalViewButton.classList.remove("active");
+      this.platesViewButton.classList.remove("active");
+      this.riversViewButton.classList.remove("active");
+      this.windViewButton.classList.remove("active");
+      this.temperatureViewButton.classList.remove("active");
+      this.app.planet.displayTextureMap = view;
+      this.app.planet.renderScene();
+    }
+
     createLeftPanel() {
-      // Main container
-      let leftPanelHolder = document.createElement("div");
-      leftPanelHolder.setAttribute("id", "leftPanelHolder");
-      document.body.appendChild(leftPanelHolder);
+
+      // View options
+      this.normalViewButton = document.getElementById("normal-view-button");
+      this.normalViewButton.addEventListener("click", () => {
+        this.changeView(0);
+        this.normalViewButton.classList.toggle("active");
+      });
+      this.platesViewButton = document.getElementById("plates-view-button");
+      this.platesViewButton.addEventListener("click", () => {
+        this.changeView(1);
+        this.platesViewButton.classList.add("active");
+      });
+      this.riversViewButton = document.getElementById("rivers-view-button");
+      this.riversViewButton.addEventListener("click", () => {
+        this.changeView(2);
+        this.riversViewButton.classList.add("active");
+      });
+      this.windViewButton = document.getElementById("wind-view-button");
+      this.windViewButton.addEventListener("click", () => {
+        this.changeView(3);
+        this.windViewButton.classList.add("active");
+      });
+      this.temperatureViewButton = document.getElementById("temperature-view-button");
+      this.temperatureViewButton.addEventListener("click", () => {
+        this.changeView(4);
+        this.temperatureViewButton.classList.add("active");
+      });
+
+
+      // Add Terrain
+      let addTerrainButton = document.getElementById("add-terrain-button");
+      this.app.addingTerrain = false;
+      addTerrainButton.addEventListener("click", () => {
+        addTerrainButton.classList.toggle("active");
+        delTerrainButton.classList.remove("active");
+
+        if (this.app.addingTerrain) {
+          this.app.addingTerrain = false;
+          this.app.controls.enabled = true;
+        } else {
+          this.app.addingTerrain = true;
+          this.app.removingTerrain = false;
+          this.app.controls.enabled = false;
+        }
+      });
+      // Del Terrain
+      let delTerrainButton = document.getElementById("del-terrain-button");
+      this.app.removingTerrain = false;
+      delTerrainButton.addEventListener("click", () => {
+        addTerrainButton.classList.remove("active");
+        delTerrainButton.classList.toggle("active");
+
+        if (this.app.removingTerrain) {
+          this.app.removingTerrain = false;
+          this.app.controls.enabled = true;
+        } else {
+          this.app.removingTerrain = true;
+          this.app.addingTerrain = false;
+          this.app.controls.enabled = false;
+        }
+      });
 
 
       // Play/stop simulation
       let playButton = document.getElementById("play-pause-button");
       playButton.addEventListener("click", () => {
+        playButton.classList.toggle("active");
         playButton.children[0].classList.toggle("fa-play");
         playButton.children[0].classList.toggle("fa-pause");
         this.app.playing = !this.app.playing;
       });
-
-
-      
-      // Add Terrain
-      let addTerrainButton = document.createElement("div");
-      addTerrainButton.setAttribute("id", "addTerrainButton");
-      addTerrainButton.innerHTML = "<button title='Pujar terreny' class='btn-interface'><i class='fa-solid fa-paintbrush fa-2x'></i></button>";
-      this.app.addingTerrain = false;
-      addTerrainButton.addEventListener("click", () => {
-        if (this.app.addingTerrain) {
-          this.app.addingTerrain = false;
-          addTerrainButton.innerHTML = "<button class='btn-interface'><i class='fa-solid fa-paintbrush fa-2x'></i></button>";
-          this.app.controls.enabled = true;
-        } else {
-          this.app.addingTerrain = true;
-          this.app.removingTerrain = false;
-          addTerrainButton.innerHTML = "<button class='btn-interface active'><i class='fa-solid fa-ban fa-2x'></i></button>";
-          delTerrainButton.innerHTML = "<button class='btn-interface'><i class='fa-solid fa-eraser fa-2x'></i></button>";
-          this.app.controls.enabled = false;
-        }
-      });
-      leftPanelHolder.appendChild(addTerrainButton);
-
-      // Remove Terrain
-      let delTerrainButton = document.createElement("div");
-      delTerrainButton.setAttribute("id", "delTerrainButton");
-      delTerrainButton.innerHTML = "<button title='Baixar terreny' class='btn-interface'><i class='fa-solid fa-eraser fa-2x'></i></button>";
-      this.app.removingTerrain = false;
-      delTerrainButton.addEventListener("click", () => {
-        if (this.app.removingTerrain) {
-          this.app.removingTerrain = false;
-          delTerrainButton.innerHTML = "<button class='btn-interface'><i class='fa-solid fa-eraser fa-2x'></i></button>";
-          this.app.controls.enabled = true;
-        } else {
-          this.app.removingTerrain = true;
-          this.app.addingTerrain = false;
-          addTerrainButton.innerHTML = "<button class='btn-interface'><i class='fa-solid fa-paintbrush fa-2x'></i></button>";
-          delTerrainButton.innerHTML = "<button class='btn-interface active'><i class='fa-solid fa-ban fa-2x'></i></button>";
-          this.app.controls.enabled = false;
-        }
-      });
-      leftPanelHolder.appendChild(delTerrainButton);
-
-
-      
     }
 
 }

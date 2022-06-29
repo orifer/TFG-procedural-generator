@@ -6,21 +6,23 @@ body {
   overflow: hidden;
   background-color: #000;
 }
-
 body {
   margin: 0;
   padding: 0;
 }
-
 #container {
   width: 100vw;
   height: 100vh;
 }
-
 canvas {
   display: block;
 }
+.hide {
+  display: none;
+}
 
+
+/* Top right interface box */
 #infoBoxHolder {
   position: absolute;
   z-index: 1000;
@@ -30,41 +32,44 @@ canvas {
   background-color: rgba(0, 0, 0, 0.8);
   width: 245px;
 }
-
 #infoBox {
   padding: 12px 12px 12px 12px;
   font-size: 14px;
 	font-family: "Helvetica-Light", sans-serif;
   line-height: 18px;
 }
-
 #planetName {
   font-size: 24px;
   line-height: 28px;
 }
 
+
 /* Buttons style  */
 .btn-interface {
+  position: absolute;
   background-color: rgba(41, 42, 45, 0.6);
   border: none;
-  color: rgb(110, 110, 110);
-  padding: 12px 16px;
+  color: rgb(151, 151, 151);
   width: 50px;
   height: 50px;
-  font-size: 18px;  /* Icon size */
+  font-size: 17px;  /* Icon size */
   cursor: pointer;
   border-radius: 10px;
+  justify-content: center;
+  align-items: center;
 }
 .btn-interface:hover, .btn-interface.active { /* Darker background on mouse-over */
   background-color: rgba(65, 105, 225, 0.603);
   color: rgb(255, 255, 255);
 }
-
-
+.btn-group {
+  position: relative;
+  width: 44px;
+  height: 44px;
+}
 
 
 /* Left Panel */
-
 .left-panel {
   position: absolute;
   margin: auto;
@@ -72,19 +77,26 @@ canvas {
   text-align: center;
   border-radius: 10px;
 }
-#play-pause-button {
+.view-panel {
   position: absolute;
-  bottom: 100px;
-  color: #FFFFFF;
+  bottom: 315px;
+  border: 2px solid rgba(41, 42, 45, 0.6);
+  padding: 2px;
+  border-radius: 15px;
+}
+.terrain-panel {
+  position: absolute;
+  bottom: 190px;
+  border: 2px solid rgba(41, 42, 45, 0.6);
+  padding: 2px;
+  border-radius: 15px;
+}
+#play-pause-button {
+  bottom: 110px;
 }
 
 
-
-
-
-
 /* Bottom timeline panel */
-
 .swiper-container {
   position: absolute;
   margin: auto;
@@ -92,14 +104,15 @@ canvas {
   right: 0;
   bottom: 0px;
   color: #FFFFFF;
-  background: linear-gradient(to top, rgba(22, 22, 22, 0.8), rgba(0, 0, 0, 0));
   width: auto;
   height: 100px;
   text-align: center;
 }
 .swiper-container-wrapper--timeline .swiper-slide {
+  position: absolute;
+  top: 0;
   display: flex;
-  background: #fff;
+  /* background: rgba(201, 201, 201, 0.8); */
   min-height: 300px;
   align-items: center;
   justify-content: center;
@@ -126,7 +139,7 @@ canvas {
   width: 75%;
 }
 .swiper-container-wrapper--timeline .swiper-pagination-progressbar-fill {
-  background-color: #000;
+  background-color: rgba(65, 105, 225, 0.603);
   height: 3px;
   top: 2px;
 }
@@ -142,11 +155,25 @@ canvas {
 .swiper-container-wrapper--timeline .swiper-pagination-progressbar:after {
   position: absolute;
   top: 3px;
-  right: -100%;
-  width: 100%;
+  right: -15%;
+  width: 300px;
   height: 1px;
-  background-color: #888;
+  background: linear-gradient(to right, rgb(151, 151, 151) , rgba(0, 0, 0, 0));
   content: "";
+  z-index: -1;
+}
+.swiper-container--timeline {
+  background: rgba(41, 42, 45, 0.2);
+  position: absolute;
+  bottom: 150px;
+  left: auto;
+  right: 20px;
+  width: 300px;
+  height: 400px;
+  border-radius: 10px;
+}
+.info-text {
+  text-align: left;
 }
 .swiper-container-wrapper--timeline .swiper-pagination-custom {
   position: relative;
@@ -184,7 +211,7 @@ canvas {
   transform: translateX(50%) translateY(-50%);
   width: 12px;
   height: 12px;
-  background: #000;
+  background: rgb(65, 105, 225);
   border-radius: 2rem;
   content: "";
   transition: 0.2s all ease-in-out;
@@ -196,7 +223,7 @@ canvas {
   transition-delay: 0.4s;
 }
 .swiper-container-wrapper--timeline .swiper-pagination-custom .swiper-pagination-switch.active .switch-title:after {
-  background: #000;
+  background: rgb(44, 96, 255);
   width: 25px;
   height: 25px;
   transition-delay: 0.4s;
@@ -208,6 +235,17 @@ canvas {
 .swiper-container-wrapper--timeline .swiper-pagination-custom .swiper-pagination-switch.active ~ .swiper-pagination-switch .switch-title:after {
   background: #888;
 }
-.hide {
-  display: none;
+.swiper-button-next {
+  white-space: nowrap;
+  right: 100px;
+  bottom: 22px;
+  top: auto;
+  justify-content: center;
+  color: rgba(255, 255, 255);
 }
+.swiper-button-next p {
+  margin-right: 10px;
+  height: 28%;
+}
+
+
