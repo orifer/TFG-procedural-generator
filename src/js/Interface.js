@@ -175,22 +175,22 @@ class Interface {
         x: 0, 
         y: this.app.stars.view.rotation.y - 4, 
         z: 0 ,
-        duration: 9, 
+        duration: 10, 
         ease: "power2.inOut"
       });
 
       // Planet
       gsap.to(this.app.planet.ground.rotation , { 
         x: 0, 
-        y: this.app.planet.ground.rotation.y + 15, 
+        y: this.app.planet.ground.rotation.y + 8, 
         z: 0 ,
-        duration: 6, 
+        duration: 5, 
         ease: "power1.inOut"
       });
 
       // Camera
       this.app.controls.autoRotate = true;
-      setTimeout(this.stopCamera.bind(this), 4000);
+      setTimeout(this.stopCamera.bind(this), 5000);
     }
 
     stopCamera() {
@@ -208,8 +208,11 @@ class Interface {
 
     update() {
       var deltaTime = this.app.time - this.clickTime;
-      var smoothValue = THREE.MathUtils.smoothstep(deltaTime, 0., 1) * -20.0;
-      if (smoothValue)  this.app.controls.autoRotateSpeed = smoothValue;
+
+      // Create a normalFunction-like curve
+      var duration = 4.;
+      var smoothValue = THREE.MathUtils.smoothstep(deltaTime/duration,0.,0.5) - THREE.MathUtils.smoothstep(deltaTime/duration,0.5,1.)
+      if (smoothValue)  this.app.controls.autoRotateSpeed = smoothValue * -30.;
     }
 
     changeView(view) {
