@@ -19,7 +19,7 @@ class BaseApp {
         const near = 0.1;
         const far = 999999.0;
         this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-        this.camera.position.z = 7;
+        this.camera.position.set(1212371., -10873., 76058.);
         window.camera = this.camera;
 
         // Main scene

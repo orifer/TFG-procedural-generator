@@ -6,12 +6,52 @@ import gsap from 'https://cdn.skypack.dev/gsap';
 class Interface {
 
     constructor(app) {
+      this.app = app;     // Main app
+      this.loadDialog();
+    }
 
-      // Main app
-      this.app = app;
-
+    init() {
       // Create the GUI
-      window.gui = new GUI({ autoPlace: false });
+      window.gui = new GUI({ autoPlace: false });      
+    }
+
+    loadDialog() {
+      var that = this; // context
+
+      $( function() {
+
+        $( "#dialog-confirm" ).dialog({
+          dialogClass: "no-close",
+          resizable: false,
+          height: "auto",
+          width: 600,
+          modal: false,
+          buttons: {
+            Ok: function() {
+              // Save the values before closing the dialog
+              // escena = $(':radio:checked', this)[0].value; //ToDo
+              that.app.planet.resolution = $(':radio:checked', this)[1].value;
+              that.goToPlanet();
+              that.loadHistoryInterface();
+              $( this ).dialog( "close" );
+            }
+          }
+        });
+
+        // Checkbox constructor parameters
+        $( "input" ).checkboxradio({
+          icon: false
+        });
+
+      });
+    }
+
+    loadHistoryInterface() {
+      // Show elements
+      $(".left-panel").removeClass("hide");
+      $("#right-info-panel").removeClass("hide");
+      $("#stats-container").removeClass("hide");
+      $("#bottom-timeline").removeClass("hide");
 
       // Load the panels
       this.createRightPanel();
@@ -22,35 +62,15 @@ class Interface {
       this.createBottomPanel();
       this.createLeftPanel();
 
-
       // Load the planet name
       this.app.planet.updatePlanetName();
-
-      // Resolution
-      window.gui.add(this.app.planet, "resolution", [256, 512, 1024, 2048, 4096]).name("Resolution").onChange(value => { this.app.planet.renderScene() });
-
-      // Seed
-      window.gui.add(this.app.planet, "seedString").listen().onFinishChange(value => { this.app.planet.renderScene() }).name("Seed");
-    
-
-      // Map visualization
-      var selectedMapOptions  = { 
-        Normal: 0, 
-        Plates: 1, 
-        Rivers: 2,
-        Flow: 3,
-        Temperature: 4,
-      };
-      window.gui.add(this.app.planet, "displayTextureMap", selectedMapOptions).name("selectedMap").onChange(value => { this.app.planet.renderScene() });
       
       // Time
       window.gui.add(this.app, "time", 0., 60.).listen();
-
-      // New planet button
-      window.gui.add(this.app.planet, "randomize").name("New planet");
       
       window.gui.close();
     }
+    
 
     createRightPanel() {
 
@@ -70,7 +90,7 @@ class Interface {
     }
 
     createPlanetCategory() {
-      let matFolder = window.gui.addFolder('Planet');
+      let matFolder = window.gui.addFolder('Planeta');
 
       matFolder.add(this.app.planet, "roughness", 0.0, 1.0).onChange(value => { this.app.planet.updateMaterial(); });
       matFolder.add(this.app.planet, "metalness", 0.0, 1.0).onChange(value => { this.app.planet.updateMaterial(); });
@@ -86,7 +106,7 @@ class Interface {
 
 
     createAtmosphereCategory() {
-      let atmFolder = window.gui.addFolder('Atmosphere');
+      let atmFolder = window.gui.addFolder('Atmosfera');
 
       atmFolder.add(this.app.atmos, "size", 0.0, 0.2).listen();
       atmFolder.add(this.app.atmos, "densityFalloff", 0., 64.0);
@@ -116,8 +136,8 @@ class Interface {
     }
 
     createCameraCategory() {
-      let cameraFolder = window.gui.addFolder('Camera');
-      cameraFolder.add(this.app.controls, "autoRotate").name('Rotate');
+      let cameraFolder = window.gui.addFolder('Càmera');
+      cameraFolder.add(this.app.controls, "autoRotate").name('Rotar');
       cameraFolder.add(this.app.camera, "fov", 20, 120).name("FOV").onChange(value => { this.app.camera.updateProjectionMatrix() });
       cameraFolder.close();
     }
@@ -201,11 +221,14 @@ class Interface {
       gsap.to(this.app.camera.position , { x: 4.6, y: 1., z: 2., duration: 4, ease: "power3.inOut" });
     }
 
+    // Restart values after animation step
     nextStep() {
       this.app.playing = false;
       this.app.planet.rotationSpeed = 0.0004;
     }
 
+
+    // This is executed on every tick
     update() {
       var deltaTime = this.app.time - this.clickTime;
 
@@ -214,6 +237,7 @@ class Interface {
       var smoothValue = THREE.MathUtils.smoothstep(deltaTime/duration,0.,0.5) - THREE.MathUtils.smoothstep(deltaTime/duration,0.5,1.)
       if (smoothValue)  this.app.controls.autoRotateSpeed = smoothValue * -30.;
     }
+
 
     changeView(view) {
       this.normalViewButton.classList.remove("active");
@@ -224,6 +248,7 @@ class Interface {
       this.app.planet.displayTextureMap = view;
       this.app.planet.renderScene();
     }
+
 
     createLeftPanel() {
 
@@ -297,6 +322,10 @@ class Interface {
         playButton.children[0].classList.toggle("fa-pause");
         this.app.playing = !this.app.playing;
       });
+    }
+
+    goToPlanet() {
+      gsap.to(this.app.camera.position , { x: 4.6, y: 1., z: 2., duration: 8, ease: "power4.out" });
     }
 
 }

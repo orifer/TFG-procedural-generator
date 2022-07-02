@@ -10,8 +10,8 @@ class Sun {
     this.app = app;
     this.view = new THREE.Object3D();
 
-    this.size = 8000;
-    this.position = new THREE.Vector3(200000, 0, 0);
+    this.size = 600;
+    this.position = new THREE.Vector3(20000, 0, 0);
     this.app.directionalLight.position.copy(this.position);
 
     this.createScene();

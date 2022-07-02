@@ -26,7 +26,7 @@
 
 
         <!-- Left panel -->
-        <div class="left-panel">
+        <div class="left-panel hide">
             <!-- Play/pause simulation button -->
             <button id="play-pause-button" class='btn-interface'>
                 <i class='fa-solid fa-play'></i>
@@ -64,7 +64,7 @@
 
 
         <!-- Right info -->
-        <div class="swiper swiper-container swiper-container--timeline">
+        <div id="right-info-panel" class="swiper swiper-container swiper-container--timeline hide">
             <div class="swiper-wrapper">
                 <!-- Slides -->
                 <div class="swiper-slide">
@@ -106,17 +106,17 @@
                 <div class="swiper-slide">
                     <span class="info-title">Actualitat</span>
                     <div class="info-description">
-                        <p>text</p>
+                        <p></p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Stats -->
-        <div id="stats-container"></div>
+        <div id="stats-container" class="hide"></div>
 
         <!-- Bottom timeline -->
-        <div class="swiper-container" style="background: linear-gradient(to top, rgb(56, 56, 56), rgba(34, 34, 34, 0.7), rgba(0, 0, 0, 0)); ">
+        <div id="bottom-timeline" class="swiper-container hide" style="background: linear-gradient(to top, rgb(56, 56, 56), rgba(34, 34, 34, 0.7), rgba(0, 0, 0, 0)); ">
             <div class="swiper-container-wrapper swiper-container-wrapper--timeline">
 
                 <!-- Timeline points -->
@@ -142,10 +142,59 @@
             </div>
         </div>
 
+        <!-- Start Dialog -->
+        <div id="dialog-confirm" title="Generador procedural de planetes">
+
+            <!-- Select scene -->
+            <legend style="margin-bottom: 0;">Selecciona una escena</legend>
+            <table id="scene-table" style="width:100%">
+                <tr>
+                    <td>
+                        <label for="scene-1">Earth-like</label>
+                        <input value="0" type="radio" name="scene-1" id="scene-1" checked>
+                    </td>
+                    <td>
+                        <p style="font-size: 0.8rem; margin: 0;">Genera un planeta com la terra i visualitza la seva evolució</p> 
+                    </td>
+                </tr>
+                <!-- <tr>
+                    <td>
+                        <label for="scene-2">Planeta B</label>
+                        <input value="1" type="radio" name="scene-1" id="scene-2">
+                    </td>
+                    <td>
+                        <p style="font-size: 0.8rem; margin: 0;">Genera un planeta B</p> 
+                    </td>
+                </tr> -->
+            </table>
+
+            <hr>
+
+            <!-- Select resolution -->
+            <fieldset>
+                <legend style="margin-bottom: 0;">Resolució</legend>
+                <p style="font-size: 0.8rem; margin: 0;"><span class="ui-icon ui-icon-alert" style="float:left; margin:2px 2px 0px 0;"></span>Valors més grans tenen un major impacte al rendiment.</p> 
+                <label for="radio-1">256</label>
+                <input value="256" type="radio" name="radio-1" id="radio-1">
+                <label for="radio-2">512</label>
+                <input value="512" type="radio" name="radio-1" id="radio-2">
+                <label for="radio-3">1024</label>
+                <input value="1024" type="radio" name="radio-1" id="radio-3" checked>
+                <label for="radio-4">2048</label>
+                <input value="2048" type="radio" name="radio-1" id="radio-4">
+                <label for="radio-5">4096</label>
+                <input value="4096" type="radio" name="radio-1" id="radio-5">
+            </fieldset>
+
+        </div>
+
+       
 
         <!------------------------------------------------ Script imports ------------------------------------------------------>
         <script src="https://kit.fontawesome.com/d56ac1debb.js" crossorigin="anonymous"></script>           <!-- FontAwesome -->
         <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>           <!-- jQuery -->
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>     <!-- jQuery UI -->
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/overcast/jquery-ui.css"/>   <!-- jQuery UI CSS -->
         <script src='https://cdnjs.cloudflare.com/ajax/libs/Swiper/6.8.4/swiper-bundle.min.js'></script>    <!-- Swiper -->
         <!----------------------------------------------------------------------------------------------------------------------->
     </body>

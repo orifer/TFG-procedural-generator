@@ -7,8 +7,15 @@ import Stars from './src/js/Stars.js';
 
 export default class app extends BaseApp {
 
-    constructor () {
+    constructor() {
         super();
+
+        // Interface (GUI)
+        this.interface = new Interface(this);
+        
+        // WIP
+        // this.interface.showMenu();
+        // this.interface.goToPlanet();
 
         this.time = 0;
         this.playing = false;
@@ -17,9 +24,7 @@ export default class app extends BaseApp {
         this.planet = new Planet(this);
         this.atmos = new Atmosphere(this);
         this.stars = new Stars(this);
-
-        // Interface (GUI)
-        this.interface = new Interface(this);
+        this.interface.init();
 
         super.postProcessing();
         this.render();
