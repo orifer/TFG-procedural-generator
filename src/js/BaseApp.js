@@ -42,7 +42,11 @@ class BaseApp {
 
         // Stats
         this.stats = Stats()
-        document.body.appendChild(this.stats.dom)
+        this.stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+        document.getElementById('stats-container').appendChild(this.stats.domElement)
+        this.stats.domElement.style.position = null;
+        this.stats.domElement.style.top = null;
+        this.stats.domElement.style.left = null;
 
         // Lights
         this.ambientLight = new THREE.AmbientLight(0xffffff, 0.04);

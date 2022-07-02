@@ -1,4 +1,6 @@
+import * as THREE from 'three';
 import { GUI } from 'https://cdn.skypack.dev/three@0.136/examples/jsm/libs/lil-gui.module.min.js';
+import gsap from 'https://cdn.skypack.dev/gsap';
 // INFO: https://lil-gui.georgealways.com/
 
 class Interface {
@@ -86,7 +88,7 @@ class Interface {
     createAtmosphereCategory() {
       let atmFolder = window.gui.addFolder('Atmosphere');
 
-      atmFolder.add(this.app.atmos, "size", 0.0, 2.0).listen();
+      atmFolder.add(this.app.atmos, "size", 0.0, 0.2).listen();
       atmFolder.add(this.app.atmos, "densityFalloff", 0., 64.0);
       atmFolder.add(this.app.atmos, "opticalDepthPoints", 0, 32, 1);
       atmFolder.add(this.app.atmos, "inScatterPoints", 0, 32, 1);
@@ -126,7 +128,7 @@ class Interface {
       // Timeline
         var swiper = new Swiper(".swiper", {
           autoHeight: true,
-          speed: 500,
+          speed: 8000,
           direction: "horizontal",
           navigation: {
             nextEl: ".swiper-button-next",
@@ -144,7 +146,7 @@ class Interface {
               $(".swiper-pagination-custom .swiper-pagination-switch").removeClass("active");
               $(".swiper-pagination-custom .swiper-pagination-switch").eq(0).addClass("active");
             },
-            slideChangeTransitionStart: function () {
+            slideChangeTransitionEnd: function () {
               $(".swiper-pagination-custom .swiper-pagination-switch").removeClass("active");
               $(".swiper-pagination-custom .swiper-pagination-switch").eq(swiper.realIndex).addClass("active");
             }
@@ -156,11 +158,59 @@ class Interface {
           // $(".swiper-pagination-custom .swiper-pagination-switch").removeClass("active");
           // $(this).addClass("active");
         });
-      
-   
 
+        // Add event listener for the continue button
+        $(".swiper-button-next")[0].addEventListener("click", this.onButtonNextClick.bind(this));
+        
+      }
+      
+    onButtonNextClick() {
+      this.clickTime = this.app.time;
+      this.app.playing = true;
+      // this.app.planet.rotationSpeed = 0.02;
+      setTimeout(this.nextStep.bind(this), 8000);
+
+      // Stars
+      gsap.to(this.app.stars.view.rotation , { 
+        x: 0, 
+        y: this.app.stars.view.rotation.y - 4, 
+        z: 0 ,
+        duration: 9, 
+        ease: "power2.inOut"
+      });
+
+      // Planet
+      gsap.to(this.app.planet.ground.rotation , { 
+        x: 0, 
+        y: this.app.planet.ground.rotation.y + 15, 
+        z: 0 ,
+        duration: 6, 
+        ease: "power1.inOut"
+      });
+
+      // Camera
+      this.app.controls.autoRotate = true;
+      setTimeout(this.stopCamera.bind(this), 4000);
     }
 
+    stopCamera() {
+      this.app.controls.autoRotate = false;
+      this.app.controls.autoRotateSpeed = 2.0;
+
+      // Camera to position
+      gsap.to(this.app.camera.position , { x: 4.6, y: 1., z: 2., duration: 4, ease: "power3.inOut" });
+    }
+
+    nextStep() {
+      this.app.playing = false;
+      this.app.planet.rotationSpeed = 0.0004;
+    }
+
+    update() {
+      var deltaTime = this.app.time - this.clickTime;
+      var smoothValue = THREE.MathUtils.smoothstep(deltaTime, 0., 1) * -20.0;
+      if (smoothValue)  this.app.controls.autoRotateSpeed = smoothValue;
+    }
 
     changeView(view) {
       this.normalViewButton.classList.remove("active");

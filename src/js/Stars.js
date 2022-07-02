@@ -10,6 +10,9 @@ class Stars {
     this.app = app;
     this.view = new THREE.Object3D();
 
+    // Properties
+    this.rotationSpeed = 0;
+
     this.createScene();
   }
   createScene() {
@@ -30,7 +33,7 @@ class Stars {
   }
 
   update() {
-    
+    this.view.rotation.y += this.rotationSpeed;   
   }
 
 }

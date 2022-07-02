@@ -4,7 +4,7 @@ body {
   height: 100%;
   overscroll-behavior: none;
   overflow: hidden;
-  background-color: #000;
+  background-color: rgb(0, 0, 0);
 }
 body {
   margin: 0;
@@ -41,6 +41,13 @@ canvas {
 #planetName {
   font-size: 24px;
   line-height: 28px;
+}
+#stats-container {
+  position: fixed;
+  top: 22px;
+  right: 20px;
+  z-index: 10000;
+  /* display: none; */
 }
 
 
@@ -96,7 +103,10 @@ canvas {
 }
 
 
-/* Bottom timeline panel */
+
+
+
+/* Bottom timeline panel 1 */
 .swiper-container {
   position: absolute;
   margin: auto;
@@ -107,28 +117,6 @@ canvas {
   width: auto;
   height: 100px;
   text-align: center;
-}
-.swiper-container-wrapper--timeline .swiper-slide {
-  position: absolute;
-  top: 0;
-  display: flex;
-  /* background: rgba(201, 201, 201, 0.8); */
-  min-height: 300px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-}
-.swiper-container-wrapper--timeline .swiper-slide .container {
-  padding: 0;
-  width: 100%;
-}
-.swiper-container-wrapper--timeline .swiper-slide .title {
-  font-size: 18px;
-  opacity: 0;
-  transition: 0.5s ease 0.5s;
-}
-.swiper-container-wrapper--timeline .swiper-slide-active .title {
-  opacity: 1;
 }
 .swiper-container-wrapper--timeline .swiper-pagination-progressbar {
   position: relative;
@@ -162,19 +150,44 @@ canvas {
   content: "";
   z-index: -1;
 }
+
+
+/* Left Info Panel */
+.swiper-slide {
+  margin-top: 10px;
+}
+.info-title {
+  font-size: 36px;
+  line-height: 120%;
+  font-weight: 100;
+  transition: 0.5s ease 0.5s;
+}
+.info-description p {
+  font-family: "Metropolis", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #a1a1a1;
+  line-height: 150%;
+  letter-spacing: 0;
+  text-align: left;
+  margin-top: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
 .swiper-container--timeline {
-  background: rgba(41, 42, 45, 0.2);
+  background: linear-gradient(135deg, rgba(41, 41, 41, 0.5) 0%, rgba(255,255,255,0) 70%);
   position: absolute;
-  bottom: 150px;
-  left: auto;
-  right: 20px;
-  width: 300px;
-  height: 400px;
+  top: 10px;
+  bottom: auto;
+  left: 10px;
+  right: auto;
+  width: 500px;
+  height: 265px;
   border-radius: 10px;
 }
-.info-text {
-  text-align: left;
-}
+
+
+/* Bottom timeline panel 2 */
 .swiper-container-wrapper--timeline .swiper-pagination-custom {
   position: relative;
   list-style: none;
@@ -247,5 +260,4 @@ canvas {
   margin-right: 10px;
   height: 28%;
 }
-
 

@@ -15,6 +15,7 @@ class Planet {
     this.resolution = 1024;
     this.subdivisions = 128;
     this.size = 1;
+    this.rotationSpeed = 0.0004;
 
     this.seedString = "Earth-like";
     this.initSeed();
@@ -77,11 +78,11 @@ class Planet {
 
 
   update() {
+    if (this.rotate) {
+      this.ground.rotation.y += this.rotationSpeed;
+    }
+    
     if (this.app.playing) {
-      if (this.rotate) {
-        this.ground.rotation.y -= 0.001;
-      }
-
       // Update shader
       this.textureMap.render({
         time: this.app.time,

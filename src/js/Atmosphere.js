@@ -22,7 +22,7 @@ class Atmosphere {
     // Animation properties
     this.startTime = 10;
     this.endTime = 22;
-    this.finalSize = 0.1;
+    this.finalSize = 0.08;
     this.startWaveLengths = new THREE.Vector3(400, 500, 550);
 
     this.startTime2 = 22;
