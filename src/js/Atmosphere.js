@@ -21,11 +21,11 @@ class Atmosphere {
 
     // Animation properties
     this.startTime = 10;
-    this.endTime = 22;
+    this.endTime = 16;
     this.finalSize = 0.08;
     this.startWaveLengths = new THREE.Vector3(400, 500, 550);
 
-    this.startTime2 = 22;
+    this.startTime2 = 16;
     this.endTime2 = 30;
     this.finalSize2 = 0.02;
     this.finalWaveLengths = new THREE.Vector3(700, 530, 440);

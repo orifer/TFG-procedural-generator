@@ -16,8 +16,8 @@ const fragmentShader = /* glsl */ `
 #define LAND_START_TIME 20.
 #define OCEAN_END_TIME 25.
 #define LAND_END_TIME 30.
-#define TECTONICS_END_TIME 126.
-#define STORY_END_TIME 250.
+#define TECTONICS_END_TIME 35.
+#define STORY_END_TIME 35.
 
 #define OCEAN_DEPTH ocean_depth(uTime)
 
