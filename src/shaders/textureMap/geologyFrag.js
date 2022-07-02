@@ -258,10 +258,12 @@ void main() {
         } else {
             // Expansion of the current plate
             int dir = int(4.*hash13(vec3(p,uFrame)));
-            if(dir == 0) gl_FragColor.x = s.x;
-            if(dir == 1) gl_FragColor.x = w.x;
-            if(dir == 2) gl_FragColor.x = n.x;
-            if(dir == 3) gl_FragColor.x = e.x;
+            switch (dir) {
+                case 0: gl_FragColor.x = s.x; break;
+                case 1: gl_FragColor.x = w.x; break;
+                case 2: gl_FragColor.x = n.x; break;
+                case 3: gl_FragColor.x = e.x; break;
+            }
         }
         gl_FragColor.y = clamp(gl_FragColor.y, 0., 1.);
 
