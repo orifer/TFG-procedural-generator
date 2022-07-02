@@ -31,6 +31,7 @@ class Interface {
               // Save the values before closing the dialog
               // escena = $(':radio:checked', this)[0].value; //ToDo
               that.app.planet.resolution = $(':radio:checked', this)[1].value;
+              that.app.planet.renderScene();
               that.goToPlanet();
               that.loadHistoryInterface();
               $( this ).dialog( "close" );
