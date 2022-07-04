@@ -46,6 +46,7 @@ class TextureMap {
         uFrame: { value: 0 },
         uResolution: { value: this.resolutionVector },
         uSeed: { value: 0 },
+        uScene: { value: 0 },
         uDisplayTextureMap: { value: 0 },
         iChannel0: { value: null },
         iChannel1: { value: null },
@@ -63,6 +64,7 @@ class TextureMap {
         uFrame: { value: 0 },
         uResolution: { value: this.resolutionVector },
         uSeed: { value: 0 },
+        uScene: { value: 0 },
         uMouse: { value: new THREE.Vector2(0, 0) },
         uMouseClick: { value: false },
         uAddingTerrain: { value: false },
@@ -80,6 +82,7 @@ class TextureMap {
         uFrame: { value: 0 },
         uResolution: { value: this.resolutionVector },
         uSeed: { value: 0 },
+        uScene: { value: 0 },
         iChannel0: { value: null },
         iChannel1: { value: null },
       });
@@ -94,6 +97,7 @@ class TextureMap {
         uFrame: { value: 0 },
         uResolution: { value: this.resolutionVector },
         uSeed: { value: 0 },
+        uScene: { value: 0 },
         iChannel0: { value: null },
         iChannel1: { value: null },
         iChannel2: { value: null },
@@ -110,6 +114,7 @@ class TextureMap {
         uFrame: { value: 0 },
         uResolution: { value: this.resolutionVector },
         uSeed: { value: 0 },
+        uScene: { value: 0 },
         iChannel0: { value: null },
         iChannel1: { value: null },
         iChannel2: { value: null },
@@ -142,13 +147,13 @@ class TextureMap {
 
 
   render(props) {
-    console.log(props.seed);
-
+    
     // Geo buffer
     this.bufferGeo.uniforms.uTime.value = props.time;
     this.bufferGeo.uniforms.uFrame.value = this.counter;
     this.bufferGeo.uniforms.uResolution.value = new THREE.Vector3(props.resolution, props.resolution, window.devicePixelRatio);
     this.bufferGeo.uniforms.uSeed.value = props.seed;
+    this.bufferGeo.uniforms.uScene.value = props.scene;
     this.bufferGeo.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture;
     this.bufferGeo.uniforms.uMouse.value = props.mouse;
     this.bufferGeo.uniforms.uMouseClick.value = props.mouseClick.value;
@@ -161,6 +166,7 @@ class TextureMap {
     this.bufferCirculation.uniforms.uFrame.value = this.counter;
     this.bufferCirculation.uniforms.uResolution.value = new THREE.Vector3(props.resolution, props.resolution, window.devicePixelRatio);
     this.bufferCirculation.uniforms.uSeed.value = props.seed;
+    this.bufferCirculation.uniforms.uScene.value = props.scene;
     this.bufferCirculation.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture;
     this.bufferCirculation.uniforms.iChannel1.value = this.targetCirculation.readBuffer.texture;
     this.targetCirculation.render(this.bufferCirculation.scene, this.orthoCamera);
@@ -170,6 +176,7 @@ class TextureMap {
     this.bufferWind.uniforms.uFrame.value = this.counter;
     this.bufferWind.uniforms.uResolution.value = new THREE.Vector3(props.resolution, props.resolution, window.devicePixelRatio);
     this.bufferWind.uniforms.uSeed.value = props.seed;
+    this.bufferWind.uniforms.uScene.value = props.scene;
     this.bufferWind.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture;
     this.bufferWind.uniforms.iChannel1.value = this.targetCirculation.readBuffer.texture;
     this.bufferWind.uniforms.iChannel2.value = this.targetWind.readBuffer.texture;
@@ -180,6 +187,7 @@ class TextureMap {
     this.bufferSoil.uniforms.uFrame.value = this.counter;
     this.bufferSoil.uniforms.uResolution.value = new THREE.Vector3(props.resolution, props.resolution, window.devicePixelRatio);
     this.bufferSoil.uniforms.uSeed.value = props.seed;
+    this.bufferSoil.uniforms.uScene.value = props.scene;
     this.bufferSoil.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture;
     this.bufferSoil.uniforms.iChannel1.value = this.targetCirculation.readBuffer.texture;
     this.bufferSoil.uniforms.iChannel2.value = this.targetWind.readBuffer.texture;
@@ -191,6 +199,7 @@ class TextureMap {
     this.bufferMain.uniforms.uFrame.value = this.counter;
     this.bufferMain.uniforms.uResolution.value = new THREE.Vector3(props.resolution, props.resolution, window.devicePixelRatio);
     this.bufferMain.uniforms.uSeed.value = props.seed;
+    this.bufferMain.uniforms.uScene.value = props.scene;
     this.bufferMain.uniforms.uDisplayTextureMap.value = props.displayTextureMap;
     this.bufferMain.uniforms.iChannel0.value = this.targetGeo.readBuffer.texture;
     this.bufferMain.uniforms.iChannel1.value = this.targetCirculation.readBuffer.texture;

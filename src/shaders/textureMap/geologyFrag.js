@@ -150,8 +150,9 @@ void main() {
         gl_FragColor.w = hash12(p); 
         
         // Terrain elevation
-        gl_FragColor.z = clamp(15. - 3.5 * protoplanet(p / uResolution.xy), 0., 15.);
-        
+        if (uScene == 0) gl_FragColor.z = clamp(15. - 3.5 * protoplanet(p / uResolution.xy), 0., 15.);
+        else if (uScene == 1) gl_FragColor.z = clamp(15. - 15. * protoplanet(p / uResolution.xy), 0., 15.);
+
         return;
     }
     
@@ -160,6 +161,8 @@ void main() {
     // ################################################################
 
     gl_FragColor = buf(p);
+
+    if (uScene == 1) return;
     
     if (uTime < OCEAN_START_TIME) return;
     float smoothstart = smoothstep(OCEAN_START_TIME, OCEAN_END_TIME, uTime);
@@ -314,7 +317,8 @@ void main() {
     if (uAddingTerrain) magnitude = 0.5 * exp(-0.5 * dot(r,r));
     else if (uRemovingTerrain) magnitude = -1. * (0.5 * exp(-0.5 * dot(r,r)));
     if (uMouseClick) gl_FragColor.z += magnitude;
-    
+
+
     
     gl_FragColor.y = clamp(gl_FragColor.y, 0., 1.);
     gl_FragColor.z = max(gl_FragColor.z, 0.);

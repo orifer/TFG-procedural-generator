@@ -8,7 +8,8 @@ const fragmentShader = /* glsl */ `
 // ||                   VARIABLES & QUALIFIERS                   ||
 // ################################################################
 
-uniform float uSeed; 
+uniform float uSeed;  // seed
+uniform int uScene; // Scene number
 
 #define PI 3.14159265359
 
@@ -74,6 +75,7 @@ vec2 plate_move(float q, float uFrame, float uTime) {
 }
 
 float ocean_depth(float t) {
+    if (uScene == 1) return 5.; // Water world
     if (TECTONICS_END_TIME < t && t < STORY_END_TIME) t = TECTONICS_END_TIME;
     float d = 7.25 + 0.25 * sin(t/5.);
     d *= smoothstep(OCEAN_START_TIME, OCEAN_END_TIME, t);

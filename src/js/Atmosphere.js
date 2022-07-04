@@ -5,10 +5,11 @@ import vertexShader from '../shaders/vertexShader.js'
 
 class Atmosphere {
 
-  constructor(app) {
+  constructor(app, props) {
 
     // Main app
     this.app = app;
+    this.scene = props.sceneId;
     this.view = new THREE.Object3D();
 
     // Atmosphere properties
@@ -115,17 +116,20 @@ class Atmosphere {
   update() {
     if (this.app.playing) {
 
-      // Increase the size of the atmosphere progressively. Starting atmosphere, more thick and redish.
-      if (this.app.time > this.startTime && this.app.time < this.endTime) {
-        this.size = 0.0001 + (THREE.MathUtils.smoothstep((this.app.time-this.startTime)/(this.endTime-this.startTime), 0., 1.) * this.finalSize);
+      if (this.scene == 0) {
+        // Increase the size of the atmosphere progressively. Starting atmosphere, more thick and redish.
+        if (this.app.time > this.startTime && this.app.time < this.endTime) {
+          this.size = 0.0001 + (THREE.MathUtils.smoothstep((this.app.time-this.startTime)/(this.endTime-this.startTime), 0., 1.) * this.finalSize);
+        }
+        // Final atmosphere, more thin and blueish.
+        else if (this.app.time > this.startTime2 && this.app.time < this.endTime2) {
+          this.size = this.finalSize - ((THREE.MathUtils.smoothstep((this.app.time-this.startTime2)/(this.endTime2-this.startTime2), 0., 1.) * (this.finalSize - this.finalSize2)));
+          this.waveLengths.x = this.startWaveLengths.x - ((THREE.MathUtils.smoothstep((this.app.time-this.startTime2)/(this.endTime2-this.startTime2), 0., 1.) * (this.startWaveLengths.x - this.finalWaveLengths.x)));
+          this.waveLengths.y = this.startWaveLengths.y - ((THREE.MathUtils.smoothstep((this.app.time-this.startTime2)/(this.endTime2-this.startTime2), 0., 1.) * (this.startWaveLengths.y - this.finalWaveLengths.y)));
+          this.waveLengths.z = this.startWaveLengths.z - ((THREE.MathUtils.smoothstep((this.app.time-this.startTime2)/(this.endTime2-this.startTime2), 0., 1.) * (this.startWaveLengths.z - this.finalWaveLengths.z)));
+        }
       }
-      // Final atmosphere, more thin and blueish.
-      else if (this.app.time > this.startTime2 && this.app.time < this.endTime2) {
-        this.size = this.finalSize - ((THREE.MathUtils.smoothstep((this.app.time-this.startTime2)/(this.endTime2-this.startTime2), 0., 1.) * (this.finalSize - this.finalSize2)));
-        this.waveLengths.x = this.startWaveLengths.x - ((THREE.MathUtils.smoothstep((this.app.time-this.startTime2)/(this.endTime2-this.startTime2), 0., 1.) * (this.startWaveLengths.x - this.finalWaveLengths.x)));
-        this.waveLengths.y = this.startWaveLengths.y - ((THREE.MathUtils.smoothstep((this.app.time-this.startTime2)/(this.endTime2-this.startTime2), 0., 1.) * (this.startWaveLengths.y - this.finalWaveLengths.y)));
-        this.waveLengths.z = this.startWaveLengths.z - ((THREE.MathUtils.smoothstep((this.app.time-this.startTime2)/(this.endTime2-this.startTime2), 0., 1.) * (this.startWaveLengths.z - this.finalWaveLengths.z)));
-      }
+
     }
 
     // Render the atmosphere if we are looking at the planet in sphere mode

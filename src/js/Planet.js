@@ -13,6 +13,7 @@ class Planet {
     // Planet properties
     this.resolution = props.resolution;
     this.seed = props.seed;
+    this.scene = props.sceneId;
     this.subdivisions = 128;
     this.size = 1;
     this.rotationSpeed = 0.0003;
@@ -59,6 +60,7 @@ class Planet {
       resolution: this.resolution,
       displayTextureMap: this.displayTextureMap,
       seed: this.seed,
+      scene: this.scene,
       mouse: this.mouseIntersectUV,
       mouseClick: { value: false },
       addingTerrain: { value: false },
@@ -84,6 +86,7 @@ class Planet {
         resolution: this.resolution,
         displayTextureMap: this.displayTextureMap,
         seed: this.seed,
+        scene: this.scene,
         mouse: this.mouseIntersectUV,
         mouseClick: { value: this.app.mouseClick },
         addingTerrain: { value: this.app.addingTerrain },

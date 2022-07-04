@@ -24,28 +24,43 @@ export default class app extends BaseApp {
         this.render();
     }
 
-    loadScene(sceneId, props) {
-        this.sceneId = sceneId;
+    loadScene(props) {
+        this.sceneId = props.sceneId;
 
         // Seed
         this.seed = props.seed;
         props.seed = (THREE.MathUtils.seededRandom(this.seed)  + 0.5); // Normalized seed between 0.5 and 1.5
 
-        switch (sceneId) {
+        switch (this.sceneId) {
             case "0": this.loadScene0(props); break;
             case "1": this.loadScene1(props); break;
             default: break;
         }
     }
 
+    // Earth-like
     loadScene0(props) {
         this.sun = new Sun(this);
         this.planet = new Planet(this, props);
-        this.atmos = new Atmosphere(this);
+        this.atmos = new Atmosphere(this, props);
         
         this.interface.init();
         this.interface.goToPlanet();
         this.interface.loadHistoryInterface();
+    }
+
+    // Water world
+    loadScene1(props) {
+        this.sun = new Sun(this);
+        this.planet = new Planet(this, props);
+        this.atmos = new Atmosphere(this, props);
+        this.atmos.size = 0.04;
+        this.atmos.waveLengths = new THREE.Vector3(700, 530, 440);
+        this.playing = true;
+        
+        this.interface.init();
+        this.interface.goToPlanetFast();
+        this.interface.loadBasicInterface();
     }
 
     render() {
@@ -65,12 +80,16 @@ export default class app extends BaseApp {
                 break;
 
             case "1":
+                this.planet.update();
+                this.atmos.update();
+                this.sun.update();     
+                this.stars.update();  
+                this.interface.update();
                 break;
         
             default:
                 break;
         }
-        
     }
 
 }

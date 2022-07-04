@@ -167,14 +167,13 @@ vec4 map_sat(vec2 fragCoord) {
     land.rgb = mix(dry, veg, plant_growth(moisture, temp));
 
     // Initial rock and heat
-    if (uTime < LAND_END_TIME) {
+    if (uScene == 0 && uTime < LAND_END_TIME) {
         float c = (15. - y) / 3.5;
         
          // Sun position to add depth to the terrain, otherwise it would be too flat
         vec2 grad = vec2(buf(p+E).z - buf(p+W).z, buf(p+N).z - buf(p+S).z);
         
         // Heat
-        // float heat = clamp(2. / pow(uTime + 1., 2.), 0., 1.);
         float heat = clamp(8. / pow(uTime + 1., 2.), 0., .35);
         
         // Rock texture
@@ -190,10 +189,20 @@ vec4 map_sat(vec2 fragCoord) {
     } else {
         r = land;
     }
+
+    // Water world
+    if (uScene == 1) {
+        r = vec4(0,0,0,1);
+        if (y < OCEAN_DEPTH)  r = ocean;
+        else r = land;
+    }
     
     float clouds = 1.;
     float vapour = texture(iChannel2, uv).w;
-    r.rgb = mix(r.rgb, vec3(1), 0.5 * clouds * log(1. + vapour) * smoothstep(0., LAND_END_TIME, uTime));
+
+    if (uScene == 0) r.rgb = mix(r.rgb, vec3(1), 0.5 * clouds * log(1. + vapour) * smoothstep(0., LAND_END_TIME, uTime));
+    else if (uScene == 1) r.rgb = mix(r.rgb, vec3(1), 0.5 * 0. * log(1. + vapour));
+    
     return r;
 }
 

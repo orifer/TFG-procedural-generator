@@ -34,7 +34,8 @@ class Interface {
               var resolution = $(':radio:checked', this)[1].value;
               var seed = $('#seed-1', this)[0].value;
 
-              that.app.loadScene(sceneId, {
+              that.app.loadScene({
+                sceneId: sceneId,
                 resolution: resolution,
                 seed: seed
               });
@@ -60,7 +61,7 @@ class Interface {
     loadHistoryInterface() {
       // Show elements
       $(".left-panel").removeClass("hide");
-      $("#right-info-panel").removeClass("hide");
+      $("#left-info-panel").removeClass("hide");
       $("#stats-container").removeClass("hide");
       $("#bottom-timeline").removeClass("hide");
 
@@ -72,6 +73,27 @@ class Interface {
       this.createCameraCategory();
       this.createBottomPanel();
       this.createLeftPanel();
+      
+      // Seed
+      window.gui.add(this.app, "seed").disable();
+
+      // Time
+      window.gui.add(this.app, "time", 0., 100.).listen();
+      
+      window.gui.close();
+    }
+
+
+    loadBasicInterface() {
+      // Show elements
+      $("#stats-container").removeClass("hide");
+
+      // Load the panels
+      this.createRightPanel();
+      this.createPlanetCategory();
+      this.createAtmosphereCategory();
+      this.createDebugCategory();
+      this.createCameraCategory();
       
       // Seed
       window.gui.add(this.app, "seed").disable();
@@ -336,6 +358,10 @@ class Interface {
 
     goToPlanet() {
       gsap.to(this.app.camera.position , { x: 4.6, y: 1., z: 2., duration: 8, ease: "power4.out" });
+    }
+
+    goToPlanetFast() {
+      this.app.camera.position.set(4.6, 1., 2.);
     }
 
 }
