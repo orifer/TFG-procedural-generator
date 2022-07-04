@@ -108,7 +108,9 @@ float protoplanet(vec2 uv) {
     for (float i = 0.; i < 5.; i++) {
         
         // Generate the craters
-        float c = craters(vec3(0.4 * pow(2.2, i) * p));
+        float c = 0.;
+        if (uScene == 2) c = craters(vec3(0.15 * pow(2.5, i) * p));
+        else c = craters(vec3(0.4 * pow(2.2, i) * p));
 
         // Generate the FBM noise
         float noise = 0.4 * exp(-3. * c) * FBM(10. * p);
@@ -150,8 +152,9 @@ void main() {
         gl_FragColor.w = hash12(p); 
         
         // Terrain elevation
-        if (uScene == 0) gl_FragColor.z = clamp(15. - 3.5 * protoplanet(p / uResolution.xy), 0., 15.);
-        else if (uScene == 1) gl_FragColor.z = clamp(15. - 15. * protoplanet(p / uResolution.xy), 0., 15.);
+        if (uScene == 1) gl_FragColor.z = clamp(15. - 15. * protoplanet(p / uResolution.xy), 0., 15.);
+        else if (uScene == 2) gl_FragColor.z = clamp(15. - 3. * protoplanet(p / uResolution.xy), 0., 15.);
+        else gl_FragColor.z = clamp(15. - 3.5 * protoplanet(p / uResolution.xy), 0., 15.);
 
         return;
     }
@@ -162,7 +165,7 @@ void main() {
 
     gl_FragColor = buf(p);
 
-    if (uScene == 1) return;
+    if (uScene == 1 || uScene == 2) return;
     
     if (uTime < OCEAN_START_TIME) return;
     float smoothstart = smoothstep(OCEAN_START_TIME, OCEAN_END_TIME, uTime);

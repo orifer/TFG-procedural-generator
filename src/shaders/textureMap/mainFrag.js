@@ -183,25 +183,35 @@ vec4 map_sat(vec2 fragCoord) {
         land = mix(rock, land, smoothstep(LAND_START_TIME, LAND_END_TIME, uTime));
     }
 
+    
     vec4 r = vec4(0,0,0,1);
-    if (y < OCEAN_DEPTH && uTime > OCEAN_START_TIME) {
+    // Water world
+    if (uScene == 1) {
+        if (y < OCEAN_DEPTH)  r = ocean;
+        else r = land;
+    }
+
+    // Red planet
+    else if (uScene == 2) {
+        dry = vec3(0.89, 0.9, 0.89);
+        dry = mix(dry, vec3(0.11, 0.10, 0.05), smoothstep(-10., -8., temp));
+        dry = mix(dry, vec3(1.00, 0.4, 0.21), smoothstep( -8., 30., temp));
+        land.rgb = dry;
+        r = land;
+    }
+
+    // Earth-like
+    else if (y < OCEAN_DEPTH && uTime > OCEAN_START_TIME) {
         r = mix(land, ocean, smoothstep(0., 2., uTime - OCEAN_START_TIME));
     } else {
         r = land;
     }
-
-    // Water world
-    if (uScene == 1) {
-        r = vec4(0,0,0,1);
-        if (y < OCEAN_DEPTH)  r = ocean;
-        else r = land;
-    }
     
-    float clouds = 1.;
-    float vapour = texture(iChannel2, uv).w;
-
-    if (uScene == 0) r.rgb = mix(r.rgb, vec3(1), 0.5 * clouds * log(1. + vapour) * smoothstep(0., LAND_END_TIME, uTime));
-    else if (uScene == 1) r.rgb = mix(r.rgb, vec3(1), 0.5 * 0. * log(1. + vapour));
+    if (uScene == 0) {
+        float clouds = 1.;
+        float vapour = texture(iChannel2, uv).w;
+        r.rgb = mix(r.rgb, vec3(1), 0.5 * clouds * log(1. + vapour) * smoothstep(0., LAND_END_TIME, uTime));
+    }
     
     return r;
 }

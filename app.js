@@ -34,6 +34,7 @@ export default class app extends BaseApp {
         switch (this.sceneId) {
             case "0": this.loadScene0(props); break;
             case "1": this.loadScene1(props); break;
+            case "2": this.loadScene2(props); break;
             default: break;
         }
     }
@@ -63,6 +64,21 @@ export default class app extends BaseApp {
         this.interface.loadBasicInterface();
     }
 
+    // Red planet
+    loadScene2(props) {
+        this.sun = new Sun(this);
+        this.planet = new Planet(this, props);
+        this.atmos = new Atmosphere(this, props);
+        this.atmos.size = 0.02;
+        this.atmos.waveLengths = new THREE.Vector3(400, 500, 550);
+        this.playing = true;
+        
+        this.interface.init();
+        this.interface.goToPlanetFast();
+        this.interface.loadBasicInterface();
+    }
+
+
     render() {
         super.render();
         
@@ -70,25 +86,12 @@ export default class app extends BaseApp {
             this.time += 0.016;
         }
 
-        switch (this.sceneId) {
-            case "0":
-                this.planet.update();
-                this.atmos.update();
-                this.sun.update();     
-                this.stars.update();  
-                this.interface.update();
-                break;
-
-            case "1":
-                this.planet.update();
-                this.atmos.update();
-                this.sun.update();     
-                this.stars.update();  
-                this.interface.update();
-                break;
-        
-            default:
-                break;
+        if (this.sceneId) {
+            this.planet.update();
+            this.atmos.update();
+            this.sun.update();     
+            this.stars.update();  
+            this.interface.update();
         }
     }
 
