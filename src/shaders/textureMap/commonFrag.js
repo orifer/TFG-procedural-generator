@@ -8,6 +8,7 @@ const fragmentShader = /* glsl */ `
 // ||                   VARIABLES & QUALIFIERS                   ||
 // ################################################################
 
+uniform float uSeed; 
 
 #define PI 3.14159265359
 
@@ -90,9 +91,9 @@ float plant_growth(float moisture, float temp) {
 // Hash without Sine
 // Creative Commons Attribution-ShareAlike 4.0 International Public License
 // Created by David Hoskins.
-#define HASHSCALE1 .1031
-#define HASHSCALE3 vec3(.1031, .1030, .0973)
-#define HASHSCALE4 vec4(.1031, .1030, .0973, .1099)
+#define HASHSCALE1 .1031 * uSeed
+#define HASHSCALE3 vec3(.1031, .1030, .0973) * uSeed
+#define HASHSCALE4 vec4(.1031, .1030, .0973, .1099) * uSeed
 
 //----------------------------------------------------------------------------------------
 //  1 out, 1 in...

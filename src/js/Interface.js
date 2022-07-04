@@ -18,8 +18,9 @@ class Interface {
     loadDialog() {
       var that = this; // context
 
-      $( function() {
+      $( function() { // Document ready
 
+        // Dialog
         $( "#dialog-start" ).dialog({
           dialogClass: "no-close",
           resizable: false,
@@ -31,9 +32,11 @@ class Interface {
               // Save the values before closing the dialog
               var sceneId = $(':radio:checked', this)[0].value;
               var resolution = $(':radio:checked', this)[1].value;
+              var seed = $('#seed-1', this)[0].value;
 
               that.app.loadScene(sceneId, {
                 resolution: resolution,
+                seed: seed
               });
 
               $( this ).dialog( "close" );
@@ -42,10 +45,15 @@ class Interface {
         });
 
         // Checkbox constructor parameters
-        $( "input" ).checkboxradio({
+        $( ".checkboxradio input" ).checkboxradio({
           icon: false
         });
 
+        // Random button
+        $( "#random-seed-button" ).click(function() {
+          $('#seed-1').val(THREE.MathUtils.randInt(0, 9999999999));
+        });
+        $('#seed-1').val(THREE.MathUtils.randInt(0, 9999999999));
       });
     }
 
@@ -64,12 +72,12 @@ class Interface {
       this.createCameraCategory();
       this.createBottomPanel();
       this.createLeftPanel();
-
-      // Load the planet name
-      this.app.planet.updatePlanetName();
       
+      // Seed
+      window.gui.add(this.app, "seed").disable();
+
       // Time
-      window.gui.add(this.app, "time", 0., 60.).listen();
+      window.gui.add(this.app, "time", 0., 100.).listen();
       
       window.gui.close();
     }
@@ -85,7 +93,7 @@ class Interface {
       // Planet name
       let infoBox = document.createElement("div");
       infoBox.setAttribute("id", "infoBox");
-      infoBox.innerHTML = "Planet<br><div id='planetName'></div>";
+      infoBox.innerHTML = "Planet<br><div id='planetName'>Earth-like</div>";
       infoBoxHolder.appendChild(infoBox);
   
       // Open controls btn
@@ -190,7 +198,6 @@ class Interface {
     onButtonNextClick() {
       this.clickTime = this.app.time;
       this.app.playing = true;
-      // this.app.planet.rotationSpeed = 0.02;
       setTimeout(this.nextStep.bind(this), 8000);
 
       // Stars
@@ -227,7 +234,7 @@ class Interface {
     // Restart values after animation step
     nextStep() {
       this.app.playing = false;
-      this.app.planet.rotationSpeed = 0.0004;
+      this.app.planet.rotationSpeed = 0.0003;
     }
 
 

@@ -147,7 +147,7 @@
 
             <!-- Select scene -->
             <legend style="margin-bottom: 0;">Selecciona una escena</legend>
-            <table id="scene-table" style="width:100%">
+            <table  class="checkboxradio" id="scene-table" style="width:100%">
                 <tr>
                     <td>
                         <label style="width:100%" for="scene-1">Earth-like</label>
@@ -171,7 +171,7 @@
             <hr>
 
             <!-- Select resolution -->
-            <fieldset>
+            <fieldset class="checkboxradio">
                 <legend style="margin-bottom: 0;">Resolució</legend>
                 <p style="font-size: 0.8rem; margin: 0;"><span class="ui-icon ui-icon-alert" style="float:left; margin:2px 2px 0px 0;"></span>Valors més grans tenen un major impacte al rendiment.</p> 
                 <label for="radio-1">256</label>
@@ -184,6 +184,19 @@
                 <input value="2048" type="radio" name="radio-1" id="radio-4">
                 <label for="radio-5">4096</label>
                 <input value="4096" type="radio" name="radio-1" id="radio-5">
+            </fieldset>
+
+            <hr>
+
+            <!-- Seed -->
+            <fieldset>
+                <legend style="margin-bottom: 0;">Semilla</legend>
+                <p style="font-size: 0.8rem; margin: 0;">Serveix per a controlar la generació aleatòria.</p> 
+                <input type="text" name="seed-1" id="seed-1" maxlength="10">
+                
+                <!-- Random button -->
+                <button id="random-seed-button" class="button-small" style="color: #3383BB; border: none;"><i class='fa-solid fa-dice'></i></button>
+                
             </fieldset>
 
         </div>

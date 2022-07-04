@@ -1,26 +1,21 @@
 import * as THREE from 'three';
 import TextureMap from './maps/TextureMap.js'
-import * as seedrandom from 'https://cdn.jsdelivr.net/npm/seedrandom@3.0.5/seedrandom.min.js';
-import Utils from './Utils.js';
 
 
 class Planet {
 
-  constructor(app, res) {
-
-    // console.log(res);
+  constructor(app, props) {
 
     // Main app
     this.app = app;
     this.view = new THREE.Object3D();
 
-    this.resolution = res;
+    // Planet properties
+    this.resolution = props.resolution;
+    this.seed = props.seed;
     this.subdivisions = 128;
     this.size = 1;
-    this.rotationSpeed = 0.0004;
-
-    this.seedString = "Earth-like";
-    this.initSeed();
+    this.rotationSpeed = 0.0003;
 
     // Material properties
     this.roughness = 0.8;
@@ -57,15 +52,13 @@ class Planet {
 
 
   renderScene() {
-    this.initSeed();
-    this.updatePlanetName();
     this.updateNormalScaleForRes(this.resolution);
-    this.textureMap.updateResolution(this.resolution);
     
     this.textureMap.render({
       time: this.app.time,
       resolution: this.resolution,
       displayTextureMap: this.displayTextureMap,
+      seed: this.seed,
       mouse: this.mouseIntersectUV,
       mouseClick: { value: false },
       addingTerrain: { value: false },
@@ -90,6 +83,7 @@ class Planet {
         time: this.app.time,
         resolution: this.resolution,
         displayTextureMap: this.displayTextureMap,
+        seed: this.seed,
         mouse: this.mouseIntersectUV,
         mouseClick: { value: this.app.mouseClick },
         addingTerrain: { value: this.app.addingTerrain },
@@ -164,33 +158,8 @@ class Planet {
   }
 
 
-  updatePlanetName() {
-    let planetName = document.getElementById("planetName");
-    if (planetName != null) {
-      planetName.innerHTML = this.seedString;
-    }
-  }
-
-
-  initSeed() {
-    // https://github.com/davidbau/seedrandom 
-    window.rng = new Math.seedrandom(this.seedString);
-    this.seed = Utils.getRandomInt(0, 1) * 1000.0;
-    // WIP 
-
-    // Alternativa con three
-    // console.log(THREE.MathUtils.seededRandom());
-  }
-
-
-  randomize() {
-    this.seedString = new String(Math.floor(100000 + Math.random() * 900000));
-    this.renderScene();
-  }
-
-
   updateNormalScaleForRes(value) {
-    this.normalScale = value * 0.0002;
+    this.normalScale = value * 0.0003;
   }
 
   

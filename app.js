@@ -1,9 +1,11 @@
+import * as THREE from 'three';
 import BaseApp from './src/js/BaseApp.js'
 import Planet from './src/js/Planet.js'
 import Interface from './src/js/Interface.js'
 import Atmosphere from './src/js/Atmosphere.js'
 import Sun from './src/js/Sun.js';
 import Stars from './src/js/Stars.js';
+
 
 export default class app extends BaseApp {
 
@@ -22,7 +24,13 @@ export default class app extends BaseApp {
         this.render();
     }
 
-    loadScene(sceneId, props) {        
+    loadScene(sceneId, props) {
+        this.sceneId = sceneId;
+
+        // Seed
+        this.seed = props.seed;
+        props.seed = (THREE.MathUtils.seededRandom(this.seed)  + 0.5); // Normalized seed between 0.5 and 1.5
+
         switch (sceneId) {
             case "0": this.loadScene0(props); break;
             case "1": this.loadScene1(props); break;
@@ -31,10 +39,8 @@ export default class app extends BaseApp {
     }
 
     loadScene0(props) {
-        this.sceneId = 0;
-
         this.sun = new Sun(this);
-        this.planet = new Planet(this, props.resolution);
+        this.planet = new Planet(this, props);
         this.atmos = new Atmosphere(this);
         
         this.interface.init();
@@ -50,7 +56,7 @@ export default class app extends BaseApp {
         }
 
         switch (this.sceneId) {
-            case 0:
+            case "0":
                 this.planet.update();
                 this.atmos.update();
                 this.sun.update();     
@@ -58,7 +64,7 @@ export default class app extends BaseApp {
                 this.interface.update();
                 break;
 
-            case 1:
+            case "1":
                 break;
         
             default:
