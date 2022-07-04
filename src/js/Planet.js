@@ -6,13 +6,15 @@ import Utils from './Utils.js';
 
 class Planet {
 
-  constructor(app) {
+  constructor(app, res) {
+
+    // console.log(res);
 
     // Main app
     this.app = app;
     this.view = new THREE.Object3D();
 
-    this.resolution = 1024;
+    this.resolution = res;
     this.subdivisions = 128;
     this.size = 1;
     this.rotationSpeed = 0.0004;

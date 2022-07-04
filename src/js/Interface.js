@@ -29,11 +29,13 @@ class Interface {
           buttons: {
             Ok: function() {
               // Save the values before closing the dialog
-              // escena = $(':radio:checked', this)[0].value; //ToDo
-              that.app.planet.resolution = $(':radio:checked', this)[1].value;
-              that.app.planet.renderScene();
-              that.goToPlanet();
-              that.loadHistoryInterface();
+              var sceneId = $(':radio:checked', this)[0].value;
+              var resolution = $(':radio:checked', this)[1].value;
+
+              that.app.loadScene(sceneId, {
+                resolution: resolution,
+              });
+
               $( this ).dialog( "close" );
             }
           }
