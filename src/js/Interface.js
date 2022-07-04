@@ -20,7 +20,7 @@ class Interface {
 
       $( function() {
 
-        $( "#dialog-confirm" ).dialog({
+        $( "#dialog-start" ).dialog({
           dialogClass: "no-close",
           resizable: false,
           height: "auto",
