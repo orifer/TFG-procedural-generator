@@ -136,6 +136,13 @@ class Planet {
     this.material.needsUpdate = true;
   }
 
+  updatePlanetName(name) {
+    let planetName = document.getElementById("planetName");
+    if (planetName != null) {
+      planetName.innerHTML = name;
+    }
+  }
+
 
   switchGeometry() {
     if (this.geo.type == 'SphereGeometry') {

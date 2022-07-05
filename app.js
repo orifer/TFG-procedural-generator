@@ -62,6 +62,7 @@ export default class app extends BaseApp {
         this.interface.init();
         this.interface.goToPlanetFast();
         this.interface.loadBasicInterface();
+        this.planet.updatePlanetName("Water world");
     }
 
     // Red planet
@@ -76,6 +77,7 @@ export default class app extends BaseApp {
         this.interface.init();
         this.interface.goToPlanetFast();
         this.interface.loadBasicInterface();
+        this.planet.updatePlanetName("Not Mars");
     }
 
 
