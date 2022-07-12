@@ -21,3 +21,5 @@ implementing in a simplified way what we know about our planet, and others, to
 obtain approximate results that can be extrapolated to see what other habitable
 planets like ours might look like, or create totally unique others with very different
 characteristics.
+
+Run the program [here](https://orifer.github.io/TFG-procedural-generator/)
