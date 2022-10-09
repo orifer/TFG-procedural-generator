@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { GUI } from 'https://cdn.skypack.dev/three@0.136/examples/jsm/libs/lil-gui.module.min.js';
-import gsap from 'https://cdn.skypack.dev/gsap';
+import gsap from 'https://cdn.skypack.dev/gsap@3.10.4';
 // INFO: https://lil-gui.georgealways.com/
 
 class Interface {
